@@ -91,9 +91,15 @@ h2 {
 
 .status-band {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
+  grid-template-columns: minmax(210px, 0.55fr) minmax(360px, 1.45fr);
   gap: 12px;
   margin-bottom: 12px;
+  align-items: start;
+}
+
+.heat-row {
+  margin-bottom: 12px;
+  align-items: start;
 }
 
 .meter-card,
@@ -118,13 +124,154 @@ h2 {
   font-size: 0.92rem;
 }
 
-.heat-meter .heat-state {
+.pilot-card {
+  align-items: start;
+}
+
+.pilot-card-main {
   grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.pilot-card-left {
+  display: grid;
+  gap: 8px;
+}
+
+.pilot-portrait {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid rgba(154, 216, 207, 0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(154, 216, 207, 0.14), transparent),
+    #182120;
+  color: #9ad8cf;
+}
+
+.pilot-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.pilot-stat-grid span,
+.pilot-focus-compact {
+  display: grid;
+  place-items: center;
+  min-height: 32px;
+  border-radius: 8px;
+  background: #182120;
+  color: #f4f1e8;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.pilot-focus-compact {
+  gap: 2px;
+  padding: 6px;
+}
+
+.pilot-focus-compact span {
+  color: #9ad8cf;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.pilot-focus-compact strong {
+  font-size: 1.3rem;
+}
+
+.pilot-card-info {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pilot-card-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pilot-card-heading h2 {
+  margin-bottom: 4px;
+  font-size: 1.2rem;
+}
+
+.pilot-card-heading span {
+  color: #c8d0ce;
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+
+.pilot-ability-summary {
+  width: fit-content;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(124, 92, 255, 0.18);
+  color: #d8ccff;
+  font-size: 0.8rem;
+}
+
+.pilot-card-details {
+  display: grid;
+  gap: 10px;
+}
+
+.pilot-card-details > p {
+  color: #d7dedb;
+  line-height: 1.45;
+}
+
+.pilot-focus-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pilot-focus-controls p {
+  color: #b8c6c2;
+}
+
+.heat-title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.heat-control-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.heat-title-row,
+.heat-control-row {
+  grid-column: 1 / -1;
+}
+
+.heat-display {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.heat-meter .heat-state {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   width: fit-content;
-  min-height: 30px;
+  min-height: 28px;
   padding: 0 10px;
   border: 0;
   border-radius: 999px;
@@ -173,6 +320,134 @@ h2 {
   gap: 9px;
 }
 
+.weapons-meter {
+  align-items: start;
+}
+
+.weapons-meter .panel-heading-toggle,
+.weapons-meter .weapon-slots {
+  grid-column: 1 / -1;
+}
+
+.panel-heading-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+  background: transparent;
+  color: #f4f1e8;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.panel-heading-toggle:hover {
+  background: rgba(244, 241, 232, 0.06);
+}
+
+.weapon-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.weapon-slot {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #182120;
+  cursor: pointer;
+}
+
+.weapon-slot:hover {
+  background: #202b2a;
+}
+
+.weapon-slot-header {
+  display: grid;
+  gap: 6px;
+}
+
+.weapon-slot-header span {
+  color: #9ad8cf;
+  font-size: 0.74rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.weapon-slot select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: #24302f;
+  color: #f4f1e8;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 0.84rem;
+}
+
+.weapon-name {
+  color: #f4f1e8;
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.weapon-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weapon-stats span {
+  min-height: 26px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #24302f;
+  color: #d7dedb;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.weapon-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weapon-tags span {
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(226, 169, 59, 0.16);
+  color: #f0d28a;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.weapon-rule {
+  display: grid;
+  gap: 2px;
+}
+
+.weapon-rule strong {
+  color: #f0d28a;
+  font-size: 0.82rem;
+}
+
+.weapon-rule p {
+  color: #c8d0ce;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
 .stepper {
   display: grid;
   grid-template-columns: 44px 42px 44px;
@@ -188,7 +463,6 @@ h2 {
 }
 
 .heat-track {
-  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 4px;
@@ -213,18 +487,27 @@ h2 {
 }
 
 .heat-bands {
-  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: 4fr 2fr 3fr;
   gap: 4px;
-  color: #8fa09c;
-  font-size: 0.72rem;
-  font-weight: 800;
 }
 
-.heat-bands span {
+.heat-bands button {
   min-width: 0;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #8fa09c;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
   overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.heat-bands button:hover {
+  color: #f4f1e8;
 }
 
 .workspace {
@@ -595,7 +878,20 @@ h3 {
   line-height: 1.5;
 }
 
+.weapon-modal-body {
+  display: grid;
+  gap: 0;
+}
+
+.modal-weapon-stats {
+  padding: 16px 16px 0;
+}
+
 @media (max-width: 900px) {
+  .status-band {
+    grid-template-columns: 1fr;
+  }
+
   .workspace {
     grid-template-columns: 1fr;
   }
@@ -614,14 +910,18 @@ h3 {
     font-size: 2rem;
   }
 
-  .status-band {
-    grid-template-columns: 1fr;
-  }
-
   .meter-card,
   .system-header {
     grid-template-columns: 1fr;
     align-items: stretch;
+  }
+
+  .pilot-card-main {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .pilot-card-heading {
+    align-items: start;
   }
 
   .system-header {
@@ -630,6 +930,14 @@ h3 {
 
   .system-controls {
     justify-content: start;
+  }
+
+  .heat-control-row {
+    grid-template-columns: 1fr;
+  }
+
+  .weapon-slots {
+    grid-template-columns: 1fr;
   }
 
   .stepper {

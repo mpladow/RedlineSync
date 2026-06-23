@@ -13,6 +13,7 @@ import {
 	RotateCcw,
 	Shield,
 	Sparkles,
+	Swords,
 	Zap
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -265,6 +266,83 @@ const DEFAULT_FOCUS = {
   sensors: 0
 };
 
+const WEAPONS = [
+  {
+    id: 'burst-carbine-br2',
+    slot: 'ranged',
+    name: '"BURST-CARBINE" BR-2 Rifle',
+    attackDie: 3,
+    damage: 2,
+    minRange: 2,
+    maxRange: 6,
+    specialRules: [
+      {
+        name: 'Overcharge - Damage',
+        text: 'When attacking, you can choose to gain +1 Heat to add +1 Damage to the attack.'
+      },
+      {
+        name: 'Reliable',
+        text: 'When attacking with this weapon, reroll 1 attack die. The second result must be kept.'
+      },
+      {
+        name: 'Suppressive Pattern',
+        text: 'Condition: Target has at least 1 Lock-On token or 1 Harried token. Effect: If this attack hits, place 1 Harried token on the target.'
+      }
+    ]
+  },
+  {
+    id: 'compact-rail-pistol',
+    slot: 'ranged',
+    name: 'Compact Rail Pistol',
+    attackDie: 2,
+    damage: 1,
+    minRange: 1,
+    maxRange: 4,
+    specialRules: []
+  },
+  {
+    id: 'titan-cleaver',
+    slot: 'melee',
+    name: 'Titan Cleaver',
+    attackDie: 3,
+    damage: 2,
+    minRange: 0,
+    maxRange: 1,
+    specialRules: [
+      {
+        name: 'Heavy Arc',
+        text: 'When this attack deals Structure Damage, push the defender 1 MD.'
+      }
+    ]
+  },
+  {
+    id: 'impact-knife',
+    slot: 'melee',
+    name: 'Impact Knife',
+    attackDie: 2,
+    damage: 1,
+    minRange: 0,
+    maxRange: 1,
+    specialRules: []
+  }
+];
+
+const DEFAULT_EQUIPPED_WEAPONS = {
+  melee: 'titan-cleaver',
+  ranged: 'burst-carbine-br2'
+};
+
+const PILOT_CARD = {
+  pilotName: 'Callsign Vantage',
+  mechName: 'IC-07 Redline Frame',
+  mobility: 3,
+  defence: 2,
+  specialAbility: {
+    name: 'Ace Pilot',
+    text: 'This pilot is skilled at converting targeting data into decisive shots. Once per round, when this pilot attacks a target with 2+ Lock-On tokens, they may reroll one additional attack die. This does not add a Lock-On token and does not remove Lock-On tokens.'
+  }
+};
+
 function getDamageSeverity(marker) {
   return marker.roll === '1-2' ? 'critical' : 'warning';
 }
@@ -274,6 +352,22 @@ function getHeatState(heat) {
   if (heat >= 4) return { label: 'Hot', range: '4-5', className: 'hot' };
   return { label: 'Steady', range: '0-3', className: 'steady' };
 }
+
+const HEAT_STATES = [
+  { label: 'Steady', range: '0-3', className: 'steady' },
+  { label: 'Hot', range: '4-5', className: 'hot' },
+  { label: 'Redline', range: '6-8', className: 'redline' }
+];
+
+const HEAT_RULES = {
+  steady: ['No additional Steady heat rules yet.'],
+  hot: ['Some weapons, pilot traits, and enemy effects may interact with Hot mechs.'],
+  redline: [
+    'Choose one bonus: +1 MD to one Mobility action OR +1 Attack die to one attack this activation.',
+    'Then, roll 1d6. On a 1-2, assign 1 Structure damage to a random system.',
+    'Gaining Heat at 6+: roll 1d6 for each Heat gained. On a 1-2, assign 1 Structure damage to a random system.'
+  ]
+};
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -293,6 +387,45 @@ function Stepper({ value, min = 0, max = 9, onChange, label }) {
   );
 }
 
+function WeaponSlot({ label, slot, selectedWeapon, onChange, onOpen }) {
+  const options = WEAPONS.filter((weapon) => weapon.slot === slot);
+
+  return (
+    <article className="weapon-slot" onClick={() => onOpen(selectedWeapon)} role="button" tabIndex={0}>
+      <div className="weapon-slot-header">
+        <span>{label}</span>
+        <select
+          value={selectedWeapon.id}
+          onChange={(event) => onChange(slot, event.target.value)}
+          onClick={(event) => event.stopPropagation()}
+          aria-label={`${label} weapon`}
+        >
+          {options.map((weapon) => (
+            <option key={weapon.id} value={weapon.id}>
+              {weapon.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="weapon-name">{selectedWeapon.name}</div>
+      <div className="weapon-stats" aria-label={`${selectedWeapon.name} stats`}>
+        <span>Attack Die {selectedWeapon.attackDie}</span>
+        <span>Dmg {selectedWeapon.damage}</span>
+        <span>
+          {selectedWeapon.minRange}/{selectedWeapon.maxRange}MD
+        </span>
+      </div>
+      <div className="weapon-tags" aria-label={`${selectedWeapon.name} tags`}>
+        {selectedWeapon.specialRules.length ? (
+          selectedWeapon.specialRules.map((rule) => <span key={rule.name}>{rule.name}</span>)
+        ) : (
+          <span>No special rules</span>
+        )}
+      </div>
+    </article>
+  );
+}
+
 function App() {
   const savedState = useMemo(() => {
     try {
@@ -308,6 +441,10 @@ function App() {
     ...savedFocus,
     mobility: savedFocus.mobility ?? savedFocus.movement ?? DEFAULT_FOCUS.mobility
   });
+  const [equippedWeapons, setEquippedWeapons] = useState({
+    ...DEFAULT_EQUIPPED_WEAPONS,
+    ...(savedState.equippedWeapons ?? {})
+  });
   const [heat, setHeat] = useState(savedState.heat ?? 3);
   const [handler, setHandler] = useState(savedState.handler ?? 'tactical');
   const [expandedCall, setExpandedCall] = useState(0);
@@ -316,24 +453,25 @@ function App() {
   const [selectedDamageMarkers, setSelectedDamageMarkers] = useState(savedState.selectedDamageMarkers ?? {});
   const [focusedDamageMarker, setFocusedDamageMarker] = useState(null);
   const [isHeatModalOpen, setIsHeatModalOpen] = useState(false);
+  const [selectedHeatRules, setSelectedHeatRules] = useState(null);
+  const [isWeaponsPanelExpanded, setIsWeaponsPanelExpanded] = useState(true);
+  const [selectedWeaponDetails, setSelectedWeaponDetails] = useState(null);
+  const [isPilotCardExpanded, setIsPilotCardExpanded] = useState(false);
 
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
   const activeHandler = HANDLERS.find((item) => item.id === handler);
   const heatState = getHeatState(heat);
-  const heatRules = {
-    steady: ['No additional Steady heat rules yet.'],
-    hot: ['Some weapons, pilot traits, and enemy effects may interact with Hot mechs.'],
-    redline: [
-      'Choose one bonus: +1 MD to one Mobility action OR +1 Attack die to one attack this activation.',
-      'Then, roll 1d6. On a 1-2, assign 1 Structure damage to a random system.',
-      'Gaining Heat at 6+: roll 1d6 for each Heat gained. On a 1-2, assign 1 Structure damage to a random system.'
-    ]
-  };
+  const modalHeatState = selectedHeatRules ?? heatState;
+  const meleeWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.melee) ?? WEAPONS.find((weapon) => weapon.slot === 'melee');
+  const rangedWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.ranged) ?? WEAPONS.find((weapon) => weapon.slot === 'ranged');
 
   useEffect(() => {
-    localStorage.setItem('redline-sync-state', JSON.stringify({ focusPool, focus, heat, handler, selectedDamageMarkers }));
-  }, [focus, focusPool, handler, heat, selectedDamageMarkers]);
+    localStorage.setItem(
+      'redline-sync-state',
+      JSON.stringify({ focusPool, focus, equippedWeapons, heat, handler, selectedDamageMarkers })
+    );
+  }, [equippedWeapons, focus, focusPool, handler, heat, selectedDamageMarkers]);
 
   const updateFocusPool = (value) => {
     setFocusPool(value);
@@ -389,6 +527,24 @@ function App() {
     setFocusedDamageMarker({ systemId, markerName });
   };
 
+  const updateEquippedWeapon = (slot, weaponId) => {
+    setEquippedWeapons((current) => ({ ...current, [slot]: weaponId }));
+  };
+
+  const openHeatRules = (state = heatState) => {
+    setSelectedHeatRules(state);
+    setIsHeatModalOpen(true);
+  };
+
+  const closeHeatRules = () => {
+    setIsHeatModalOpen(false);
+    setSelectedHeatRules(null);
+  };
+
+  const closeWeaponDetails = () => {
+    setSelectedWeaponDetails(null);
+  };
+
   useEffect(() => {
     if (!focusedDamageMarker) return;
 
@@ -407,10 +563,8 @@ function App() {
     };
   }, [focusedDamageMarker]);
 
-  const resetFrame = () => {
+  const resetFocusAllocation = () => {
     setFocus({ mobility: 0, weapons: 0, neural: 0, defence: 0, reactor: 0, sensors: 0 });
-    setHeat(0);
-    setSelectedDamageMarkers({});
   };
 
   return (
@@ -418,51 +572,130 @@ function App() {
       <header className="topbar">
         <div>
           <p className="eyebrow">Iron Colossus companion</p>
-          <h1>Redline Sync</h1>
+          <h1>Resonance Sync Z</h1>
         </div>
-        <button className="icon-action" type="button" onClick={resetFrame} aria-label="Reset frame">
+        <button className="icon-action" type="button" onClick={resetFocusAllocation} aria-label="Reset allocated focus">
           <RotateCcw size={20} />
         </button>
       </header>
 
       <section className="status-band">
-        <div className="meter-card focus-meter">
-          <div className="meter-heading">
-            <Gauge size={20} />
-            <span>Focus Pool</span>
+        <section className={`meter-card focus-meter pilot-card ${isPilotCardExpanded ? 'expanded' : ''}`}>
+          <div className="pilot-card-main">
+            <div className="pilot-card-left">
+              <div className="pilot-portrait" aria-hidden="true">
+                <Gauge size={28} />
+              </div>
+              <div className="pilot-stat-grid" aria-label="Pilot frame stats">
+                <span>Mob {PILOT_CARD.mobility}</span>
+                <span>Def {PILOT_CARD.defence}</span>
+              </div>
+              <div className="pilot-focus-compact">
+                <span>Focus Pool</span>
+                <strong>{focusPool}</strong>
+              </div>
+            </div>
+            <div className="pilot-card-info">
+              <div className="pilot-card-heading">
+                <div>
+                  <p className="eyebrow">Pilot</p>
+                  <h2>{PILOT_CARD.pilotName}</h2>
+                  <span>{PILOT_CARD.mechName}</span>
+                </div>
+                <button
+                  className="collapse-toggle"
+                  type="button"
+                  aria-expanded={isPilotCardExpanded}
+                  aria-label={`${isPilotCardExpanded ? 'Hide' : 'Show'} pilot details`}
+                  onClick={() => setIsPilotCardExpanded((current) => !current)}
+                >
+                  {isPilotCardExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                </button>
+              </div>
+              <div className="pilot-ability-summary">
+                <strong>{PILOT_CARD.specialAbility.name}</strong>
+              </div>
+              {isPilotCardExpanded && (
+                <div className="pilot-card-details">
+                  <div className="pilot-focus-controls">
+                    <Stepper value={focusPool} min={0} max={12} onChange={updateFocusPool} label="focus pool" />
+                    <p>{remainingFocus} remaining</p>
+                  </div>
+                  <p>{PILOT_CARD.specialAbility.text}</p>
+                </div>
+              )}
+            </div>
           </div>
-          <Stepper value={focusPool} min={0} max={12} onChange={updateFocusPool} label="focus pool" />
-          <p>{remainingFocus} remaining</p>
-        </div>
-        <div className="meter-card heat-meter">
+        </section>
+        <section className="meter-card weapons-meter">
+          <button
+            className="panel-heading-toggle"
+            type="button"
+            aria-expanded={isWeaponsPanelExpanded}
+            aria-label={`${isWeaponsPanelExpanded ? 'Hide' : 'Show'} equipped weapons`}
+            onClick={() => setIsWeaponsPanelExpanded((current) => !current)}
+          >
+            <span className="meter-heading">
+              <Swords size={20} />
+              <span>Equipped Weapons</span>
+            </span>
+            {isWeaponsPanelExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+          {isWeaponsPanelExpanded && (
+            <div className="weapon-slots">
+              <WeaponSlot
+                label="Melee"
+                slot="melee"
+                selectedWeapon={meleeWeapon}
+                onChange={updateEquippedWeapon}
+                onOpen={setSelectedWeaponDetails}
+              />
+              <WeaponSlot
+                label="Ranged"
+                slot="ranged"
+                selectedWeapon={rangedWeapon}
+                onChange={updateEquippedWeapon}
+                onOpen={setSelectedWeaponDetails}
+              />
+            </div>
+          )}
+        </section>
+      </section>
+
+      <section className="meter-card heat-meter heat-row">
+        <div className="heat-title-row">
           <div className="meter-heading">
             <Flame size={20} />
             <span>Heat</span>
           </div>
-          <Stepper value={heat} min={0} max={8} onChange={setHeat} label="heat" />
           <button
             className={`heat-state ${heatState.className}`}
             type="button"
-            onClick={() => setIsHeatModalOpen(true)}
+            onClick={() => openHeatRules(heatState)}
             aria-label={`Show ${heatState.label} heat rules`}
           >
             {heatState.label}
           </button>
-          <div className="heat-track" aria-hidden="true">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <span
-                key={index}
-                className={`${index < heat ? 'active' : ''} ${
-                  index >= 5 ? 'redline' : index >= 3 ? 'hot' : 'steady'
-                }`}
-              />
-            ))}
+        </div>
+        <div className="heat-control-row">
+          <div className="heat-display">
+            <div className="heat-track" aria-hidden="true">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <span
+                  key={index}
+                  className={`${index < heat ? 'active' : ''} ${index >= 5 ? 'redline' : index >= 3 ? 'hot' : 'steady'}`}
+                />
+              ))}
+            </div>
+            <div className="heat-bands" aria-label="Heat bands">
+              {HEAT_STATES.map((state) => (
+                <button key={state.className} type="button" onClick={() => openHeatRules(state)}>
+                  {state.label} {state.range}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="heat-bands" aria-label="Heat bands">
-            <span>Steady 0-3</span>
-            <span>Hot 4-5</span>
-            <span>Redline 6-8</span>
-          </div>
+          <Stepper value={heat} min={0} max={8} onChange={setHeat} label="heat" />
         </div>
       </section>
 
@@ -639,7 +872,7 @@ function App() {
       </div>
 
       {isHeatModalOpen && (
-        <div className="modal-backdrop" role="presentation" onClick={() => setIsHeatModalOpen(false)}>
+        <div className="modal-backdrop" role="presentation" onClick={closeHeatRules}>
           <section
             className="rules-modal"
             role="dialog"
@@ -650,16 +883,59 @@ function App() {
             <div className="modal-header">
               <div>
                 <p className="eyebrow">Heat rules</p>
-                <h2 id="heat-rules-title">{heatState.label}</h2>
+                <h2 id="heat-rules-title">{modalHeatState.label}</h2>
               </div>
-              <button className="icon-action" type="button" onClick={() => setIsHeatModalOpen(false)} aria-label="Close heat rules">
+              <button className="icon-action" type="button" onClick={closeHeatRules} aria-label="Close heat rules">
                 <ChevronUp size={20} />
               </button>
             </div>
             <div className="modal-rule-list">
-              {heatRules[heatState.className].map((rule) => (
+              {HEAT_RULES[modalHeatState.className].map((rule) => (
                 <p key={rule}>{rule}</p>
               ))}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {selectedWeaponDetails && (
+        <div className="modal-backdrop" role="presentation" onClick={closeWeaponDetails}>
+          <section
+            className="rules-modal weapon-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="weapon-details-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">{selectedWeaponDetails.slot} weapon</p>
+                <h2 id="weapon-details-title">{selectedWeaponDetails.name}</h2>
+              </div>
+              <button className="icon-action" type="button" onClick={closeWeaponDetails} aria-label="Close weapon details">
+                <ChevronUp size={20} />
+              </button>
+            </div>
+            <div className="weapon-modal-body">
+              <div className="weapon-stats modal-weapon-stats">
+                <span>Attack Die {selectedWeaponDetails.attackDie}</span>
+                <span>Dmg {selectedWeaponDetails.damage}</span>
+                <span>
+                  {selectedWeaponDetails.minRange}/{selectedWeaponDetails.maxRange}MD
+                </span>
+              </div>
+              <div className="modal-rule-list">
+                {selectedWeaponDetails.specialRules.length ? (
+                  selectedWeaponDetails.specialRules.map((rule) => (
+                    <div className="weapon-rule" key={rule.name}>
+                      <strong>{rule.name}</strong>
+                      <p>{rule.text}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No special rules.</p>
+                )}
+              </div>
             </div>
           </section>
         </div>
