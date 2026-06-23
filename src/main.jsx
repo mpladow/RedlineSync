@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Activity,
+  AlertTriangle,
   ChevronDown,
   ChevronUp,
   Cpu,
@@ -264,6 +265,10 @@ const DEFAULT_FOCUS = {
   sensors: 0
 };
 
+function getDamageSeverity(marker) {
+  return marker.roll === '1-2' ? 'critical' : 'warning';
+}
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
@@ -303,6 +308,7 @@ function App() {
   const [expandedSystems, setExpandedSystems] = useState({ mobility: true });
   const [expandedDamageTables, setExpandedDamageTables] = useState({});
   const [selectedDamageMarkers, setSelectedDamageMarkers] = useState(savedState.selectedDamageMarkers ?? {});
+  const [focusedDamageMarker, setFocusedDamageMarker] = useState(null);
 
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
@@ -344,11 +350,45 @@ function App() {
   };
 
   const toggleDamageMarker = (systemId, markerName) => {
-    setSelectedDamageMarkers((current) => ({
-      ...current,
-      [systemId]: current[systemId] === markerName ? '' : markerName
-    }));
+    setSelectedDamageMarkers((current) => {
+      const currentMarkers = Array.isArray(current[systemId])
+        ? current[systemId]
+        : current[systemId]
+          ? [current[systemId]]
+          : [];
+      const nextMarkers = currentMarkers.includes(markerName)
+        ? currentMarkers.filter((name) => name !== markerName)
+        : [...currentMarkers, markerName];
+
+      return {
+        ...current,
+        [systemId]: nextMarkers
+      };
+    });
   };
+
+  const showDamageMarker = (systemId, markerName) => {
+    setExpandedDamageTables((current) => ({ ...current, [systemId]: true }));
+    setFocusedDamageMarker({ systemId, markerName });
+  };
+
+  useEffect(() => {
+    if (!focusedDamageMarker) return;
+
+    const selector = `[data-system-id="${focusedDamageMarker.systemId}"][data-marker-name="${CSS.escape(focusedDamageMarker.markerName)}"]`;
+    const frame = requestAnimationFrame(() => {
+      const row = document.querySelector(selector);
+      row?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      row?.focus({ preventScroll: true });
+    });
+
+    const timeout = window.setTimeout(() => setFocusedDamageMarker(null), 1400);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+    };
+  }, [focusedDamageMarker]);
 
   const resetFrame = () => {
     setFocus({ mobility: 0, weapons: 0, neural: 0, defence: 0, reactor: 0, sensors: 0 });
@@ -401,14 +441,33 @@ function App() {
             {SYSTEMS.map(({ id, label, icon: Icon, accent, actions, damageMarkers }) => {
               const areActionsExpanded = Boolean(expandedSystems[id]);
               const isDamageExpanded = Boolean(expandedDamageTables[id]);
-              const selectedDamage = selectedDamageMarkers[id];
+              const selectedDamage = Array.isArray(selectedDamageMarkers[id])
+                ? selectedDamageMarkers[id]
+                : selectedDamageMarkers[id]
+                  ? [selectedDamageMarkers[id]]
+                  : [];
               return (
-                <article className={`system-card ${selectedDamage ? 'damaged' : ''}`} key={id} style={{ '--accent': accent }}>
+                <article className={`system-card ${selectedDamage.length ? 'damaged' : ''}`} key={id} style={{ '--accent': accent }}>
                   <div className="system-header">
                     <div className="system-copy">
                       <Icon size={22} />
                       <span>{label}</span>
-                      {selectedDamage ? <strong className="system-damage-badge">{selectedDamage}</strong> : null}
+                      {selectedDamage.map((markerName) => {
+                        const marker = damageMarkers.find((item) => item.name === markerName);
+                        const severity = marker ? getDamageSeverity(marker) : 'warning';
+                        return (
+                          <button
+                            className={`system-damage-badge ${severity}`}
+                            key={markerName}
+                            type="button"
+                            onClick={() => showDamageMarker(id, markerName)}
+                            aria-label={`Show ${label} damage marker ${markerName}`}
+                          >
+                            {severity === 'critical' ? <AlertTriangle size={14} /> : null}
+                            {markerName}
+                          </button>
+                        );
+                      })}
                     </div>
                     <div className="system-controls">
                       <Stepper
@@ -468,17 +527,27 @@ function App() {
                           <span>Effect</span>
                         </div>
                         {damageMarkers.map((marker) => {
-                          const isSelected = selectedDamage === marker.name;
+                          const isSelected = selectedDamage.includes(marker.name);
+                          const severity = getDamageSeverity(marker);
                           return (
                             <button
-                              className={`table-row marker-row ${isSelected ? 'selected' : ''}`}
+                              className={`table-row marker-row ${severity} ${isSelected ? 'selected' : ''} ${
+                                focusedDamageMarker?.systemId === id && focusedDamageMarker?.markerName === marker.name
+                                  ? 'focused'
+                                  : ''
+                              }`}
                               key={marker.name}
                               type="button"
                               aria-pressed={isSelected}
+                              data-system-id={id}
+                              data-marker-name={marker.name}
                               onClick={() => toggleDamageMarker(id, marker.name)}
                             >
                               <span className="roll-pill">{marker.roll}</span>
-                              <strong>{marker.name}</strong>
+                              <strong className="marker-name">
+                                {severity === 'critical' ? <AlertTriangle size={16} /> : null}
+                                {marker.name}
+                              </strong>
                               <span>{marker.effect}</span>
                             </button>
                           );

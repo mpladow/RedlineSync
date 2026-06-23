@@ -177,11 +177,13 @@ h2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  align-items: start;
 }
 
 .system-card {
   display: grid;
   gap: 12px;
+  align-content: start;
   min-width: 0;
   padding: 12px;
   border-left: 4px solid var(--accent);
@@ -222,13 +224,29 @@ h2 {
 .system-damage-badge {
   display: inline-flex;
   align-items: center;
+  gap: 5px;
   min-height: 26px;
   padding: 0 9px;
+  border: 0;
   border-radius: 999px;
   background: rgba(226, 169, 59, 0.18);
   color: #f0d28a;
+  cursor: pointer;
   font-size: 0.75rem;
   font-weight: 850;
+}
+
+.system-damage-badge:hover {
+  background: rgba(226, 169, 59, 0.28);
+}
+
+.system-damage-badge.critical {
+  background: rgba(231, 88, 62, 0.22);
+  color: #ffb2a4;
+}
+
+.system-damage-badge.critical:hover {
+  background: rgba(231, 88, 62, 0.32);
 }
 
 .collapse-toggle {
@@ -236,7 +254,7 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 44px;
+  height: 44px;
   padding: 0 12px;
   border-radius: 8px;
   background: #24302f;
@@ -322,12 +340,42 @@ h2 {
   box-shadow: inset 4px 0 0 #e2a93b;
 }
 
+.marker-row.critical {
+  box-shadow: inset 4px 0 0 rgba(231, 88, 62, 0.6);
+}
+
+.marker-row.critical.selected {
+  background: rgba(231, 88, 62, 0.16);
+  box-shadow: inset 4px 0 0 #e7583e;
+}
+
 .marker-row.selected strong {
   color: #f0d28a;
 }
 
+.marker-row.critical.selected strong {
+  color: #ffb2a4;
+}
+
+.marker-row.focused {
+  outline: 2px solid #f4f1e8;
+  outline-offset: -2px;
+}
+
 .table-row strong {
   color: #f4f1e8;
+}
+
+.marker-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.marker-name svg,
+.system-damage-badge.critical svg {
+  color: #e7583e;
+  flex: 0 0 auto;
 }
 
 .cost-pill,
