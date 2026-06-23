@@ -88,6 +88,11 @@ function App() {
 
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
+  const unspentActivationFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
+  console.log("🚀 ~ App ~ spentActivationFocus:", unspentActivationFocus)
+  const assignedActivationFocus = useMemo(() => Object.values(cockpitFocus).reduce((total, value) => total + value, 0), [cockpitFocus]);
+  const spentActivationFocus = assignedActivationFocus + unspentActivationFocus;
+  console.log("🚀 ~ App ~ unspentActivationFocus:", spentActivationFocus)
   const heatState = getHeatState(heat);
   const modalHeatState = selectedHeatRules ?? heatState;
   const meleeWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.melee) ?? WEAPONS.find((weapon) => weapon.slot === 'melee');
@@ -462,6 +467,11 @@ function App() {
               <p>
                 This will move the game from {currentPhase} to {nextPhase}.
               </p>
+              {phaseIndex === 2 && unspentActivationFocus > 0 && (
+                <div className="alert alert-warning">
+                  <p>You have not spent all your focus yet. Have all opponents Passed their Turn?</p>
+                </div>
+              )}
               {phaseIndex === 3 && remainingFocus > 0 && (
                 <div className="alert alert-warning">
                   <p>You have not spent all your focus yet. Have all opponents Passed their Turn?</p>
