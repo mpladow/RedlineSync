@@ -280,6 +280,9 @@ function App() {
       if (current === 0) {
         setCockpitFocus(focus);
       }
+      if (current === 2) {
+        return 0;
+      }
       return Math.min(GAME_PHASES.length - 1, current + 1);
     });
     setShowCockpitFocusAlert(false);
@@ -555,7 +558,7 @@ function App() {
       />
       <FocusAllocationDock
         focus={focus}
-        remainingFocus={remainingFocus}
+        remainingFocus={unspentActivationFocus}
         isExpanded={isFocusDockExpanded}
         onToggleExpanded={() => setIsFocusDockExpanded((current) => !current)}
         onSelectSystem={(systemId) => {
