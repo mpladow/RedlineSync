@@ -189,14 +189,27 @@ h2 {
   background: #182120;
 }
 
+.system-card.damaged {
+  outline: 1px solid rgba(226, 169, 59, 0.5);
+}
+
 .system-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
 
+.system-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .system-copy {
+  flex-wrap: wrap;
   min-width: 0;
   color: #f6f0df;
   font-weight: 800;
@@ -204,6 +217,55 @@ h2 {
 
 .system-copy span {
   overflow-wrap: anywhere;
+}
+
+.system-damage-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(226, 169, 59, 0.18);
+  color: #f0d28a;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #24302f;
+  color: #f4f1e8;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.section-toggle {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.collapse-toggle:hover {
+  background: #32413f;
+}
+
+.damage-control {
+  background: #202928;
+}
+
+.damage-control:hover {
+  background: #2a3534;
+}
+
+.system-section {
+  display: grid;
+  gap: 8px;
 }
 
 .call-list {
@@ -242,6 +304,26 @@ h2 {
   color: #c8d0ce;
   font-size: 0.87rem;
   line-height: 1.35;
+}
+
+.marker-row {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.marker-row:hover {
+  background: #202b2a;
+}
+
+.marker-row.selected {
+  background: rgba(226, 169, 59, 0.16);
+  box-shadow: inset 4px 0 0 #e2a93b;
+}
+
+.marker-row.selected strong {
+  color: #f0d28a;
 }
 
 .table-row strong {
@@ -384,6 +466,10 @@ h3 {
 
   .system-header {
     display: grid;
+  }
+
+  .system-controls {
+    justify-content: start;
   }
 
   .stepper {

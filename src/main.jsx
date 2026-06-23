@@ -300,14 +300,17 @@ function App() {
   const [heat, setHeat] = useState(savedState.heat ?? 3);
   const [handler, setHandler] = useState(savedState.handler ?? 'tactical');
   const [expandedCall, setExpandedCall] = useState(0);
+  const [expandedSystems, setExpandedSystems] = useState({ mobility: true });
+  const [expandedDamageTables, setExpandedDamageTables] = useState({});
+  const [selectedDamageMarkers, setSelectedDamageMarkers] = useState(savedState.selectedDamageMarkers ?? {});
 
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
   const activeHandler = HANDLERS.find((item) => item.id === handler);
 
   useEffect(() => {
-    localStorage.setItem('redline-sync-state', JSON.stringify({ focusPool, focus, heat, handler }));
-  }, [focus, focusPool, handler, heat]);
+    localStorage.setItem('redline-sync-state', JSON.stringify({ focusPool, focus, heat, handler, selectedDamageMarkers }));
+  }, [focus, focusPool, handler, heat, selectedDamageMarkers]);
 
   const updateFocusPool = (value) => {
     setFocusPool(value);
@@ -332,9 +335,25 @@ function App() {
     }
   };
 
+  const toggleSystem = (systemId) => {
+    setExpandedSystems((current) => ({ ...current, [systemId]: !current[systemId] }));
+  };
+
+  const toggleDamageTable = (systemId) => {
+    setExpandedDamageTables((current) => ({ ...current, [systemId]: !current[systemId] }));
+  };
+
+  const toggleDamageMarker = (systemId, markerName) => {
+    setSelectedDamageMarkers((current) => ({
+      ...current,
+      [systemId]: current[systemId] === markerName ? '' : markerName
+    }));
+  };
+
   const resetFrame = () => {
     setFocus({ mobility: 0, weapons: 0, neural: 0, defence: 0, reactor: 0, sensors: 0 });
     setHeat(0);
+    setSelectedDamageMarkers({});
   };
 
   return (
@@ -379,55 +398,97 @@ function App() {
             <h2>Allocate Focus</h2>
           </div>
           <div className="focus-grid">
-            {SYSTEMS.map(({ id, label, icon: Icon, accent, actions, damageMarkers }) => (
-              <article className="system-card" key={id} style={{ '--accent': accent }}>
-                <div className="system-header">
-                  <div className="system-copy">
-                    <Icon size={22} />
-                    <span>{label}</span>
-                  </div>
-                  <Stepper
-                    value={focus[id]}
-                    max={focusPool}
-                    onChange={(value) => updateFocus(id, value)}
-                    label={`${label} focus`}
-                  />
-                </div>
-
-                <div className="data-table action-table" aria-label={`${label} actions`}>
-                  <div className="table-head">
-                    <span>Cost</span>
-                    <span>Action</span>
-                    <span>Description</span>
-                  </div>
-                  {actions.map((action) => (
-                    <div className="table-row" key={action.name}>
-                      <span className="cost-pill">{action.cost}</span>
-                      <strong>{action.name}</strong>
-                      <span>{action.description}</span>
+            {SYSTEMS.map(({ id, label, icon: Icon, accent, actions, damageMarkers }) => {
+              const areActionsExpanded = Boolean(expandedSystems[id]);
+              const isDamageExpanded = Boolean(expandedDamageTables[id]);
+              const selectedDamage = selectedDamageMarkers[id];
+              return (
+                <article className={`system-card ${selectedDamage ? 'damaged' : ''}`} key={id} style={{ '--accent': accent }}>
+                  <div className="system-header">
+                    <div className="system-copy">
+                      <Icon size={22} />
+                      <span>{label}</span>
+                      {selectedDamage ? <strong className="system-damage-badge">{selectedDamage}</strong> : null}
                     </div>
-                  ))}
-                </div>
-
-                <div className="damage-marker-section">
-                  <h3>Damage Markers</h3>
-                  <div className="data-table marker-table" aria-label={`${label} damage markers`}>
-                    <div className="table-head">
-                      <span>Roll</span>
-                      <span>Name</span>
-                      <span>Effect</span>
+                    <div className="system-controls">
+                      <Stepper
+                        value={focus[id]}
+                        max={focusPool}
+                        onChange={(value) => updateFocus(id, value)}
+                        label={`${label} focus`}
+                      />
                     </div>
-                    {damageMarkers.map((marker) => (
-                      <div className="table-row" key={marker.name}>
-                        <span className="roll-pill">{marker.roll}</span>
-                        <strong>{marker.name}</strong>
-                        <span>{marker.effect}</span>
+                  </div>
+
+                  <div className="system-section">
+                    <button
+                      className="collapse-toggle section-toggle"
+                      type="button"
+                      aria-expanded={areActionsExpanded}
+                      aria-label={`${areActionsExpanded ? 'Hide' : 'Show'} ${label} actions`}
+                      onClick={() => toggleSystem(id)}
+                    >
+                      <span>Actions</span>
+                      {areActionsExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                    {areActionsExpanded && (
+                      <div className="data-table action-table" aria-label={`${label} actions`}>
+                        <div className="table-head">
+                          <span>Cost</span>
+                          <span>Action</span>
+                          <span>Description</span>
+                        </div>
+                        {actions.map((action) => (
+                          <div className="table-row" key={action.name}>
+                            <span className="cost-pill">{action.cost}</span>
+                            <strong>{action.name}</strong>
+                            <span>{action.description}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                </div>
-              </article>
-            ))}
+
+                  <div className="damage-marker-section system-section">
+                    <button
+                      className="collapse-toggle section-toggle damage-control"
+                      type="button"
+                      aria-expanded={isDamageExpanded}
+                      aria-label={`${isDamageExpanded ? 'Hide' : 'Show'} ${label} damage markers`}
+                      onClick={() => toggleDamageTable(id)}
+                    >
+                      <span>Damage</span>
+                      {isDamageExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                    {isDamageExpanded && (
+                      <div className="data-table marker-table" aria-label={`${label} damage markers`}>
+                        <div className="table-head">
+                          <span>Roll</span>
+                          <span>Name</span>
+                          <span>Effect</span>
+                        </div>
+                        {damageMarkers.map((marker) => {
+                          const isSelected = selectedDamage === marker.name;
+                          return (
+                            <button
+                              className={`table-row marker-row ${isSelected ? 'selected' : ''}`}
+                              key={marker.name}
+                              type="button"
+                              aria-pressed={isSelected}
+                              onClick={() => toggleDamageMarker(id, marker.name)}
+                            >
+                              <span className="roll-pill">{marker.roll}</span>
+                              <strong>{marker.name}</strong>
+                              <span>{marker.effect}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
 
