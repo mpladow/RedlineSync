@@ -1,22 +1,22 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { createRoot } from 'react-dom/client';
 import {
-  Activity,
-  AlertTriangle,
-  ChevronDown,
-  ChevronUp,
-  Cpu,
-  Crosshair,
-  Flame,
-  Gauge,
-  Minus,
-  Plus,
-  Radar,
-  RotateCcw,
-  Shield,
-  Sparkles,
-  Zap
+	Activity,
+	AlertTriangle,
+	ChevronDown,
+	ChevronUp,
+	Cpu,
+	Crosshair,
+	Flame,
+	Gauge,
+	Minus,
+	Plus,
+	Radar,
+	RotateCcw,
+	Shield,
+	Sparkles,
+	Zap
 } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import './styles.css';
 
 const SYSTEMS = [
@@ -269,6 +269,12 @@ function getDamageSeverity(marker) {
   return marker.roll === '1-2' ? 'critical' : 'warning';
 }
 
+function getHeatState(heat) {
+  if (heat >= 6) return { label: 'Redline', range: '6-8', className: 'redline' };
+  if (heat >= 4) return { label: 'Hot', range: '4-5', className: 'hot' };
+  return { label: 'Steady', range: '0-3', className: 'steady' };
+}
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
@@ -309,10 +315,21 @@ function App() {
   const [expandedDamageTables, setExpandedDamageTables] = useState({});
   const [selectedDamageMarkers, setSelectedDamageMarkers] = useState(savedState.selectedDamageMarkers ?? {});
   const [focusedDamageMarker, setFocusedDamageMarker] = useState(null);
+  const [isHeatModalOpen, setIsHeatModalOpen] = useState(false);
 
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
   const activeHandler = HANDLERS.find((item) => item.id === handler);
+  const heatState = getHeatState(heat);
+  const heatRules = {
+    steady: ['No additional Steady heat rules yet.'],
+    hot: ['Some weapons, pilot traits, and enemy effects may interact with Hot mechs.'],
+    redline: [
+      'Choose one bonus: +1 MD to one Mobility action OR +1 Attack die to one attack this activation.',
+      'Then, roll 1d6. On a 1-2, assign 1 Structure damage to a random system.',
+      'Gaining Heat at 6+: roll 1d6 for each Heat gained. On a 1-2, assign 1 Structure damage to a random system.'
+    ]
+  };
 
   useEffect(() => {
     localStorage.setItem('redline-sync-state', JSON.stringify({ focusPool, focus, heat, handler, selectedDamageMarkers }));
@@ -422,11 +439,29 @@ function App() {
             <Flame size={20} />
             <span>Heat</span>
           </div>
-          <Stepper value={heat} min={0} max={12} onChange={setHeat} label="heat" />
+          <Stepper value={heat} min={0} max={8} onChange={setHeat} label="heat" />
+          <button
+            className={`heat-state ${heatState.className}`}
+            type="button"
+            onClick={() => setIsHeatModalOpen(true)}
+            aria-label={`Show ${heatState.label} heat rules`}
+          >
+            {heatState.label}
+          </button>
           <div className="heat-track" aria-hidden="true">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <span key={index} className={index < heat ? 'active' : ''} />
+            {Array.from({ length: 8 }).map((_, index) => (
+              <span
+                key={index}
+                className={`${index < heat ? 'active' : ''} ${
+                  index >= 5 ? 'redline' : index >= 3 ? 'hot' : 'steady'
+                }`}
+              />
             ))}
+          </div>
+          <div className="heat-bands" aria-label="Heat bands">
+            <span>Steady 0-3</span>
+            <span>Hot 4-5</span>
+            <span>Redline 6-8</span>
           </div>
         </div>
       </section>
@@ -602,6 +637,33 @@ function App() {
           </div>
         </section>
       </div>
+
+      {isHeatModalOpen && (
+        <div className="modal-backdrop" role="presentation" onClick={() => setIsHeatModalOpen(false)}>
+          <section
+            className="rules-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="heat-rules-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">Heat rules</p>
+                <h2 id="heat-rules-title">{heatState.label}</h2>
+              </div>
+              <button className="icon-action" type="button" onClick={() => setIsHeatModalOpen(false)} aria-label="Close heat rules">
+                <ChevronUp size={20} />
+              </button>
+            </div>
+            <div className="modal-rule-list">
+              {heatRules[heatState.className].map((rule) => (
+                <p key={rule}>{rule}</p>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

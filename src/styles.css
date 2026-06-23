@@ -118,6 +118,53 @@ h2 {
   font-size: 0.92rem;
 }
 
+.heat-meter .heat-state {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.heat-state span {
+  color: inherit;
+  opacity: 0.78;
+  font-size: 0.78rem;
+}
+
+.heat-state.steady {
+  background: rgba(25, 167, 165, 0.16);
+  color: #9ad8cf;
+}
+
+.heat-state.steady:hover {
+  background: rgba(25, 167, 165, 0.25);
+}
+
+.heat-state.hot {
+  background: rgba(226, 169, 59, 0.18);
+  color: #f0d28a;
+}
+
+.heat-state.hot:hover {
+  background: rgba(226, 169, 59, 0.28);
+}
+
+.heat-state.redline {
+  background: rgba(231, 88, 62, 0.22);
+  color: #ffb2a4;
+}
+
+.heat-state.redline:hover {
+  background: rgba(231, 88, 62, 0.32);
+}
+
 .meter-heading,
 .section-title,
 .system-copy {
@@ -143,7 +190,7 @@ h2 {
 .heat-track {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   gap: 4px;
 }
 
@@ -153,8 +200,31 @@ h2 {
   background: #26302f;
 }
 
-.heat-track span.active {
-  background: linear-gradient(90deg, #f0b947, #e7583e);
+.heat-track span.active.steady {
+  background: #19a7a5;
+}
+
+.heat-track span.active.hot {
+  background: #e2a93b;
+}
+
+.heat-track span.active.redline {
+  background: #e7583e;
+}
+
+.heat-bands {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 4fr 2fr 3fr;
+  gap: 4px;
+  color: #8fa09c;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.heat-bands span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .workspace {
@@ -481,6 +551,48 @@ h3 {
 
 .call-item p {
   padding: 0 12px 12px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(4, 8, 8, 0.72);
+}
+
+.rules-modal {
+  width: min(520px, 100%);
+  border: 1px solid rgba(244, 241, 232, 0.14);
+  border-radius: 8px;
+  background: #121818;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.modal-header h2 {
+  font-size: 1.35rem;
+}
+
+.modal-rule-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.modal-rule-list p {
+  color: #d7dedb;
+  line-height: 1.5;
 }
 
 @media (max-width: 900px) {
