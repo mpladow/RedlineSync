@@ -1,14 +1,28 @@
 import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { HANDLERS } from '../constants/handlers';
 
-export function HandlerPanel({ handler, expandedCall, onChangeHandler, onToggleCall }) {
+export function HandlerPanel({
+  handler,
+  expandedCall,
+  onChangeHandler,
+  onToggleCall,
+  isHighlighted = false,
+  showSupportAlert = false
+}) {
   const activeHandler = HANDLERS.find((item) => item.id === handler);
 
   return (
-    <section className="panel handler-panel">
-      <div className="section-title">
-        <Sparkles size={20} />
-        <h2>Handler</h2>
+    <section id="handler-panel" className={`panel handler-panel ${isHighlighted ? 'attention' : ''}`} tabIndex={-1}>
+      <div className="focus-panel-heading">
+        <div className="section-title">
+          <Sparkles size={20} />
+          <h2>Handler</h2>
+        </div>
+        {showSupportAlert && (
+          <div className="focus-alert" role="alert">
+            <span>You can activate Support Actions in this phase.</span>
+          </div>
+        )}
       </div>
       <div className="handler-tabs">
         {HANDLERS.map((item) => (

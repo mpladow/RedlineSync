@@ -6,6 +6,8 @@ export function SystemCard({
   system,
   focusValue,
   focusPool,
+  assignedFocusValue,
+  showFocusAssignment,
   selectedDamage,
   expandedActions,
   expandedDamage,
@@ -14,9 +16,13 @@ export function SystemCard({
   onToggleActions,
   onToggleDamage,
   onToggleMarker,
-  onShowDamageMarker
+  onShowDamageMarker,
+  onShowOvercommittedWarning
 }) {
   const { id, label, icon: Icon, accent, actions, damageMarkers } = system;
+  const overcommittedFocusValue = showFocusAssignment ? assignedFocusValue : focusValue;
+  const isOvercommitted = overcommittedFocusValue > 3;
+  const focusLimit = showFocusAssignment ? assignedFocusValue : focusPool;
   return (
     <article
       id={`focus-system-${id}`}
@@ -28,6 +34,16 @@ export function SystemCard({
         <div className="system-copy">
           <Icon size={22} />
           <span>{label}</span>
+          {isOvercommitted && (
+            <button
+              className="system-status-badge overcommitted"
+              type="button"
+              onClick={() => onShowOvercommittedWarning(label)}
+              aria-label={`Show ${label} overcommitted warning`}
+            >
+              Overcommitted
+            </button>
+          )}
           {selectedDamage.map((markerName) => {
             const marker = damageMarkers.find((item) => item.name === markerName);
             const severity = marker ? getDamageSeverity(marker) : 'warning';
@@ -48,9 +64,10 @@ export function SystemCard({
         <div className="system-controls">
           <Stepper
             value={focusValue}
-            max={focusPool}
+            max={focusLimit}
             onChange={(value) => onFocusChange(id, value)}
             label={`${label} focus`}
+            assignedValue={showFocusAssignment ? assignedFocusValue : null}
           />
         </div>
       </div>
