@@ -773,6 +773,7 @@ h2 {
   gap: 6px;
 }
 
+
 .stepper output {
   min-width: 42px;
   text-align: center;
@@ -1352,6 +1353,24 @@ h3 {
   gap: 8px;
 }
 
+.alert {
+  padding: 12px 14px;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.alert p {
+  margin: 0;
+  color: #f4f1e8;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.alert-warning {
+  background: rgba(231, 88, 62, 0.2);
+  border-left-color: #e7583e;
+}
+
 .primary-action,
 .secondary-action {
   min-height: 42px;
@@ -1397,6 +1416,7 @@ h3 {
   align-items: stretch;
   gap: 8px;
   max-width: min(980px, calc(100vw - 36px));
+  width: auto;
   padding: 8px;
   border: 1px solid rgba(244, 241, 232, 0.14);
   border-radius: 8px;
@@ -1404,8 +1424,16 @@ h3 {
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
   transition:
     max-width 180ms ease,
+    width 180ms ease,
     transform 180ms ease,
     opacity 180ms ease;
+}
+
+.focus-dock.expanded {
+  left: 18px;
+  right: 18px;
+  max-width: none;
+  width: calc(100vw - 36px);
 }
 
 .focus-dock-toggle,
@@ -1432,13 +1460,13 @@ h3 {
   display: flex;
   flex-direction: row-reverse;
   gap: 6px;
+  flex: 1;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: thin;
-  max-width: 760px;
+  max-width: none;
   opacity: 1;
   transition:
-    max-width 180ms ease,
     opacity 140ms ease,
     transform 180ms ease;
 }
@@ -1461,10 +1489,21 @@ h3 {
   color: #d7dedb;
   cursor: pointer;
   white-space: nowrap;
+  flex: 1 1 72px;
 }
 
 .focus-dock-systems button:hover {
   background: #24302f;
+}
+
+.focus-dock-systems button.selected {
+  background: #f4f1e8;
+  color: #111817;
+}
+
+.focus-dock-systems button.selected strong {
+  background: #111817;
+  color: #f4f1e8;
 }
 
 .focus-dock-systems span,

@@ -204,19 +204,43 @@ function App() {
 
   useEffect(() => {
     const didChangeToSupport = phaseIndex === 1 && previousPhaseIndex.current !== 1;
+    const didChangeToActivation = phaseIndex === 2 && previousPhaseIndex.current !== 2;
     previousPhaseIndex.current = phaseIndex;
 
-    if (!didChangeToSupport) return;
+    if (didChangeToSupport) {
+      setIsHandlerHighlighted(true);
+      const frame = requestAnimationFrame(scrollToHandler);
+      const timeout = window.setTimeout(() => setIsHandlerHighlighted(false), 1800);
 
-    setIsHandlerHighlighted(true);
-    const frame = requestAnimationFrame(scrollToHandler);
-    const timeout = window.setTimeout(() => setIsHandlerHighlighted(false), 1800);
+      return () => {
+        cancelAnimationFrame(frame);
+        window.clearTimeout(timeout);
+      };
+    }
 
-    return () => {
-      cancelAnimationFrame(frame);
-      window.clearTimeout(timeout);
-    };
-  }, [phaseIndex]);
+    if (didChangeToActivation) {
+      setExpandedSystems((current) => {
+        const next = { ...current };
+        Object.entries(focus).forEach(([systemId, value]) => {
+          if (value > 0) {
+            next[systemId] = true;
+          }
+        });
+        return next;
+      });
+      setExpandedDamageTables((current) => {
+        const next = { ...current };
+        Object.entries(focus).forEach(([systemId, value]) => {
+          if (value > 0) {
+            next[systemId] = false;
+          }
+        });
+        return next;
+      });
+    }
+
+    return undefined;
+  }, [phaseIndex, focus]);
 
   useEffect(() => {
     if (!focusedDamageMarker) return;
@@ -404,6 +428,7 @@ function App() {
           showCockpitAlert={showCockpitFocusAlert && phaseIndex === 0}
           focusAllocationComplete={remainingFocus === 0}
           showFocusAssignments={phaseIndex === 2}
+          isActivationPhase={phaseIndex === 2}
         />
         <HandlerPanel
           handler={handler}
@@ -437,6 +462,11 @@ function App() {
               <p>
                 This will move the game from {currentPhase} to {nextPhase}.
               </p>
+              {phaseIndex === 3 && remainingFocus > 0 && (
+                <div className="alert alert-warning">
+                  <p>You have not spent all your focus yet. Have all opponents Passed their Turn?</p>
+                </div>
+              )}
               <div className="phase-confirm-actions">
                 <button type="button" className="secondary-action" onClick={() => setIsPhaseConfirmOpen(false)}>
                   Cancel
@@ -518,7 +548,12 @@ function App() {
         remainingFocus={remainingFocus}
         isExpanded={isFocusDockExpanded}
         onToggleExpanded={() => setIsFocusDockExpanded((current) => !current)}
-        onSelectSystem={scrollToFocusSystem}
+        onSelectSystem={(systemId) => {
+          toggleSystem(systemId);
+          scrollToFocusSystem(systemId);
+        }}
+        expandedSystems={expandedSystems}
+        expandedDamageTables={expandedDamageTables}
       />
       <div className="dock-menu">
         <button

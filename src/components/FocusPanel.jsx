@@ -18,7 +18,8 @@ export function FocusPanel({
   showCockpitAlert,
   onShowOvercommittedWarning,
   focusAllocationComplete,
-  showFocusAssignments
+  showFocusAssignments,
+  isActivationPhase
 }) {
   return (
     <section className={`panel focus-panel ${showCockpitAlert ? 'attention' : ''}`}>
@@ -60,6 +61,7 @@ export function FocusPanel({
               onToggleMarker={onToggleDamageMarker}
               onShowDamageMarker={onShowDamageMarker}
               onShowOvercommittedWarning={onShowOvercommittedWarning}
+              isActivationPhase={isActivationPhase}
             />
           );
         })}

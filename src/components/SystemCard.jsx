@@ -17,7 +17,8 @@ export function SystemCard({
   onToggleDamage,
   onToggleMarker,
   onShowDamageMarker,
-  onShowOvercommittedWarning
+  onShowOvercommittedWarning,
+  isActivationPhase
 }) {
   const { id, label, icon: Icon, accent, actions, damageMarkers } = system;
   const overcommittedFocusValue = showFocusAssignment ? assignedFocusValue : focusValue;
@@ -68,6 +69,8 @@ export function SystemCard({
             onChange={(value) => onFocusChange(id, value)}
             label={`${label} focus`}
             assignedValue={showFocusAssignment ? assignedFocusValue : null}
+            disableDecrement={isActivationPhase && focusValue === 0}
+            emptyDisplay={isActivationPhase && focusValue === 0}
           />
         </div>
       </div>

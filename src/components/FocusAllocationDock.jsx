@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SYSTEMS } from '../constants/systems';
 
-export function FocusAllocationDock({ focus, remainingFocus, isExpanded, onToggleExpanded, onSelectSystem }) {
+export function FocusAllocationDock({ focus, remainingFocus, isExpanded, onToggleExpanded, onSelectSystem, expandedSystems = {}, expandedDamageTables = {} }) {
   return (
     <aside className={`focus-dock ${isExpanded ? 'expanded' : 'collapsed'}`} aria-label="Focus allocation summary">
       <button
@@ -15,12 +15,22 @@ export function FocusAllocationDock({ focus, remainingFocus, isExpanded, onToggl
       </button>
 
       <div className="focus-dock-systems">
-        {SYSTEMS.map((system) => (
-          <button key={system.id} type="button" onClick={() => onSelectSystem(system.id)} tabIndex={isExpanded ? 0 : -1}>
-            <span>{system.label}</span>
-            <strong>{focus[system.id] ?? 0}</strong>
-          </button>
-        ))}
+        {SYSTEMS.map((system) => {
+          const isSelected = Boolean(expandedSystems[system.id] || expandedDamageTables[system.id]);
+          return (
+            <button
+              key={system.id}
+              type="button"
+              className={isSelected ? 'selected' : ''}
+              onClick={() => onSelectSystem(system.id)}
+              tabIndex={isExpanded ? 0 : -1}
+              aria-pressed={isSelected}
+            >
+              <span>{system.label}</span>
+              <strong>{focus[system.id] ?? 0}</strong>
+            </button>
+          );
+        })}
       </div>
 
       <div className="focus-dock-remaining">
