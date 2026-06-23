@@ -1,8 +1,16 @@
 import { Flame } from 'lucide-react';
 import { HEAT_STATES } from '../constants/heat';
+import type { HeatState } from '../types';
 import { Stepper } from './Stepper';
 
-export function HeatMeter({ heat, heatState, onHeatChange, onOpenHeatRules }) {
+type HeatMeterProps = {
+  heat: number;
+  heatState: HeatState;
+  onHeatChange: (value: number) => void;
+  onOpenHeatRules: (heatState: HeatState) => void;
+};
+
+export function HeatMeter({ heat, heatState, onHeatChange, onOpenHeatRules }: HeatMeterProps) {
   return (
     <section className="meter-card heat-meter heat-row">
       <div className="heat-title-row">

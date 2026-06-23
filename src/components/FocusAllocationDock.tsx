@@ -1,7 +1,26 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SYSTEMS } from '../constants/systems';
+import type { ExpansionMap, FocusMap, SystemId } from '../types';
 
-export function FocusAllocationDock({ focus, remainingFocus, isExpanded, onToggleExpanded, onSelectSystem, expandedSystems = {}, expandedDamageTables = {} }) {
+type FocusAllocationDockProps = {
+  focus: FocusMap;
+  remainingFocus: number;
+  isExpanded: boolean;
+  onToggleExpanded: () => void;
+  onSelectSystem: (systemId: SystemId) => void;
+  expandedSystems?: ExpansionMap;
+  expandedDamageTables?: ExpansionMap;
+};
+
+export function FocusAllocationDock({
+  focus,
+  remainingFocus,
+  isExpanded,
+  onToggleExpanded,
+  onSelectSystem,
+  expandedSystems = {},
+  expandedDamageTables = {}
+}: FocusAllocationDockProps) {
   return (
     <aside className={`focus-dock ${isExpanded ? 'expanded' : 'collapsed'}`} aria-label="Focus allocation summary">
       <button

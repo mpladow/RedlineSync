@@ -1,10 +1,12 @@
-export const HEAT_STATES = [
+import type { HeatClassName, HeatState } from '../types';
+
+export const HEAT_STATES: HeatState[] = [
   { label: 'Steady', range: '0-3', className: 'steady' },
   { label: 'Hot', range: '4-5', className: 'hot' },
   { label: 'Redline', range: '6-8', className: 'redline' }
 ];
 
-export const HEAT_RULES = {
+export const HEAT_RULES: Record<HeatClassName, string[]> = {
   steady: ['No additional Steady heat rules yet.'],
   hot: ['Some weapons, pilot traits, and enemy effects may interact with Hot mechs.'],
   redline: [

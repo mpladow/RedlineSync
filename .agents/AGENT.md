@@ -1,7 +1,7 @@
 ## RedlineSync Agent Guide
 
 ### Project context
-- **Repo name**: `Resonance Sync`
+- **Repo name**: `RedlineSync`
 - **Purpose**: A React + Vite helper app for the Iron Colossus tabletop system. It manages focus allocation, weapon loadouts, heat tracking, handler calls, and damage markers.
 - **Tech stack**: React, Vite, vanilla CSS, Lucide icons.
 - **Primary source**: `src/main.jsx` and reusable component modules in `src/components/`.

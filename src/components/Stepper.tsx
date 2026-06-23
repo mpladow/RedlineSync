@@ -1,7 +1,27 @@
 import { Minus, Plus } from 'lucide-react';
 import { clamp } from '../utils/helpers';
 
-export function Stepper({ value, min = 0, max = 9, onChange, label, assignedValue = null, disableDecrement = false, emptyDisplay = false }) {
+type StepperProps = {
+  value: number;
+  min?: number;
+  max?: number;
+  onChange: (value: number) => void;
+  label: string;
+  assignedValue?: number | null;
+  disableDecrement?: boolean;
+  emptyDisplay?: boolean;
+};
+
+export function Stepper({
+  value,
+  min = 0,
+  max = 9,
+  onChange,
+  label,
+  assignedValue = null,
+  disableDecrement = false,
+  emptyDisplay = false
+}: StepperProps) {
   const displayValue = assignedValue === null ? value : `${value}/${assignedValue}`;
   const isDecreaseDisabled = disableDecrement && value <= min;
 

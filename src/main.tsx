@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { ChevronLeft, ChevronRight, Menu, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -15,9 +16,23 @@ import { WeaponsPanel } from './components/WeaponsPanel';
 import { DEFAULT_FOCUS, DEFAULT_FOCUS_POOL } from './constants/pilotCard';
 import { SYSTEMS } from './constants/systems';
 import { DEFAULT_EQUIPPED_WEAPONS, WEAPONS } from './constants/weapons';
+import type {
+  DamageSelectionMap,
+  EquippedWeapons,
+  ExpansionMap,
+  FocusedDamageMarker,
+  FocusMap,
+  HandlerId,
+  HeatState,
+  SavedState,
+  SystemId,
+  Weapon
+} from './types';
 import { getHeatState } from './utils/helpers';
 
 const GAME_PHASES = ['Cockpit Phase', 'Support Phase', 'Activation Phase', 'End Phase'];
+
+type ActiveScreen = 'home' | 'create-pilot' | 'sync';
 
 const PLACEHOLDER_PILOTS = [
   {
@@ -44,43 +59,43 @@ const PLACEHOLDER_PILOTS = [
 ];
 
 function App() {
-  const [savedState, setSavedState] = useLocalStorage('redline-sync-state', {});
-  const [activeScreen, setActiveScreen] = useState('home');
+  const [savedState, setSavedState] = useLocalStorage<SavedState>('redline-sync-state', {});
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('home');
   const [isNavigationMenuOpen, setIsNavigationMenuOpen] = useState(false);
 
   const savedFocus = savedState.focus ?? {};
-  const [focusPool, setFocusPool] = useState(savedState.focusPool ?? DEFAULT_FOCUS_POOL);
-  const [focus, setFocus] = useState({
+  const [focusPool, setFocusPool] = useState<number>(savedState.focusPool ?? DEFAULT_FOCUS_POOL);
+  const [focus, setFocus] = useState<FocusMap>({
     ...DEFAULT_FOCUS,
     ...savedFocus,
     mobility: savedFocus.mobility ?? savedFocus.movement ?? DEFAULT_FOCUS.mobility
   });
-  const [cockpitFocus, setCockpitFocus] = useState({
+  const [cockpitFocus, setCockpitFocus] = useState<FocusMap>({
     ...DEFAULT_FOCUS,
     ...(savedState.cockpitFocus ?? savedFocus),
     mobility: savedState.cockpitFocus?.mobility ?? savedFocus.mobility ?? savedFocus.movement ?? DEFAULT_FOCUS.mobility
   });
-  const [equippedWeapons, setEquippedWeapons] = useState({
+  const [equippedWeapons, setEquippedWeapons] = useState<EquippedWeapons>({
     ...DEFAULT_EQUIPPED_WEAPONS,
     ...(savedState.equippedWeapons ?? {})
   });
-  const [heat, setHeat] = useState(savedState.heat ?? 3);
-  const [handler, setHandler] = useState(savedState.handler ?? 'tactical');
+  const [heat, setHeat] = useState<number>(savedState.heat ?? 3);
+  const [handler, setHandler] = useState<HandlerId>(savedState.handler ?? 'tactical');
   const [expandedCall, setExpandedCall] = useState(0);
-  const [expandedSystems, setExpandedSystems] = useState({ mobility: true });
-  const [expandedDamageTables, setExpandedDamageTables] = useState({});
-  const [selectedDamageMarkers, setSelectedDamageMarkers] = useState(savedState.selectedDamageMarkers ?? {});
-  const [focusedDamageMarker, setFocusedDamageMarker] = useState(null);
+  const [expandedSystems, setExpandedSystems] = useState<ExpansionMap>({ mobility: true });
+  const [expandedDamageTables, setExpandedDamageTables] = useState<ExpansionMap>({});
+  const [selectedDamageMarkers, setSelectedDamageMarkers] = useState<DamageSelectionMap>(savedState.selectedDamageMarkers ?? {});
+  const [focusedDamageMarker, setFocusedDamageMarker] = useState<FocusedDamageMarker | null>(null);
   const [isHeatModalOpen, setIsHeatModalOpen] = useState(false);
-  const [selectedHeatRules, setSelectedHeatRules] = useState(null);
+  const [selectedHeatRules, setSelectedHeatRules] = useState<HeatState | null>(null);
   const [isWeaponsPanelExpanded, setIsWeaponsPanelExpanded] = useState(true);
-  const [selectedWeaponDetails, setSelectedWeaponDetails] = useState(null);
+  const [selectedWeaponDetails, setSelectedWeaponDetails] = useState<Weapon | null>(null);
   const [isPilotCardExpanded, setIsPilotCardExpanded] = useState(false);
   const [isFocusDockExpanded, setIsFocusDockExpanded] = useState(true);
   const [phaseIndex, setPhaseIndex] = useState(savedState.phaseIndex ?? 0);
   const [isPhaseConfirmOpen, setIsPhaseConfirmOpen] = useState(false);
   const [isFocusBlockModalOpen, setIsFocusBlockModalOpen] = useState(false);
-  const [overcommittedSystemName, setOvercommittedSystemName] = useState(null);
+  const [overcommittedSystemName, setOvercommittedSystemName] = useState<string | null>(null);
   const [showCockpitFocusAlert, setShowCockpitFocusAlert] = useState(phaseIndex === 0);
   const [isHandlerHighlighted, setIsHandlerHighlighted] = useState(false);
   const hasInitializedCockpitPhase = useRef(false);
@@ -89,14 +104,13 @@ function App() {
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
   const unspentActivationFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
-  console.log("🚀 ~ App ~ spentActivationFocus:", unspentActivationFocus)
   const assignedActivationFocus = useMemo(() => Object.values(cockpitFocus).reduce((total, value) => total + value, 0), [cockpitFocus]);
   const spentActivationFocus = assignedActivationFocus + unspentActivationFocus;
-  console.log("🚀 ~ App ~ unspentActivationFocus:", spentActivationFocus)
+  void spentActivationFocus;
   const heatState = getHeatState(heat);
   const modalHeatState = selectedHeatRules ?? heatState;
-  const meleeWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.melee) ?? WEAPONS.find((weapon) => weapon.slot === 'melee');
-  const rangedWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.ranged) ?? WEAPONS.find((weapon) => weapon.slot === 'ranged');
+  const meleeWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.melee) ?? WEAPONS.find((weapon) => weapon.slot === 'melee')!;
+  const rangedWeapon = WEAPONS.find((weapon) => weapon.id === equippedWeapons.ranged) ?? WEAPONS.find((weapon) => weapon.slot === 'ranged')!;
   const currentPhase = GAME_PHASES[phaseIndex] ?? GAME_PHASES[0];
   const nextPhase = GAME_PHASES[phaseIndex + 1];
   const previousPhase = GAME_PHASES[phaseIndex - 1];
@@ -105,7 +119,7 @@ function App() {
     setSavedState({ focusPool, focus, cockpitFocus, equippedWeapons, heat, handler, phaseIndex, selectedDamageMarkers });
   }, [cockpitFocus, equippedWeapons, focus, focusPool, handler, heat, phaseIndex, selectedDamageMarkers, setSavedState]);
 
-  const updateFocusPool = (value) => {
+  const updateFocusPool = (value: number) => {
     setFocusPool(value);
     setFocus((currentFocus) => {
       const nextFocus = { ...currentFocus };
@@ -120,7 +134,7 @@ function App() {
     });
   };
 
-  const updateFocus = (systemId, value) => {
+  const updateFocus = (systemId: SystemId, value: number) => {
     const current = focus[systemId];
     const projectedSpend = spentFocus - current + value;
     if (projectedSpend <= focusPool) {
@@ -128,23 +142,19 @@ function App() {
     }
   };
 
-  const toggleSystem = (systemId) => {
+  const toggleSystem = (systemId: SystemId) => {
     setExpandedSystems((current) => ({ ...current, [systemId]: !current[systemId] }));
     setExpandedDamageTables((current) => ({ ...current, [systemId]: false }));
   };
 
-  const toggleDamageTable = (systemId) => {
+  const toggleDamageTable = (systemId: SystemId) => {
     setExpandedDamageTables((current) => ({ ...current, [systemId]: !current[systemId] }));
     setExpandedSystems((current) => ({ ...current, [systemId]: false }));
   };
 
-  const toggleDamageMarker = (systemId, markerName) => {
+  const toggleDamageMarker = (systemId: SystemId, markerName: string) => {
     setSelectedDamageMarkers((current) => {
-      const currentMarkers = Array.isArray(current[systemId])
-        ? current[systemId]
-        : current[systemId]
-          ? [current[systemId]]
-          : [];
+      const currentMarkers = current[systemId] ?? [];
       const nextMarkers = currentMarkers.includes(markerName)
         ? currentMarkers.filter((name) => name !== markerName)
         : [...currentMarkers, markerName];
@@ -156,17 +166,17 @@ function App() {
     });
   };
 
-  const showDamageMarker = (systemId, markerName) => {
+  const showDamageMarker = (systemId: SystemId, markerName: string) => {
     setExpandedDamageTables((current) => ({ ...current, [systemId]: true }));
     setExpandedSystems((current) => ({ ...current, [systemId]: false }));
     setFocusedDamageMarker({ systemId, markerName });
   };
 
-  const updateEquippedWeapon = (slot, weaponId) => {
+  const updateEquippedWeapon = (slot: keyof EquippedWeapons, weaponId: string) => {
     setEquippedWeapons((current) => ({ ...current, [slot]: weaponId }));
   };
 
-  const openHeatRules = (state = heatState) => {
+  const openHeatRules = (state: HeatState = heatState) => {
     setSelectedHeatRules(state);
     setIsHeatModalOpen(true);
   };
@@ -180,7 +190,7 @@ function App() {
     setSelectedWeaponDetails(null);
   };
 
-  const scrollToFocusSystem = (systemId) => {
+  const scrollToFocusSystem = (systemId: SystemId) => {
     document.getElementById(`focus-system-${systemId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
@@ -228,7 +238,7 @@ function App() {
         const next = { ...current };
         Object.entries(focus).forEach(([systemId, value]) => {
           if (value > 0) {
-            next[systemId] = true;
+            next[systemId as SystemId] = true;
           }
         });
         return next;
@@ -237,7 +247,7 @@ function App() {
         const next = { ...current };
         Object.entries(focus).forEach(([systemId, value]) => {
           if (value > 0) {
-            next[systemId] = false;
+            next[systemId as SystemId] = false;
           }
         });
         return next;
@@ -252,7 +262,7 @@ function App() {
 
     const selector = `[data-system-id="${focusedDamageMarker.systemId}"][data-marker-name="${CSS.escape(focusedDamageMarker.markerName)}"]`;
     const frame = requestAnimationFrame(() => {
-      const row = document.querySelector(selector);
+      const row = document.querySelector<HTMLElement>(selector);
       row?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       row?.focus({ preventScroll: true });
     });
@@ -458,7 +468,7 @@ function App() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="phase-confirm-title"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
           >
             <div className="modal-header">
               <div>
@@ -500,7 +510,7 @@ function App() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="focus-block-title"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
           >
             <div className="modal-header">
               <div>
@@ -527,7 +537,7 @@ function App() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="overcommitted-title"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
           >
             <div className="modal-header">
               <div>
@@ -591,4 +601,10 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  throw new Error('Root element not found');
+}
+
+createRoot(rootElement).render(<App />);

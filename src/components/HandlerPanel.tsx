@@ -1,5 +1,15 @@
 import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import { HANDLERS } from '../constants/handlers';
+import type { HandlerId } from '../types';
+
+type HandlerPanelProps = {
+  handler: HandlerId;
+  expandedCall: number;
+  onChangeHandler: (handler: HandlerId) => void;
+  onToggleCall: (index: number) => void;
+  isHighlighted?: boolean;
+  showSupportAlert?: boolean;
+};
 
 export function HandlerPanel({
   handler,
@@ -8,8 +18,8 @@ export function HandlerPanel({
   onToggleCall,
   isHighlighted = false,
   showSupportAlert = false
-}) {
-  const activeHandler = HANDLERS.find((item) => item.id === handler);
+}: HandlerPanelProps) {
+  const activeHandler = HANDLERS.find((item) => item.id === handler) ?? HANDLERS[0];
 
   return (
     <section id="handler-panel" className={`panel handler-panel ${isHighlighted ? 'attention' : ''}`} tabIndex={-1}>

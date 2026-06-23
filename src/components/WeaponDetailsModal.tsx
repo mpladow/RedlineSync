@@ -1,6 +1,13 @@
+import type { MouseEvent } from 'react';
 import { ChevronUp } from 'lucide-react';
+import type { Weapon } from '../types';
 
-export function WeaponDetailsModal({ weapon, onClose }) {
+type WeaponDetailsModalProps = {
+  weapon: Weapon | null;
+  onClose: () => void;
+};
+
+export function WeaponDetailsModal({ weapon, onClose }: WeaponDetailsModalProps) {
   if (!weapon) return null;
 
   return (
@@ -10,7 +17,7 @@ export function WeaponDetailsModal({ weapon, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="weapon-details-title"
-        onClick={(event) => event.stopPropagation()}
+        onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
       >
         <div className="modal-header">
           <div>

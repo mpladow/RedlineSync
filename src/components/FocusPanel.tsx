@@ -1,6 +1,27 @@
 import { Activity, CheckCircle2 } from 'lucide-react';
 import { SYSTEMS } from '../constants/systems';
+import type { DamageSelectionMap, ExpansionMap, FocusMap, FocusedDamageMarker, SystemId } from '../types';
 import { SystemCard } from './SystemCard';
+
+type FocusPanelProps = {
+  focus: FocusMap;
+  focusPool: number;
+  cockpitFocus: FocusMap;
+  expandedSystems: ExpansionMap;
+  expandedDamageTables: ExpansionMap;
+  selectedDamageMarkers: DamageSelectionMap;
+  focusedDamageMarker: FocusedDamageMarker | null;
+  onFocusChange: (systemId: SystemId, value: number) => void;
+  onToggleSystem: (systemId: SystemId) => void;
+  onToggleDamageTable: (systemId: SystemId) => void;
+  onToggleDamageMarker: (systemId: SystemId, markerName: string) => void;
+  onShowDamageMarker: (systemId: SystemId, markerName: string) => void;
+  showCockpitAlert: boolean;
+  onShowOvercommittedWarning: (systemName: string) => void;
+  focusAllocationComplete: boolean;
+  showFocusAssignments: boolean;
+  isActivationPhase: boolean;
+};
 
 export function FocusPanel({
   focus,
@@ -20,7 +41,7 @@ export function FocusPanel({
   focusAllocationComplete,
   showFocusAssignments,
   isActivationPhase
-}) {
+}: FocusPanelProps) {
   return (
     <section className={`panel focus-panel ${showCockpitAlert ? 'attention' : ''}`}>
       <div className="focus-panel-heading">
@@ -37,11 +58,7 @@ export function FocusPanel({
       </div>
       <div className="focus-grid">
         {SYSTEMS.map((system) => {
-          const selectedDamage = Array.isArray(selectedDamageMarkers[system.id])
-            ? selectedDamageMarkers[system.id]
-            : selectedDamageMarkers[system.id]
-              ? [selectedDamageMarkers[system.id]]
-              : [];
+          const selectedDamage = selectedDamageMarkers[system.id] ?? [];
 
           return (
             <SystemCard

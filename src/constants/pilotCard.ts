@@ -1,4 +1,6 @@
-export const DEFAULT_FOCUS = {
+import type { FocusMap } from '../types';
+
+export const DEFAULT_FOCUS: FocusMap = {
   mobility: 1,
   weapons: 2,
   neural: 2,
