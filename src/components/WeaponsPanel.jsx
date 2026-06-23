@@ -17,7 +17,7 @@ export function WeaponsPanel({ meleeWeapon, rangedWeapon, onWeaponChange, onOpen
         </span>
         {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
       </button>
-      {isExpanded && (
+      <div className={`collapsible-region weapon-slots-region ${isExpanded ? 'open' : 'closed'}`}>
         <div className="weapon-slots">
           <WeaponSlot
             label="Melee"
@@ -34,7 +34,7 @@ export function WeaponsPanel({ meleeWeapon, rangedWeapon, onWeaponChange, onOpen
             onOpen={onOpenWeaponDetails}
           />
         </div>
-      )}
+      </div>
     </section>
   );
 }

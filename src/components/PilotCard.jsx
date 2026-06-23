@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Gauge } from 'lucide-react';
+import { ChevronUp, Gauge } from 'lucide-react';
 import { DEFAULT_FOCUS_POOL, PILOT_CARD } from '../constants/pilotCard';
 import { Stepper } from './Stepper';
 
@@ -40,18 +40,6 @@ export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpan
               <h2>{PILOT_CARD.pilotName}</h2>
               <span>{PILOT_CARD.mechName}</span>
             </div>
-            <button
-              className="collapse-toggle"
-              type="button"
-              aria-expanded={isExpanded}
-              aria-label="Show pilot ID"
-              onClick={(event) => {
-                event.stopPropagation();
-                onToggleExpand();
-              }}
-            >
-              <ChevronDown size={18} />
-            </button>
           </div>
           <div className="pilot-ability-summary">
             <strong>{PILOT_CARD.specialAbility.name}</strong>

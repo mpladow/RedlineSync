@@ -28,6 +28,47 @@ button {
   font: inherit;
 }
 
+@keyframes soft-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes table-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.collapsible-region {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows 180ms ease,
+    opacity 160ms ease;
+}
+
+.collapsible-region.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.collapsible-region > * {
+  min-height: 0;
+}
+
 .app-shell {
   width: min(1180px, 100%);
   margin: 0 auto;
@@ -216,6 +257,10 @@ h2 {
 }
 
 .pilot-ability-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  align-self: start;
   width: fit-content;
   min-height: 28px;
   padding: 5px 10px;
@@ -273,6 +318,7 @@ h2 {
   border-radius: 8px;
   background: #121818;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  animation: soft-pop 180ms ease;
 }
 
 .pilot-id-card {
@@ -451,6 +497,10 @@ h2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   align-items: start;
+}
+
+.weapon-slots-region {
+  grid-column: 1 / -1;
 }
 
 .weapon-slot {
@@ -768,6 +818,11 @@ h2 {
   gap: 8px;
 }
 
+.system-detail-panel .data-table,
+.system-detail-empty {
+  animation: table-reveal 150ms ease;
+}
+
 .system-detail-empty {
   padding: 10px 12px;
   border-radius: 8px;
@@ -974,6 +1029,25 @@ h3 {
   padding: 0 12px 12px;
 }
 
+.call-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows 180ms ease,
+    opacity 160ms ease;
+}
+
+.call-content.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.call-content > p {
+  min-height: 0;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -982,6 +1056,7 @@ h3 {
   place-items: center;
   padding: 18px;
   background: rgba(4, 8, 8, 0.72);
+  animation: table-reveal 160ms ease;
 }
 
 .rules-modal {
@@ -990,6 +1065,7 @@ h3 {
   border-radius: 8px;
   background: #121818;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  animation: soft-pop 180ms ease;
 }
 
 .modal-header {
@@ -1039,6 +1115,10 @@ h3 {
   border-radius: 8px;
   background: rgba(18, 24, 24, 0.96);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+  transition:
+    max-width 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
 .focus-dock-toggle,
@@ -1068,6 +1148,20 @@ h3 {
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: thin;
+  max-width: 760px;
+  opacity: 1;
+  transition:
+    max-width 180ms ease,
+    opacity 140ms ease,
+    transform 180ms ease;
+}
+
+.focus-dock.collapsed .focus-dock-systems {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateX(8px);
 }
 
 .focus-dock-systems button {
@@ -1232,5 +1326,15 @@ h3 {
 
   .focus-dock-systems button {
     grid-template-columns: auto auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
   }
 }

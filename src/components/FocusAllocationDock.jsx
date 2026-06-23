@@ -14,16 +14,14 @@ export function FocusAllocationDock({ focus, remainingFocus, isExpanded, onToggl
         {isExpanded ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
       </button>
 
-      {isExpanded && (
-        <div className="focus-dock-systems">
-          {SYSTEMS.map((system) => (
-            <button key={system.id} type="button" onClick={() => onSelectSystem(system.id)}>
-              <span>{system.label}</span>
-              <strong>{focus[system.id] ?? 0}</strong>
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="focus-dock-systems">
+        {SYSTEMS.map((system) => (
+          <button key={system.id} type="button" onClick={() => onSelectSystem(system.id)} tabIndex={isExpanded ? 0 : -1}>
+            <span>{system.label}</span>
+            <strong>{focus[system.id] ?? 0}</strong>
+          </button>
+        ))}
+      </div>
 
       <div className="focus-dock-remaining">
         <strong>{remainingFocus}</strong>
