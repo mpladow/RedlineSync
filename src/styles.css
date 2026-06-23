@@ -28,10 +28,51 @@ button {
   font: inherit;
 }
 
+@keyframes soft-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes table-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.collapsible-region {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows 180ms ease,
+    opacity 160ms ease;
+}
+
+.collapsible-region.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.collapsible-region > * {
+  min-height: 0;
+}
+
 .app-shell {
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 20px 104px;
 }
 
 .topbar,
@@ -126,6 +167,11 @@ h2 {
 
 .pilot-card {
   align-items: start;
+  cursor: pointer;
+}
+
+.pilot-card:hover {
+  border-color: rgba(154, 216, 207, 0.28);
 }
 
 .pilot-card-main {
@@ -211,6 +257,10 @@ h2 {
 }
 
 .pilot-ability-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  align-self: start;
   width: fit-content;
   min-height: 28px;
   padding: 5px 10px;
@@ -230,6 +280,17 @@ h2 {
   line-height: 1.45;
 }
 
+.pilot-focus-control-group {
+  display: grid;
+  gap: 7px;
+}
+
+.pilot-focus-control-group > span {
+  color: #9ad8cf;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
 .pilot-focus-controls {
   display: flex;
   align-items: center;
@@ -239,6 +300,90 @@ h2 {
 
 .pilot-focus-controls p {
   color: #b8c6c2;
+}
+
+.pilot-focus-note {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(226, 169, 59, 0.14);
+  color: #f0d28a;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.pilot-id-modal {
+  width: min(760px, 100%);
+  border: 1px solid rgba(244, 241, 232, 0.14);
+  border-radius: 8px;
+  background: #121818;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  animation: soft-pop 180ms ease;
+}
+
+.pilot-id-card {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
+}
+
+.pilot-id-left {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.pilot-id-portrait {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1.1;
+  border: 1px solid rgba(154, 216, 207, 0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(154, 216, 207, 0.16), transparent),
+    #182120;
+  color: #9ad8cf;
+}
+
+.pilot-id-body {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.pilot-id-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.pilot-id-header h2 {
+  margin-bottom: 4px;
+  font-size: 1.55rem;
+}
+
+.pilot-id-header span {
+  color: #c8d0ce;
+}
+
+.pilot-id-ability {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #182120;
+}
+
+.pilot-id-ability strong {
+  color: #d8ccff;
+}
+
+.pilot-id-ability p {
+  color: #d7dedb;
+  line-height: 1.5;
 }
 
 .heat-title-row {
@@ -352,6 +497,10 @@ h2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   align-items: start;
+}
+
+.weapon-slots-region {
+  grid-column: 1 / -1;
 }
 
 .weapon-slot {
@@ -639,6 +788,50 @@ h2 {
   gap: 8px;
 }
 
+.system-mode-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.system-mode-toggle button {
+  flex: 1 1 0;
+  height: 44px;
+  border-radius: 8px;
+  background: #202928;
+  color: #c8d0ce;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.system-mode-toggle button:hover {
+  background: #2a3534;
+}
+
+.system-mode-toggle button.selected {
+  background: #f4f1e8;
+  color: #111817;
+}
+
+.system-detail-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.system-detail-panel .data-table,
+.system-detail-empty {
+  animation: table-reveal 150ms ease;
+}
+
+.system-detail-empty {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #182120;
+  color: #8fa09c;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
 .call-list {
   display: grid;
   gap: 10px;
@@ -836,6 +1029,25 @@ h3 {
   padding: 0 12px 12px;
 }
 
+.call-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows 180ms ease,
+    opacity 160ms ease;
+}
+
+.call-content.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.call-content > p {
+  min-height: 0;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -844,6 +1056,7 @@ h3 {
   place-items: center;
   padding: 18px;
   background: rgba(4, 8, 8, 0.72);
+  animation: table-reveal 160ms ease;
 }
 
 .rules-modal {
@@ -852,6 +1065,7 @@ h3 {
   border-radius: 8px;
   background: #121818;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  animation: soft-pop 180ms ease;
 }
 
 .modal-header {
@@ -887,6 +1101,129 @@ h3 {
   padding: 16px 16px 0;
 }
 
+.focus-dock {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 15;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  max-width: min(980px, calc(100vw - 36px));
+  padding: 8px;
+  border: 1px solid rgba(244, 241, 232, 0.14);
+  border-radius: 8px;
+  background: rgba(18, 24, 24, 0.96);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+  transition:
+    max-width 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.focus-dock-toggle,
+.focus-dock-systems button,
+.focus-dock-remaining {
+  min-height: 44px;
+  border-radius: 8px;
+}
+
+.focus-dock-toggle {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  background: #24302f;
+  color: #f4f1e8;
+  cursor: pointer;
+}
+
+.focus-dock-toggle:hover {
+  background: #32413f;
+}
+
+.focus-dock-systems {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  max-width: 760px;
+  opacity: 1;
+  transition:
+    max-width 180ms ease,
+    opacity 140ms ease,
+    transform 180ms ease;
+}
+
+.focus-dock.collapsed .focus-dock-systems {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateX(8px);
+}
+
+.focus-dock-systems button {
+  display: grid;
+  grid-template-columns: minmax(72px, auto) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  background: #182120;
+  color: #d7dedb;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.focus-dock-systems button:hover {
+  background: #24302f;
+}
+
+.focus-dock-systems span,
+.focus-dock-remaining span {
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.focus-dock-systems strong,
+.focus-dock-remaining strong {
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 999px;
+  background: #f4f1e8;
+  color: #111817;
+  font-size: 0.9rem;
+}
+
+.focus-dock-remaining {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-items: center;
+  gap: 2px;
+  min-width: 76px;
+  padding: 6px 12px;
+  background: rgba(124, 92, 255, 0.18);
+  color: #d8ccff;
+  white-space: nowrap;
+}
+
+.focus-dock-remaining strong {
+  min-width: 38px;
+  min-height: 38px;
+  font-size: 1.35rem;
+}
+
+.focus-dock-remaining span {
+  color: #d8ccff;
+  font-size: 0.76rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 @media (max-width: 900px) {
   .status-band {
     grid-template-columns: 1fr;
@@ -903,7 +1240,7 @@ h3 {
 
 @media (max-width: 680px) {
   .app-shell {
-    padding: 14px;
+    padding: 14px 14px 116px;
   }
 
   h1 {
@@ -918,6 +1255,23 @@ h3 {
 
   .pilot-card-main {
     grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .pilot-id-card {
+    grid-template-columns: 1fr;
+  }
+
+  .pilot-id-left {
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .pilot-id-left .pilot-stat-grid {
+    grid-column: 2;
+  }
+
+  .pilot-id-portrait {
+    grid-row: 1 / span 2;
   }
 
   .pilot-card-heading {
@@ -961,5 +1315,26 @@ h3 {
 
   .segmented button {
     flex: 1 1 76px;
+  }
+
+  .focus-dock {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .focus-dock-systems button {
+    grid-template-columns: auto auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
   }
 }

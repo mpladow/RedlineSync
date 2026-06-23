@@ -36,7 +36,9 @@ export function HandlerPanel({ handler, expandedCall, onChangeHandler, onToggleC
                 <span>{name}</span>
                 {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
               </button>
-              {open && <p>{body}</p>}
+              <div className={`call-content ${open ? 'open' : 'closed'}`}>
+                <p>{body}</p>
+              </div>
             </article>
           );
         })}

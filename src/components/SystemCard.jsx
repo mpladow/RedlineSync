@@ -1,4 +1,4 @@
-import { AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { getDamageSeverity } from '../utils/helpers';
 import { Stepper } from './Stepper';
 
@@ -18,7 +18,12 @@ export function SystemCard({
 }) {
   const { id, label, icon: Icon, accent, actions, damageMarkers } = system;
   return (
-    <article className={`system-card ${selectedDamage.length ? 'damaged' : ''}`} key={id} style={{ '--accent': accent }}>
+    <article
+      id={`focus-system-${id}`}
+      className={`system-card ${selectedDamage.length ? 'damaged' : ''}`}
+      key={id}
+      style={{ '--accent': accent }}
+    >
       <div className="system-header">
         <div className="system-copy">
           <Icon size={22} />
@@ -50,17 +55,28 @@ export function SystemCard({
         </div>
       </div>
 
-      <div className="system-section">
+      <div className="system-mode-toggle" aria-label={`${label} detail mode`}>
         <button
-          className="collapse-toggle section-toggle"
+          className={expandedActions ? 'selected' : ''}
           type="button"
-          aria-expanded={expandedActions}
-          aria-label={`${expandedActions ? 'Hide' : 'Show'} ${label} actions`}
+          aria-pressed={expandedActions}
+          aria-label={`Show ${label} actions`}
           onClick={() => onToggleActions(id)}
         >
-          <span>Actions</span>
-          {expandedActions ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          Actions
         </button>
+        <button
+          className={expandedDamage ? 'selected' : ''}
+          type="button"
+          aria-pressed={expandedDamage}
+          aria-label={`Show ${label} damage markers`}
+          onClick={() => onToggleDamage(id)}
+        >
+          Damage
+        </button>
+      </div>
+
+      <div className="system-detail-panel">
         {expandedActions && (
           <div className="data-table action-table" aria-label={`${label} actions`}>
             <div className="table-head">
@@ -77,19 +93,6 @@ export function SystemCard({
             ))}
           </div>
         )}
-      </div>
-
-      <div className="damage-marker-section system-section">
-        <button
-          className="collapse-toggle section-toggle damage-control"
-          type="button"
-          aria-expanded={expandedDamage}
-          aria-label={`${expandedDamage ? 'Hide' : 'Show'} ${label} damage markers`}
-          onClick={() => onToggleDamage(id)}
-        >
-          <span>Damage</span>
-          {expandedDamage ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-        </button>
         {expandedDamage && (
           <div className="data-table marker-table" aria-label={`${label} damage markers`}>
             <div className="table-head">
@@ -122,6 +125,7 @@ export function SystemCard({
             })}
           </div>
         )}
+        {!expandedActions && !expandedDamage && <p className="system-detail-empty">Select Actions or Damage.</p>}
       </div>
     </article>
   );
