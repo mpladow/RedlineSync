@@ -7,6 +7,8 @@ export const DEFAULT_FOCUS = {
   sensors: 0
 };
 
+export const DEFAULT_FOCUS_POOL = 6;
+
 export const PILOT_CARD = {
   pilotName: 'Callsign Vantage',
   mechName: 'IC-07 Redline Frame',

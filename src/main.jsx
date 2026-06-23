@@ -5,15 +5,16 @@ import './styles.css';
 
 import { SYSTEMS } from './constants/systems';
 import { WEAPONS, DEFAULT_EQUIPPED_WEAPONS } from './constants/weapons';
-import { DEFAULT_FOCUS } from './constants/pilotCard';
+import { DEFAULT_FOCUS, DEFAULT_FOCUS_POOL } from './constants/pilotCard';
 import { getHeatState } from './utils/helpers';
-import { PilotCard } from './components/PilotCard';
+import { PilotCard, PilotCardModal } from './components/PilotCard';
 import { WeaponsPanel } from './components/WeaponsPanel';
 import { HeatMeter } from './components/HeatMeter';
 import { FocusPanel } from './components/FocusPanel';
 import { HandlerPanel } from './components/HandlerPanel';
 import { HeatRulesModal } from './components/HeatRulesModal';
 import { WeaponDetailsModal } from './components/WeaponDetailsModal';
+import { FocusAllocationDock } from './components/FocusAllocationDock';
 
 function App() {
   const savedState = useMemo(() => {
@@ -25,7 +26,7 @@ function App() {
   }, []);
 
   const savedFocus = savedState.focus ?? {};
-  const [focusPool, setFocusPool] = useState(savedState.focusPool ?? 6);
+  const [focusPool, setFocusPool] = useState(savedState.focusPool ?? DEFAULT_FOCUS_POOL);
   const [focus, setFocus] = useState({
     ...DEFAULT_FOCUS,
     ...savedFocus,
@@ -47,6 +48,7 @@ function App() {
   const [isWeaponsPanelExpanded, setIsWeaponsPanelExpanded] = useState(true);
   const [selectedWeaponDetails, setSelectedWeaponDetails] = useState(null);
   const [isPilotCardExpanded, setIsPilotCardExpanded] = useState(false);
+  const [isFocusDockExpanded, setIsFocusDockExpanded] = useState(true);
 
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
@@ -87,10 +89,12 @@ function App() {
 
   const toggleSystem = (systemId) => {
     setExpandedSystems((current) => ({ ...current, [systemId]: !current[systemId] }));
+    setExpandedDamageTables((current) => ({ ...current, [systemId]: false }));
   };
 
   const toggleDamageTable = (systemId) => {
     setExpandedDamageTables((current) => ({ ...current, [systemId]: !current[systemId] }));
+    setExpandedSystems((current) => ({ ...current, [systemId]: false }));
   };
 
   const toggleDamageMarker = (systemId, markerName) => {
@@ -113,6 +117,7 @@ function App() {
 
   const showDamageMarker = (systemId, markerName) => {
     setExpandedDamageTables((current) => ({ ...current, [systemId]: true }));
+    setExpandedSystems((current) => ({ ...current, [systemId]: false }));
     setFocusedDamageMarker({ systemId, markerName });
   };
 
@@ -132,6 +137,10 @@ function App() {
 
   const closeWeaponDetails = () => {
     setSelectedWeaponDetails(null);
+  };
+
+  const scrollToFocusSystem = (systemId) => {
+    document.getElementById(`focus-system-${systemId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   useEffect(() => {
@@ -215,6 +224,20 @@ function App() {
 
       <HeatRulesModal isOpen={isHeatModalOpen} heatState={modalHeatState} onClose={closeHeatRules} />
       <WeaponDetailsModal weapon={selectedWeaponDetails} onClose={closeWeaponDetails} />
+      <PilotCardModal
+        isOpen={isPilotCardExpanded}
+        focusPool={focusPool}
+        remainingFocus={remainingFocus}
+        onFocusPoolChange={updateFocusPool}
+        onClose={() => setIsPilotCardExpanded(false)}
+      />
+      <FocusAllocationDock
+        focus={focus}
+        remainingFocus={remainingFocus}
+        isExpanded={isFocusDockExpanded}
+        onToggleExpanded={() => setIsFocusDockExpanded((current) => !current)}
+        onSelectSystem={scrollToFocusSystem}
+      />
     </main>
   );
 }
