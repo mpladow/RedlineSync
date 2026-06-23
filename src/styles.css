@@ -91,9 +91,15 @@ h2 {
 
 .status-band {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
+  grid-template-columns: minmax(210px, 0.55fr) minmax(360px, 1.45fr);
   gap: 12px;
   margin-bottom: 12px;
+  align-items: start;
+}
+
+.heat-row {
+  margin-bottom: 12px;
+  align-items: start;
 }
 
 .meter-card,
@@ -118,12 +124,328 @@ h2 {
   font-size: 0.92rem;
 }
 
+.pilot-card {
+  align-items: start;
+}
+
+.pilot-card-main {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.pilot-card-left {
+  display: grid;
+  gap: 8px;
+}
+
+.pilot-portrait {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid rgba(154, 216, 207, 0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(154, 216, 207, 0.14), transparent),
+    #182120;
+  color: #9ad8cf;
+}
+
+.pilot-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.pilot-stat-grid span,
+.pilot-focus-compact {
+  display: grid;
+  place-items: center;
+  min-height: 32px;
+  border-radius: 8px;
+  background: #182120;
+  color: #f4f1e8;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.pilot-focus-compact {
+  gap: 2px;
+  padding: 6px;
+}
+
+.pilot-focus-compact span {
+  color: #9ad8cf;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.pilot-focus-compact strong {
+  font-size: 1.3rem;
+}
+
+.pilot-card-info {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pilot-card-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pilot-card-heading h2 {
+  margin-bottom: 4px;
+  font-size: 1.2rem;
+}
+
+.pilot-card-heading span {
+  color: #c8d0ce;
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+
+.pilot-ability-summary {
+  width: fit-content;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(124, 92, 255, 0.18);
+  color: #d8ccff;
+  font-size: 0.8rem;
+}
+
+.pilot-card-details {
+  display: grid;
+  gap: 10px;
+}
+
+.pilot-card-details > p {
+  color: #d7dedb;
+  line-height: 1.45;
+}
+
+.pilot-focus-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pilot-focus-controls p {
+  color: #b8c6c2;
+}
+
+.heat-title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.heat-control-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.heat-title-row,
+.heat-control-row {
+  grid-column: 1 / -1;
+}
+
+.heat-display {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.heat-meter .heat-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.heat-state span {
+  color: inherit;
+  opacity: 0.78;
+  font-size: 0.78rem;
+}
+
+.heat-state.steady {
+  background: rgba(25, 167, 165, 0.16);
+  color: #9ad8cf;
+}
+
+.heat-state.steady:hover {
+  background: rgba(25, 167, 165, 0.25);
+}
+
+.heat-state.hot {
+  background: rgba(226, 169, 59, 0.18);
+  color: #f0d28a;
+}
+
+.heat-state.hot:hover {
+  background: rgba(226, 169, 59, 0.28);
+}
+
+.heat-state.redline {
+  background: rgba(231, 88, 62, 0.22);
+  color: #ffb2a4;
+}
+
+.heat-state.redline:hover {
+  background: rgba(231, 88, 62, 0.32);
+}
+
 .meter-heading,
 .section-title,
 .system-copy {
   display: flex;
   align-items: center;
   gap: 9px;
+}
+
+.weapons-meter {
+  align-items: start;
+}
+
+.weapons-meter .panel-heading-toggle,
+.weapons-meter .weapon-slots {
+  grid-column: 1 / -1;
+}
+
+.panel-heading-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+  background: transparent;
+  color: #f4f1e8;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.panel-heading-toggle:hover {
+  background: rgba(244, 241, 232, 0.06);
+}
+
+.weapon-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.weapon-slot {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #182120;
+  cursor: pointer;
+}
+
+.weapon-slot:hover {
+  background: #202b2a;
+}
+
+.weapon-slot-header {
+  display: grid;
+  gap: 6px;
+}
+
+.weapon-slot-header span {
+  color: #9ad8cf;
+  font-size: 0.74rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.weapon-slot select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: #24302f;
+  color: #f4f1e8;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 0.84rem;
+}
+
+.weapon-name {
+  color: #f4f1e8;
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.weapon-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weapon-stats span {
+  min-height: 26px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #24302f;
+  color: #d7dedb;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.weapon-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.weapon-tags span {
+  min-height: 24px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(226, 169, 59, 0.16);
+  color: #f0d28a;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.weapon-rule {
+  display: grid;
+  gap: 2px;
+}
+
+.weapon-rule strong {
+  color: #f0d28a;
+  font-size: 0.82rem;
+}
+
+.weapon-rule p {
+  color: #c8d0ce;
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
 
 .stepper {
@@ -141,9 +463,8 @@ h2 {
 }
 
 .heat-track {
-  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   gap: 4px;
 }
 
@@ -153,8 +474,40 @@ h2 {
   background: #26302f;
 }
 
-.heat-track span.active {
-  background: linear-gradient(90deg, #f0b947, #e7583e);
+.heat-track span.active.steady {
+  background: #19a7a5;
+}
+
+.heat-track span.active.hot {
+  background: #e2a93b;
+}
+
+.heat-track span.active.redline {
+  background: #e7583e;
+}
+
+.heat-bands {
+  display: grid;
+  grid-template-columns: 4fr 2fr 3fr;
+  gap: 4px;
+}
+
+.heat-bands button {
+  min-width: 0;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #8fa09c;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.heat-bands button:hover {
+  color: #f4f1e8;
 }
 
 .workspace {
@@ -177,11 +530,13 @@ h2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  align-items: start;
 }
 
 .system-card {
   display: grid;
   gap: 12px;
+  align-content: start;
   min-width: 0;
   padding: 12px;
   border-left: 4px solid var(--accent);
@@ -189,14 +544,27 @@ h2 {
   background: #182120;
 }
 
+.system-card.damaged {
+  outline: 1px solid rgba(226, 169, 59, 0.5);
+}
+
 .system-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
 
+.system-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .system-copy {
+  flex-wrap: wrap;
   min-width: 0;
   color: #f6f0df;
   font-weight: 800;
@@ -204,6 +572,71 @@ h2 {
 
 .system-copy span {
   overflow-wrap: anywhere;
+}
+
+.system-damage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 26px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(226, 169, 59, 0.18);
+  color: #f0d28a;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.system-damage-badge:hover {
+  background: rgba(226, 169, 59, 0.28);
+}
+
+.system-damage-badge.critical {
+  background: rgba(231, 88, 62, 0.22);
+  color: #ffb2a4;
+}
+
+.system-damage-badge.critical:hover {
+  background: rgba(231, 88, 62, 0.32);
+}
+
+.collapse-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #24302f;
+  color: #f4f1e8;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.section-toggle {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.collapse-toggle:hover {
+  background: #32413f;
+}
+
+.damage-control {
+  background: #202928;
+}
+
+.damage-control:hover {
+  background: #2a3534;
+}
+
+.system-section {
+  display: grid;
+  gap: 8px;
 }
 
 .call-list {
@@ -244,8 +677,58 @@ h2 {
   line-height: 1.35;
 }
 
+.marker-row {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.marker-row:hover {
+  background: #202b2a;
+}
+
+.marker-row.selected {
+  background: rgba(226, 169, 59, 0.16);
+  box-shadow: inset 4px 0 0 #e2a93b;
+}
+
+.marker-row.critical {
+  box-shadow: inset 4px 0 0 rgba(231, 88, 62, 0.6);
+}
+
+.marker-row.critical.selected {
+  background: rgba(231, 88, 62, 0.16);
+  box-shadow: inset 4px 0 0 #e7583e;
+}
+
+.marker-row.selected strong {
+  color: #f0d28a;
+}
+
+.marker-row.critical.selected strong {
+  color: #ffb2a4;
+}
+
+.marker-row.focused {
+  outline: 2px solid #f4f1e8;
+  outline-offset: -2px;
+}
+
 .table-row strong {
   color: #f4f1e8;
+}
+
+.marker-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.marker-name svg,
+.system-damage-badge.critical svg {
+  color: #e7583e;
+  flex: 0 0 auto;
 }
 
 .cost-pill,
@@ -353,7 +836,62 @@ h3 {
   padding: 0 12px 12px;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(4, 8, 8, 0.72);
+}
+
+.rules-modal {
+  width: min(520px, 100%);
+  border: 1px solid rgba(244, 241, 232, 0.14);
+  border-radius: 8px;
+  background: #121818;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(244, 241, 232, 0.1);
+}
+
+.modal-header h2 {
+  font-size: 1.35rem;
+}
+
+.modal-rule-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.modal-rule-list p {
+  color: #d7dedb;
+  line-height: 1.5;
+}
+
+.weapon-modal-body {
+  display: grid;
+  gap: 0;
+}
+
+.modal-weapon-stats {
+  padding: 16px 16px 0;
+}
+
 @media (max-width: 900px) {
+  .status-band {
+    grid-template-columns: 1fr;
+  }
+
   .workspace {
     grid-template-columns: 1fr;
   }
@@ -372,18 +910,34 @@ h3 {
     font-size: 2rem;
   }
 
-  .status-band {
-    grid-template-columns: 1fr;
-  }
-
   .meter-card,
   .system-header {
     grid-template-columns: 1fr;
     align-items: stretch;
   }
 
+  .pilot-card-main {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .pilot-card-heading {
+    align-items: start;
+  }
+
   .system-header {
     display: grid;
+  }
+
+  .system-controls {
+    justify-content: start;
+  }
+
+  .heat-control-row {
+    grid-template-columns: 1fr;
+  }
+
+  .weapon-slots {
+    grid-template-columns: 1fr;
   }
 
   .stepper {
