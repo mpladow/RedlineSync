@@ -1,9 +1,11 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { ChevronUp, Gauge } from 'lucide-react';
-import { DEFAULT_FOCUS_POOL, PILOT_CARD } from '../constants/pilotCard';
+import { DEFAULT_FOCUS_POOL } from '../constants/pilotCard';
+import type { PilotRecord } from '../types';
 import { Stepper } from './Stepper';
 
 type PilotCardProps = {
+  pilot: PilotRecord;
   focusPool: number;
   remainingFocus: number;
   isExpanded: boolean;
@@ -12,6 +14,7 @@ type PilotCardProps = {
 };
 
 type PilotCardModalProps = {
+  pilot: PilotRecord;
   isOpen: boolean;
   focusPool: number;
   remainingFocus: number;
@@ -19,7 +22,7 @@ type PilotCardModalProps = {
   onClose: () => void;
 };
 
-export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpand, onFocusPoolChange }: PilotCardProps) {
+export function PilotCard({ pilot, focusPool, remainingFocus, isExpanded, onToggleExpand, onFocusPoolChange }: PilotCardProps) {
   void remainingFocus;
   void isExpanded;
   void onFocusPoolChange;
@@ -46,8 +49,8 @@ export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpan
             <Gauge size={28} />
           </div>
           <div className="pilot-stat-grid" aria-label="Pilot frame stats">
-            <span>Mob {PILOT_CARD.mobility}</span>
-            <span>Def {PILOT_CARD.defence}</span>
+            <span>Mob {pilot.mobility}</span>
+            <span>Def {pilot.defence}</span>
           </div>
           <div className="pilot-focus-compact">
             <span>Focus Pool</span>
@@ -58,12 +61,12 @@ export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpan
           <div className="pilot-card-heading">
             <div>
               <p className="eyebrow">Pilot</p>
-              <h2>{PILOT_CARD.pilotName}</h2>
-              <span>{PILOT_CARD.mechName}</span>
+              <h2>{pilot.pilotName}</h2>
+              <span>{pilot.mechName}</span>
             </div>
           </div>
           <div className="pilot-ability-summary">
-            <strong>{PILOT_CARD.specialAbility.name}</strong>
+            <strong>{pilot.specialAbility.name}</strong>
           </div>
         </div>
       </div>
@@ -71,7 +74,7 @@ export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpan
   );
 }
 
-export function PilotCardModal({ isOpen, focusPool, remainingFocus, onFocusPoolChange, onClose }: PilotCardModalProps) {
+export function PilotCardModal({ pilot, isOpen, focusPool, remainingFocus, onFocusPoolChange, onClose }: PilotCardModalProps) {
   if (!isOpen) return null;
   const hasAdjustedFocusPool = focusPool !== DEFAULT_FOCUS_POOL;
 
@@ -90,16 +93,16 @@ export function PilotCardModal({ isOpen, focusPool, remainingFocus, onFocusPoolC
               <Gauge size={42} />
             </div>
             <div className="pilot-stat-grid" aria-label="Pilot frame stats">
-              <span>Mob {PILOT_CARD.mobility}</span>
-              <span>Def {PILOT_CARD.defence}</span>
+              <span>Mob {pilot.mobility}</span>
+              <span>Def {pilot.defence}</span>
             </div>
           </div>
           <div className="pilot-id-body">
             <div className="pilot-id-header">
               <div>
                 <p className="eyebrow">Pilot ID</p>
-                <h2 id="pilot-id-title">{PILOT_CARD.pilotName}</h2>
-                <span>{PILOT_CARD.mechName}</span>
+                <h2 id="pilot-id-title">{pilot.pilotName}</h2>
+                <span>{pilot.mechName}</span>
               </div>
               <button className="icon-action" type="button" onClick={onClose} aria-label="Close pilot ID">
                 <ChevronUp size={20} />
@@ -116,8 +119,8 @@ export function PilotCardModal({ isOpen, focusPool, remainingFocus, onFocusPoolC
               <p className="pilot-focus-note">Focus Pool adjusted from default {DEFAULT_FOCUS_POOL}.</p>
             )}
             <article className="pilot-id-ability">
-              <strong>{PILOT_CARD.specialAbility.name}</strong>
-              <p>{PILOT_CARD.specialAbility.text}</p>
+              <strong>{pilot.specialAbility.name}</strong>
+              <p>{pilot.specialAbility.text}</p>
             </article>
           </div>
         </div>
