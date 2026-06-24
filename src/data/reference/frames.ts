@@ -1,9 +1,14 @@
-import type { DamageMarker, RuleInteractions, SystemId } from '../../types';
+import type { DamageMarker, RuleInteractions, StructureMap, SystemId } from '../../types';
 
 export type FrameDamageMarkers = Record<SystemId, DamageMarker[]>;
 
 export type FrameConfiguration = {
 	name: string;
+	mobility: number;
+	defenceDie: number;
+	armour: number;
+	sensorRange: number;
+	structure: StructureMap;
 	damageMarkers: FrameDamageMarkers;
 	signatureSystem: RuleInteractions & {
 		name: string;
@@ -153,6 +158,18 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 export const FRAME_CONFIGURATIONS = [
 	{
 		name: 'Prototype Frame',
+		mobility: 3,
+		defenceDie: 2,
+		armour: 2,
+		sensorRange: 12,
+		structure: {
+			mobility: 4,
+			weapons: 4,
+			sensors: 4,
+			defence: 4,
+			neural: 5,
+			reactor: 4
+		},
 		damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
 		signatureSystem: {
 			name: '',
@@ -164,6 +181,18 @@ export const FRAME_CONFIGURATIONS = [
 	},
 	{
 		name: 'Agile Frame',
+		mobility: 4,
+		defenceDie: 2,
+		armour: 1,
+		sensorRange: 12,
+		structure: {
+			mobility: 5,
+			weapons: 4,
+			sensors: 4,
+			defence: 3,
+			neural: 5,
+			reactor: 4
+		},
 		damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
 		signatureSystem: {
 			name: 'Kinetic Recovery Array',
@@ -180,6 +209,18 @@ export const FRAME_CONFIGURATIONS = [
 	},
 	{
 		name: 'Heavy Frame',
+		mobility: 2,
+		defenceDie: 2,
+		armour: 3,
+		sensorRange: 12,
+		structure: {
+			mobility: 3,
+			weapons: 4,
+			sensors: 3,
+			defence: 5,
+			neural: 5,
+			reactor: 5
+		},
 		damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
 		signatureSystem: {
 			name: 'Anchored Stabiliser Core',
@@ -196,6 +237,18 @@ export const FRAME_CONFIGURATIONS = [
 	},
 	{
 		name: 'Duelist Frame',
+		mobility: 3,
+		defenceDie: 2,
+		armour: 2,
+		sensorRange: 12,
+		structure: {
+			mobility: 4,
+			weapons: 5,
+			sensors: 3,
+			defence: 4,
+			neural: 5,
+			reactor: 4
+		},
 		damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
 		signatureSystem: {
 			name: 'Duel-Pattern Actuators',

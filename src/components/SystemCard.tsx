@@ -1,5 +1,6 @@
-import type { CSSProperties } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import type { CSSProperties, MouseEvent } from 'react';
+import { useState } from 'react';
+import { AlertTriangle, Heart, LoaderCircle, Minus, Plus } from 'lucide-react';
 import type { DamageMarker, FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
 import { SYSTEM_PRESENTATION } from '../ui/systemPresentation';
 import { getDamageMarkerId, getDamageSeverity } from '../utils/helpers';
@@ -8,6 +9,8 @@ import { Stepper } from './Stepper';
 type SystemCardProps = {
   system: SystemDefinition;
   damageMarkers: DamageMarker[];
+  structureValue: number;
+  maximumStructureValue: number;
   focusValue: number;
   focusPool: number;
   assignedFocusValue: number;
@@ -17,6 +20,7 @@ type SystemCardProps = {
   expandedDamage: boolean;
   focusedMarker: FocusedDamageMarker | null;
   onFocusChange: (systemId: SystemId, value: number) => void;
+  onStructureChange: (systemId: SystemId, value: number) => void;
   onToggleActions: (systemId: SystemId) => void;
   onToggleDamage: (systemId: SystemId) => void;
   onToggleMarker: (systemId: SystemId, markerName: string) => void;
@@ -29,6 +33,8 @@ type SystemCardProps = {
 export function SystemCard({
   system,
   damageMarkers,
+  structureValue,
+  maximumStructureValue,
   focusValue,
   focusPool,
   assignedFocusValue,
@@ -38,6 +44,7 @@ export function SystemCard({
   expandedDamage,
   focusedMarker,
   onFocusChange,
+  onStructureChange,
   onToggleActions,
   onToggleDamage,
   onToggleMarker,
@@ -51,17 +58,54 @@ export function SystemCard({
   const overcommittedFocusValue = showFocusAssignment ? assignedFocusValue : focusValue;
   const isOvercommitted = overcommittedFocusValue > 3;
   const focusLimit = showFocusAssignment ? assignedFocusValue : focusPool;
+  const structureState =
+    structureValue === 0 ? 'depleted' : structureValue === maximumStructureValue ? 'full' : 'damaged';
+  const [isMajorDamageModalOpen, setIsMajorDamageModalOpen] = useState(false);
+  const [isRollingMajorDamage, setIsRollingMajorDamage] = useState(false);
+  const availableDamageMarkers = damageMarkers.filter((marker) => {
+    const markerId = getDamageMarkerId(marker);
+    return !selectedDamage.includes(markerId) && !selectedDamage.includes(marker.name);
+  });
+
+  const closeMajorDamageModal = () => {
+    if (!isRollingMajorDamage) {
+      setIsMajorDamageModalOpen(false);
+    }
+  };
+
+  const rollForMajorDamage = () => {
+    if (availableDamageMarkers.length === 0) return;
+
+    setIsRollingMajorDamage(true);
+    window.setTimeout(() => {
+      const marker = availableDamageMarkers[Math.floor(Math.random() * availableDamageMarkers.length)];
+      const markerId = getDamageMarkerId(marker);
+      onToggleMarker(id, markerId);
+      onShowDamageMarker(id, markerId);
+      setIsRollingMajorDamage(false);
+      setIsMajorDamageModalOpen(false);
+    }, 2000);
+  };
+
   return (
-    <article
-      id={`focus-system-${id}`}
-      className={`system-card ${selectedDamage.length ? 'damaged' : ''}`}
-      key={id}
-      style={{ '--accent': accent } as CSSProperties}
-    >
+    <>
+      <article
+        id={`focus-system-${id}`}
+        className={`system-card ${selectedDamage.length ? 'damaged' : ''}`}
+        key={id}
+        style={{ '--accent': accent } as CSSProperties}
+      >
       <div className="system-header">
         <div className="system-copy">
           <Icon size={22} />
           <span>{label}</span>
+          <span
+            className={`system-structure-badge ${structureState}`}
+            aria-label={`${label} structure ${structureValue} of ${maximumStructureValue}`}
+          >
+            <Heart size={14} aria-hidden="true" />
+            {structureValue}/{maximumStructureValue}
+          </span>
           {isOvercommitted && (
             <button
               className="system-status-badge overcommitted"
@@ -147,6 +191,47 @@ export function SystemCard({
         )}
         {expandedDamage && (
           <div className="data-table marker-table" aria-label={`${label} damage markers`}>
+            <div className="structure-tracker">
+              <div>
+                <span className="structure-tracker-label">Structure</span>
+                <output
+                  className="structure-squares"
+                  aria-label={`${label} has ${structureValue} of ${maximumStructureValue} structure points`}
+                >
+                  {Array.from({ length: maximumStructureValue }, (_, index) => (
+                    <span className={index < structureValue ? 'filled' : ''} key={index} aria-hidden="true" />
+                  ))}
+                </output>
+                {structureValue === 0 && (
+                  <button
+                    className="system-major-damage-badge"
+                    type="button"
+                    onClick={() => setIsMajorDamageModalOpen(true)}
+                  >
+                    Roll for Major Damage
+                  </button>
+                )}
+              </div>
+              <div className="structure-controls">
+                <button
+                  type="button"
+                  onClick={() => onStructureChange(id, structureValue - 1)}
+                  disabled={structureValue === 0}
+                  aria-label={`Decrease ${label} structure`}
+                >
+                  <Minus size={16} />
+                </button>
+                <strong aria-hidden="true">{structureValue}/{maximumStructureValue}</strong>
+                <button
+                  type="button"
+                  onClick={() => onStructureChange(id, structureValue + 1)}
+                  disabled={structureValue === maximumStructureValue}
+                  aria-label={`Increase ${label} structure`}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
             <div className="table-head">
               <span>Roll</span>
               <span>Name</span>
@@ -180,6 +265,52 @@ export function SystemCard({
         )}
         {!expandedActions && !expandedDamage && <p className="system-detail-empty">Select Actions or Damage.</p>}
       </div>
-    </article>
+      </article>
+
+      {isMajorDamageModalOpen && (
+        <div className="modal-backdrop" role="presentation" onClick={closeMajorDamageModal}>
+          <section
+            className="rules-modal phase-confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`major-damage-title-${id}`}
+            onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">{label}</p>
+                <h2 id={`major-damage-title-${id}`}>Roll for Major Damage?</h2>
+              </div>
+            </div>
+            <div className="phase-confirm-body">
+              {isRollingMajorDamage ? (
+                <div className="major-damage-rolling" role="status">
+                  <LoaderCircle size={28} />
+                  <p>Rolling for damage...</p>
+                </div>
+              ) : availableDamageMarkers.length > 0 ? (
+                <div className="phase-confirm-actions">
+                  <button type="button" className="secondary-action" onClick={closeMajorDamageModal}>
+                    Cancel
+                  </button>
+                  <button type="button" className="primary-action" onClick={rollForMajorDamage}>
+                    Roll
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p>All damage options for this system are already selected.</p>
+                  <div className="phase-confirm-actions">
+                    <button type="button" className="primary-action" onClick={closeMajorDamageModal}>
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        </div>
+      )}
+    </>
   );
 }

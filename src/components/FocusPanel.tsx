@@ -1,10 +1,19 @@
-import { Activity, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Activity, CheckCircle2, ChevronRight, Dice6, Gauge, Radar, Shield } from 'lucide-react';
 import { getFrameConfiguration, SYSTEMS } from '../data/reference';
-import type { DamageSelectionMap, ExpansionMap, FocusMap, FocusedDamageMarker, SystemId } from '../types';
+import type {
+  DamageSelectionMap,
+  ExpansionMap,
+  FocusMap,
+  FocusedDamageMarker,
+  StructureMap,
+  SystemId
+} from '../types';
 import { SystemCard } from './SystemCard';
 
 type FocusPanelProps = {
   frameName: string;
+  structure: StructureMap;
+  maximumStructure: StructureMap;
   focus: FocusMap;
   focusPool: number;
   cockpitFocus: FocusMap;
@@ -13,6 +22,7 @@ type FocusPanelProps = {
   selectedDamageMarkers: DamageSelectionMap;
   focusedDamageMarker: FocusedDamageMarker | null;
   onFocusChange: (systemId: SystemId, value: number) => void;
+  onStructureChange: (systemId: SystemId, value: number) => void;
   onToggleSystem: (systemId: SystemId) => void;
   onToggleDamageTable: (systemId: SystemId) => void;
   onToggleDamageMarker: (systemId: SystemId, markerName: string) => void;
@@ -28,6 +38,8 @@ type FocusPanelProps = {
 
 export function FocusPanel({
   frameName,
+  structure,
+  maximumStructure,
   focus,
   focusPool,
   cockpitFocus,
@@ -36,6 +48,7 @@ export function FocusPanel({
   selectedDamageMarkers,
   focusedDamageMarker,
   onFocusChange,
+  onStructureChange,
   onToggleSystem,
   onToggleDamageTable,
   onToggleDamageMarker,
@@ -54,9 +67,33 @@ export function FocusPanel({
   return (
     <section className={`panel focus-panel ${showCockpitAlert ? 'attention' : ''}`}>
       <div className="focus-panel-heading">
-        <div className="section-title">
-          <Activity size={20} />
-          <h2>Allocate Focus</h2>
+        <div className="focus-panel-title-row">
+          <div className="section-title">
+            <Activity size={20} />
+            <h2>Systems</h2>
+          </div>
+          <div className="systems-frame-stats" aria-label="Frame stats">
+            <span>
+              <Gauge size={15} aria-hidden="true" />
+              <small>Mobility</small>
+              <strong>{frame.mobility} MD</strong>
+            </span>
+            <span>
+              <Radar size={15} aria-hidden="true" />
+              <small>Sensor Range</small>
+              <strong>{frame.sensorRange} MD</strong>
+            </span>
+            <span>
+              <Dice6 size={15} aria-hidden="true" />
+              <small>Defence Die</small>
+              <strong>D{frame.defenceDie}</strong>
+            </span>
+            <span className="systems-armour-stat">
+              <Shield size={15} aria-hidden="true" />
+              <small>Armour</small>
+              <strong>{frame.armour}</strong>
+            </span>
+          </div>
         </div>
         {showCockpitAlert &&
           (focusAllocationComplete ? (
@@ -81,6 +118,8 @@ export function FocusPanel({
               key={system.id}
               system={system}
               damageMarkers={frame.damageMarkers[system.id]}
+              structureValue={structure[system.id]}
+              maximumStructureValue={maximumStructure[system.id]}
               focusValue={focus[system.id]}
               focusPool={focusPool}
               assignedFocusValue={cockpitFocus[system.id] ?? 0}
@@ -90,6 +129,7 @@ export function FocusPanel({
               expandedDamage={Boolean(expandedDamageTables[system.id])}
               focusedMarker={focusedDamageMarker}
               onFocusChange={onFocusChange}
+              onStructureChange={onStructureChange}
               onToggleActions={onToggleSystem}
               onToggleDamage={onToggleDamageTable}
               onToggleMarker={onToggleDamageMarker}
