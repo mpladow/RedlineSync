@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import type { DamageMarker, FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
 import { SYSTEM_PRESENTATION } from '../ui/systemPresentation';
-import { getDamageSeverity } from '../utils/helpers';
+import { getDamageMarkerId, getDamageSeverity } from '../utils/helpers';
 import { Stepper } from './Stepper';
 
 type SystemCardProps = {
@@ -72,15 +72,18 @@ export function SystemCard({
               Overcommitted
             </button>
           )}
-          {selectedDamage.map((markerName) => {
-            const marker = damageMarkers.find((item) => item.name === markerName);
+          {selectedDamage.map((markerId) => {
+            const marker = damageMarkers.find(
+              (item) => getDamageMarkerId(item) === markerId || item.name === markerId
+            );
             const severity = marker ? getDamageSeverity(marker) : 'warning';
+            const markerName = marker?.name ?? markerId;
             return (
               <button
                 className={`system-damage-badge ${severity}`}
-                key={markerName}
+                key={markerId}
                 type="button"
-                onClick={() => onShowDamageMarker(id, markerName)}
+                onClick={() => onShowDamageMarker(id, markerId)}
                 aria-label={`Show ${label} damage marker ${markerName}`}
               >
                 {severity === 'critical' ? <AlertTriangle size={14} /> : null}
@@ -150,18 +153,19 @@ export function SystemCard({
               <span>Effect</span>
             </div>
             {damageMarkers.map((marker) => {
-              const isSelected = selectedDamage.includes(marker.name);
+              const markerId = getDamageMarkerId(marker);
+              const isSelected = selectedDamage.includes(markerId) || selectedDamage.includes(marker.name);
               const severity = getDamageSeverity(marker);
-              const isFocused = focusedMarker?.systemId === id && focusedMarker?.markerName === marker.name;
+              const isFocused = focusedMarker?.systemId === id && focusedMarker?.markerName === markerId;
               return (
                 <button
                   className={`table-row marker-row ${severity} ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}`}
-                  key={marker.name}
+                  key={markerId}
                   type="button"
                   aria-pressed={isSelected}
                   data-system-id={id}
-                  data-marker-name={marker.name}
-                  onClick={() => onToggleMarker(id, marker.name)}
+                  data-marker-name={markerId}
+                  onClick={() => onToggleMarker(id, markerId)}
                 >
                   <span className="roll-pill">{marker.roll}</span>
                   <strong className="marker-name">

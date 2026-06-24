@@ -55,6 +55,7 @@ export type SystemAction = {
 };
 
 export type DamageMarker = {
+  id?: string;
   roll: string;
   name: string;
   effect: string;
