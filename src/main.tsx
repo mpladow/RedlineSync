@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react';
-import { ChevronLeft, ChevronRight, Menu, UserPlus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, Pencil, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import './styles.css';
 
@@ -12,6 +12,7 @@ import { HandlerPanel } from './components/HandlerPanel';
 import { HeatMeter } from './components/HeatMeter';
 import { HeatRulesModal } from './components/HeatRulesModal';
 import { PilotCard, PilotCardModal } from './components/PilotCard';
+import { PilotForm } from './components/PilotForm';
 import { WeaponDetailsModal } from './components/WeaponDetailsModal';
 import { WeaponsPanel } from './components/WeaponsPanel';
 import { DEFAULT_FOCUS, DEFAULT_FOCUS_POOL } from './constants/pilotCard';
@@ -25,39 +26,22 @@ import type {
   FocusMap,
   HandlerId,
   HeatState,
+  PilotRecord,
   SavedState,
   SystemId,
   Weapon
 } from './types';
 import { getHeatState } from './utils/helpers';
+import {
+  loadPilots,
+  persistPilots,
+  persistPilotWorkspaceConfiguration,
+  removePilotWorkspace
+} from './utils/pilotStorage';
 
 const GAME_PHASES = ['Cockpit Phase', 'Support Phase', 'Activation Phase', 'End Phase'];
 
-const PLACEHOLDER_PILOTS = [
-  {
-    id: 'rook-7',
-    pilotName: 'Mara Voss',
-    mechName: 'Rook-7',
-    frame: 'Siege Frame',
-    status: 'Ready'
-  },
-  {
-    id: 'kestrel-nine',
-    pilotName: 'Ilya Ren',
-    mechName: 'Kestrel Nine',
-    frame: 'Skirmish Frame',
-    status: 'Draft'
-  },
-  {
-    id: 'brazen-signal',
-    pilotName: 'Tamsin Vale',
-    mechName: 'Brazen Signal',
-    frame: 'Support Frame',
-    status: 'Ready'
-  }
-];
-
-function PilotRosterPage() {
+function PilotRosterPage({ pilots }: { pilots: PilotRecord[] }) {
   return (
     <main className="app-shell home-shell">
       <header className="page-header">
@@ -71,54 +55,64 @@ function PilotRosterPage() {
         </Link>
       </header>
 
-      <section className="roster-list" aria-label="Created Mechs and Pilots">
-        {PLACEHOLDER_PILOTS.map((pilot) => (
-          <Link key={pilot.id} to={`/sync/${pilot.id}`} className="roster-card">
-            <div className="roster-emblem" aria-hidden="true">
-              {pilot.mechName.slice(0, 1)}
-            </div>
-            <div className="roster-card-main">
-              <div>
-                <span>{pilot.pilotName}</span>
-                <strong>{pilot.mechName}</strong>
-              </div>
-              <p>{pilot.frame}</p>
-            </div>
-            <span className={`roster-status ${pilot.status.toLowerCase()}`}>{pilot.status}</span>
+      {pilots.length === 0 ? (
+        <section className="empty-roster" aria-label="No pilots created">
+          <Link to="/pilots/new" className="roster-emblem empty-roster-create" aria-label="Create Pilot">
+            +
           </Link>
-        ))}
-      </section>
+          <div>
+            <h2>No pilots yet</h2>
+            <p>Create a pilot, configure their Mech, and they will appear here.</p>
+          </div>
+          <Link to="/pilots/new" className="primary-action">
+            Create your first pilot
+          </Link>
+        </section>
+      ) : (
+        <section className="roster-list" aria-label="Created Mechs and Pilots">
+          {pilots.map((pilot) => (
+            <article key={pilot.id} className="roster-card">
+              <Link to={`/sync/${pilot.id}`} className="roster-card-link" aria-label={`Open ${pilot.pilotName}`}>
+                <div className="roster-emblem" aria-hidden="true">
+                  {pilot.mechName.slice(0, 1)}
+                </div>
+                <div className="roster-card-main">
+                  <div>
+                    <span>{pilot.pilotName}</span>
+                    <strong>{pilot.mechName}</strong>
+                  </div>
+                  <p>{pilot.frame}</p>
+                </div>
+                <span className={`roster-status ${pilot.status.toLowerCase()}`}>{pilot.status}</span>
+              </Link>
+              <Link to={`/pilots/${pilot.id}/edit`} className="icon-action roster-edit" aria-label={`Edit ${pilot.pilotName}`}>
+                <Pencil size={18} />
+              </Link>
+            </article>
+          ))}
+        </section>
+      )}
     </main>
   );
 }
 
-function CreatePilotPage() {
-  return (
-    <main className="app-shell home-shell">
-      <header className="page-header">
-        <div>
-          <p className="eyebrow">New record</p>
-          <h1>Create Pilot</h1>
-        </div>
-        <Link to="/" className="secondary-action page-header-action">
-          <ChevronLeft size={18} />
-          <span>Back</span>
-        </Link>
-      </header>
+function SyncWorkspacePage({ pilots }: { pilots: PilotRecord[] }) {
+  const { pilotId } = useParams();
+  const pilot = pilots.find((item) => item.id === pilotId);
 
-      <section className="placeholder-panel" aria-label="Create Pilot placeholder">
-        <p>Create Pilot content placeholder</p>
-      </section>
-    </main>
-  );
+  if (!pilot) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <SyncWorkspace pilot={pilot} />;
 }
 
-function SyncWorkspacePage() {
-  const [savedState, setSavedState] = useLocalStorage<SavedState>('redline-sync-state', {});
+function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
+  const [savedState, setSavedState] = useLocalStorage<SavedState>(`redline-sync-state:${pilot.id}`, {});
   const [isNavigationMenuOpen, setIsNavigationMenuOpen] = useState(false);
 
   const savedFocus = savedState.focus ?? {};
-  const [focusPool, setFocusPool] = useState<number>(savedState.focusPool ?? DEFAULT_FOCUS_POOL);
+  const [focusPool, setFocusPool] = useState<number>(savedState.focusPool ?? pilot.focusPool ?? DEFAULT_FOCUS_POOL);
   const [focus, setFocus] = useState<FocusMap>({
     ...DEFAULT_FOCUS,
     ...savedFocus,
@@ -131,10 +125,11 @@ function SyncWorkspacePage() {
   });
   const [equippedWeapons, setEquippedWeapons] = useState<EquippedWeapons>({
     ...DEFAULT_EQUIPPED_WEAPONS,
+    ...pilot.equippedWeapons,
     ...(savedState.equippedWeapons ?? {})
   });
   const [heat, setHeat] = useState<number>(savedState.heat ?? 3);
-  const [handler, setHandler] = useState<HandlerId>(savedState.handler ?? 'tactical');
+  const [handler, setHandler] = useState<HandlerId>(savedState.handler ?? pilot.handler);
   const [expandedCall, setExpandedCall] = useState(0);
   const [expandedSystems, setExpandedSystems] = useState<ExpansionMap>({ mobility: true });
   const [expandedDamageTables, setExpandedDamageTables] = useState<ExpansionMap>({});
@@ -401,6 +396,7 @@ function SyncWorkspacePage() {
 
       <section className="status-band">
         <PilotCard
+          pilot={pilot}
           focusPool={focusPool}
           remainingFocus={remainingFocus}
           isExpanded={isPilotCardExpanded}
@@ -554,6 +550,7 @@ function SyncWorkspacePage() {
       <HeatRulesModal isOpen={isHeatModalOpen} heatState={modalHeatState} onClose={closeHeatRules} />
       <WeaponDetailsModal weapon={selectedWeaponDetails} onClose={closeWeaponDetails} />
       <PilotCardModal
+        pilot={pilot}
         isOpen={isPilotCardExpanded}
         focusPool={focusPool}
         remainingFocus={remainingFocus}
@@ -596,14 +593,52 @@ function SyncWorkspacePage() {
 }
 
 function App() {
+  const [pilots, setPilots] = useState<PilotRecord[]>(loadPilots);
+
+  const savePilot = (pilot: PilotRecord) => {
+    const nextPilots = pilots.some((item) => item.id === pilot.id)
+      ? pilots.map((item) => (item.id === pilot.id ? pilot : item))
+      : [...pilots, pilot];
+
+    persistPilotWorkspaceConfiguration(pilot);
+    persistPilots(nextPilots);
+    setPilots(nextPilots);
+  };
+
+  const deletePilot = (pilotId: string) => {
+    const nextPilots = pilots.filter((pilot) => pilot.id !== pilotId);
+    persistPilots(nextPilots);
+    removePilotWorkspace(pilotId);
+    setPilots(nextPilots);
+  };
+
   return (
     <Routes>
-      <Route path="/" element={<PilotRosterPage />} />
-      <Route path="/pilots/new" element={<CreatePilotPage />} />
-      <Route path="/sync/:pilotId" element={<SyncWorkspacePage />} />
+      <Route path="/" element={<PilotRosterPage pilots={pilots} />} />
+      <Route path="/pilots/new" element={<PilotForm onSave={savePilot} />} />
+      <Route
+        path="/pilots/:pilotId/edit"
+        element={<EditPilotRoute pilots={pilots} onSave={savePilot} onDelete={deletePilot} />}
+      />
+      <Route path="/sync/:pilotId" element={<SyncWorkspacePage pilots={pilots} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
+}
+
+function EditPilotRoute({
+  pilots,
+  onSave,
+  onDelete
+}: {
+  pilots: PilotRecord[];
+  onSave: (pilot: PilotRecord) => void;
+  onDelete: (pilotId: string) => void;
+}) {
+  const { pilotId } = useParams();
+  const pilot = pilots.find((item) => item.id === pilotId);
+
+  return pilot ? <PilotForm pilot={pilot} onSave={onSave} onDelete={onDelete} /> : <Navigate to="/" replace />;
 }
 
 const rootElement = document.getElementById('root');

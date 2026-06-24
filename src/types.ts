@@ -63,6 +63,25 @@ export type EquippedWeapons = Record<WeaponSlotName, string>;
 
 export type HandlerId = 'tactical' | 'engineering' | 'ordnance';
 
+export type PilotRecord = {
+  id: string;
+  pilotName: string;
+  mechName: string;
+  frame: string;
+  status: 'Ready' | 'Draft';
+  mobility: number;
+  defence: number;
+  focusPool: number;
+  handler: HandlerId;
+  equippedWeapons: EquippedWeapons;
+  specialAbility: {
+    name: string;
+    text: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Handler = {
   id: HandlerId;
   label: string;
