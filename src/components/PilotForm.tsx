@@ -5,7 +5,9 @@ import { useState } from 'react';
 import {
   DEFAULT_EQUIPPED_WEAPONS,
   DEFAULT_FOCUS_POOL,
+  DEFAULT_FRAME,
   FRAME_OPTIONS,
+  getFrameConfiguration,
   HANDLERS,
   PILOT_CARD,
   WEAPONS
@@ -32,9 +34,10 @@ function createPilotId(pilotName: string) {
 
 export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
   const navigate = useNavigate();
+  const initialFrame = getFrameConfiguration(pilot?.frame ?? DEFAULT_FRAME.name).name;
   const [pilotName, setPilotName] = useState(pilot?.pilotName ?? '');
   const [mechName, setMechName] = useState(pilot?.mechName ?? '');
-  const [frame, setFrame] = useState(pilot?.frame ?? '');
+  const [frame, setFrame] = useState<string>(initialFrame);
   const [focusPool, setFocusPool] = useState(pilot?.focusPool ?? DEFAULT_FOCUS_POOL);
   const [handler, setHandler] = useState<HandlerId>(pilot?.handler ?? 'tactical');
   const [meleeWeapon, setMeleeWeapon] = useState(pilot?.equippedWeapons.melee ?? DEFAULT_EQUIPPED_WEAPONS.melee);
@@ -42,6 +45,7 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveError, setSaveError] = useState('');
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const selectedFrame = getFrameConfiguration(frame);
 
   const validate = () => {
     const nextErrors: FormErrors = {};
@@ -151,15 +155,15 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
               />
               {errors.mechName && <small id="mech-name-error">{errors.mechName}</small>}
             </label>
-            <label className="form-field">
-              <span>Frame</span>
+            <div className="form-field">
+              <label htmlFor="pilot-frame">Frame</label>
               <select
+                id="pilot-frame"
                 value={frame}
                 onChange={(event) => setFrame(event.target.value)}
                 aria-invalid={Boolean(errors.frame)}
                 aria-describedby={errors.frame ? 'frame-error' : undefined}
               >
-                <option value="">Select a frame</option>
                 {FRAME_OPTIONS.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -167,7 +171,17 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
                 ))}
               </select>
               {errors.frame && <small id="frame-error">{errors.frame}</small>}
-            </label>
+              <article className="signature-system" aria-live="polite" aria-atomic="true">
+                <p className="eyebrow">Signature System</p>
+                <h3>{selectedFrame.signatureSystem.name}</h3>
+                <p>{selectedFrame.signatureSystem.description}</p>
+                <div className="signature-system-rules">
+                  {selectedFrame.signatureSystem.rules.map((rule) => (
+                    <p key={rule}>{rule}</p>
+                  ))}
+                </div>
+              </article>
+            </div>
           </div>
         </section>
 

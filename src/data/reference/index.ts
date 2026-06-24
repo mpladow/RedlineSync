@@ -1,4 +1,5 @@
-import { FRAME_OPTIONS, GAME_PHASES } from './game';
+import { DEFAULT_FRAME, FRAME_CONFIGURATIONS, FRAME_OPTIONS, getFrameConfiguration } from './frames';
+import { GAME_PHASES } from './game';
 import { HANDLERS } from './handlers';
 import { HEAT_RULES, HEAT_STATES } from './heat';
 import { DEFAULT_FOCUS, DEFAULT_FOCUS_POOL, PILOT_CARD } from './pilotDefaults';
@@ -9,8 +10,11 @@ export {
   DEFAULT_EQUIPPED_WEAPONS,
   DEFAULT_FOCUS,
   DEFAULT_FOCUS_POOL,
+  DEFAULT_FRAME,
+  FRAME_CONFIGURATIONS,
   FRAME_OPTIONS,
   GAME_PHASES,
+  getFrameConfiguration,
   HANDLERS,
   HEAT_RULES,
   HEAT_STATES,
@@ -41,6 +45,6 @@ export const REFERENCE_DATA = {
   },
   game: {
     phases: GAME_PHASES,
-    frames: FRAME_OPTIONS
+    frames: FRAME_CONFIGURATIONS
   }
 } as const;
