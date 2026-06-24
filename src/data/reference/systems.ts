@@ -1,12 +1,9 @@
-import { Cpu, Crosshair, Radar, Shield, Sparkles, Zap } from 'lucide-react';
-import type { SystemDefinition } from '../types';
+import type { SystemDefinition } from '../../types';
 
 export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'mobility',
     label: 'Mobility',
-    icon: Zap,
-    accent: '#19a7a5',
     actions: [
       { cost: '1-2', name: 'Step', description: 'Move up to X MD, where X is the number of Focus Tokens spent.' },
       {
@@ -43,8 +40,6 @@ export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'weapons',
     label: 'Weapons',
-    icon: Crosshair,
-    accent: '#e7583e',
     actions: [
       { cost: '1', name: 'Standard Attack', description: 'Make one melee attack or ranged attack to deal Structure Damage.' },
       {
@@ -81,8 +76,6 @@ export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'neural',
     label: 'Neural Link',
-    icon: Sparkles,
-    accent: '#7c5cff',
     actions: [
       {
         cost: '1',
@@ -109,8 +102,6 @@ export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'defence',
     label: 'Defence',
-    icon: Shield,
-    accent: '#e2a93b',
     actions: [
       {
         cost: '1-3',
@@ -145,8 +136,6 @@ export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'reactor',
     label: 'Reactor',
-    icon: Cpu,
-    accent: '#f0b947',
     actions: [
       {
         cost: '1',
@@ -174,8 +163,6 @@ export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'sensors',
     label: 'Sensors',
-    icon: Radar,
-    accent: '#8fcb6b',
     actions: [
       {
         cost: '1-3',

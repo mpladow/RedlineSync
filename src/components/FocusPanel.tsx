@@ -1,5 +1,5 @@
 import { Activity, CheckCircle2, ChevronRight } from 'lucide-react';
-import { SYSTEMS } from '../constants/systems';
+import { SYSTEMS } from '../data/reference';
 import type { DamageSelectionMap, ExpansionMap, FocusMap, FocusedDamageMarker, SystemId } from '../types';
 import { SystemCard } from './SystemCard';
 

@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronRight, ChevronUp, Sparkles } from 'lucide-react';
-import { HANDLERS } from '../constants/handlers';
+import { HANDLERS } from '../data/reference';
 import type { HandlerId } from '../types';
 
 type HandlerPanelProps = {

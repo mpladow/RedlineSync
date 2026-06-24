@@ -1,6 +1,6 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { ChevronUp, Gauge } from 'lucide-react';
-import { DEFAULT_FOCUS_POOL } from '../constants/pilotCard';
+import { DEFAULT_FOCUS_POOL } from '../data/reference';
 import type { PilotRecord } from '../types';
 import { Stepper } from './Stepper';
 

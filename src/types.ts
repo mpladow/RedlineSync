@@ -1,6 +1,3 @@
-import type { ComponentType } from 'react';
-import type { LucideProps } from 'lucide-react';
-
 export type SystemId = 'mobility' | 'weapons' | 'neural' | 'defence' | 'reactor' | 'sensors';
 
 export type FocusMap = Record<SystemId, number>;
@@ -29,8 +26,6 @@ export type DamageMarker = {
 export type SystemDefinition = {
   id: SystemId;
   label: string;
-  icon: ComponentType<LucideProps>;
-  accent: string;
   actions: SystemAction[];
   damageMarkers: DamageMarker[];
 };

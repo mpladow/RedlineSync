@@ -2,9 +2,14 @@ import type { FormEvent } from 'react';
 import { ChevronLeft, Save, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { DEFAULT_EQUIPPED_WEAPONS, WEAPONS } from '../constants/weapons';
-import { HANDLERS } from '../constants/handlers';
-import { DEFAULT_FOCUS_POOL, PILOT_CARD } from '../constants/pilotCard';
+import {
+  DEFAULT_EQUIPPED_WEAPONS,
+  DEFAULT_FOCUS_POOL,
+  FRAME_OPTIONS,
+  HANDLERS,
+  PILOT_CARD,
+  WEAPONS
+} from '../data/reference';
 import type { HandlerId, PilotRecord, WeaponSlotName } from '../types';
 
 type PilotFormProps = {
@@ -14,8 +19,6 @@ type PilotFormProps = {
 };
 
 type FormErrors = Partial<Record<'pilotName' | 'mechName' | 'frame', string>>;
-
-const FRAME_OPTIONS = ['Assault Frame', 'Siege Frame', 'Skirmish Frame', 'Support Frame'];
 
 function createPilotId(pilotName: string) {
   const slug = pilotName

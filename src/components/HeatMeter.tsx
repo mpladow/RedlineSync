@@ -1,5 +1,5 @@
 import { Flame } from 'lucide-react';
-import { HEAT_STATES } from '../constants/heat';
+import { HEAT_STATES } from '../data/reference';
 import type { HeatState } from '../types';
 import { Stepper } from './Stepper';
 

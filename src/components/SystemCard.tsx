@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import type { FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
+import { SYSTEM_PRESENTATION } from '../ui/systemPresentation';
 import { getDamageSeverity } from '../utils/helpers';
 import { Stepper } from './Stepper';
 
@@ -43,7 +44,8 @@ export function SystemCard({
   isCockpitPhase,
   isActivationPhase
 }: SystemCardProps) {
-  const { id, label, icon: Icon, accent, actions, damageMarkers } = system;
+  const { id, label, actions, damageMarkers } = system;
+  const { icon: Icon, accent } = SYSTEM_PRESENTATION[id];
   const overcommittedFocusValue = showFocusAssignment ? assignedFocusValue : focusValue;
   const isOvercommitted = overcommittedFocusValue > 3;
   const focusLimit = showFocusAssignment ? assignedFocusValue : focusPool;

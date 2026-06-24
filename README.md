@@ -45,7 +45,8 @@ npm run preview
 
 - `src/` — application source
   - `components/` — reusable React components
-  - `constants/` — extracted game data/constants
+  - `data/reference/` — serializable game reference data and defaults
+  - `ui/` — presentation-only metadata excluded from reference/API data
   - `utils/` — helper functions
   - `styles.css` — app styling
 - `index.html` — Vite entry

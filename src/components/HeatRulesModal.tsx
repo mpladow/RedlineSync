@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import { ChevronUp } from 'lucide-react';
-import { HEAT_RULES } from '../constants/heat';
+import { HEAT_RULES } from '../data/reference';
 import type { HeatState } from '../types';
 
 type HeatRulesModalProps = {

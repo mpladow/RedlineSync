@@ -1,4 +1,4 @@
-import type { FocusMap } from '../types';
+import type { FocusMap } from '../../types';
 
 export const DEFAULT_FOCUS: FocusMap = {
   mobility: 1,

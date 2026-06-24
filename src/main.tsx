@@ -15,9 +15,14 @@ import { PilotCard, PilotCardModal } from './components/PilotCard';
 import { PilotForm } from './components/PilotForm';
 import { WeaponDetailsModal } from './components/WeaponDetailsModal';
 import { WeaponsPanel } from './components/WeaponsPanel';
-import { DEFAULT_FOCUS, DEFAULT_FOCUS_POOL } from './constants/pilotCard';
-import { SYSTEMS } from './constants/systems';
-import { DEFAULT_EQUIPPED_WEAPONS, WEAPONS } from './constants/weapons';
+import {
+  DEFAULT_EQUIPPED_WEAPONS,
+  DEFAULT_FOCUS,
+  DEFAULT_FOCUS_POOL,
+  GAME_PHASES,
+  SYSTEMS,
+  WEAPONS
+} from './data/reference';
 import type {
   DamageSelectionMap,
   EquippedWeapons,
@@ -38,8 +43,6 @@ import {
   persistPilotWorkspaceConfiguration,
   removePilotWorkspace
 } from './utils/pilotStorage';
-
-const GAME_PHASES = ['Cockpit Phase', 'Support Phase', 'Activation Phase', 'End Phase'];
 
 function PilotRosterPage({ pilots }: { pilots: PilotRecord[] }) {
   return (

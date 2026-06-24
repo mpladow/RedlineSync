@@ -1,4 +1,4 @@
-import type { Handler } from '../types';
+import type { Handler } from '../../types';
 
 export const HANDLERS: Handler[] = [
   {

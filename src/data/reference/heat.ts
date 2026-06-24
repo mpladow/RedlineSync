@@ -1,4 +1,4 @@
-import type { HeatClassName, HeatState } from '../types';
+import type { HeatClassName, HeatState } from '../../types';
 
 export const HEAT_STATES: HeatState[] = [
   { label: 'Steady', range: '0-3', className: 'steady' },

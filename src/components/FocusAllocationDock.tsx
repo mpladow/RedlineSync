@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { SYSTEMS } from '../constants/systems';
+import { SYSTEMS } from '../data/reference';
 import type { ExpansionMap, FocusMap, SystemId } from '../types';
 
 type FocusAllocationDockProps = {

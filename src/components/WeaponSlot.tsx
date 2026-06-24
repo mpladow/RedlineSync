@@ -1,5 +1,5 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
-import { WEAPONS } from '../constants/weapons';
+import { WEAPONS } from '../data/reference';
 import type { Weapon, WeaponSlotName } from '../types';
 
 type WeaponSlotProps = {
