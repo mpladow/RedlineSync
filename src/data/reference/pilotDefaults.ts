@@ -1,4 +1,5 @@
 import type { FocusMap } from '../../types';
+import { DEFAULT_PILOT_TRAIT, getPilotTraitText } from './pilotTraits';
 
 export const DEFAULT_FOCUS: FocusMap = {
   mobility: 1,
@@ -17,7 +18,9 @@ export const PILOT_CARD = {
   mobility: 3,
   defence: 2,
   specialAbility: {
-    name: 'Ace Pilot',
-    text: 'This pilot is skilled at converting targeting data into decisive shots. Once per round, when this pilot attacks a target with 2+ Lock-On tokens, they may reroll one additional attack die. This does not add a Lock-On token and does not remove Lock-On tokens.'
+    name: DEFAULT_PILOT_TRAIT.name,
+    text: getPilotTraitText(DEFAULT_PILOT_TRAIT),
+    systems: [...DEFAULT_PILOT_TRAIT.systems],
+    triggers: [...DEFAULT_PILOT_TRAIT.triggers]
   }
 };

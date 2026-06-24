@@ -1,5 +1,42 @@
 export type SystemId = 'mobility' | 'weapons' | 'neural' | 'defence' | 'reactor' | 'sensors';
 
+export type RuleTrigger =
+  | 'after-movement'
+  | 'before-weapon-attack'
+  | 'after-attack-roll'
+  | 'after-weapon-hit'
+  | 'after-structure-damage'
+  | 'before-weapon-reflex'
+  | 'after-weapon-reflex'
+  | 'after-heat-gained'
+  | 'after-token-applied'
+  | 'when-token-present'
+  | 'when-support-call-used'
+  | 'when-neural-focus-spent'
+  | 'when-major-damage-interacted'
+  | 'when-heat-state-entered'
+  | 'when-system-damage-assigned'
+  | 'after-cockpit-allocation'
+  | 'when-round-started'
+  | 'when-focus-assigned'
+  | 'before-system-action'
+  | 'when-charge-token-spent'
+  | 'when-support-orders-reassigned'
+  | 'when-harried-applied'
+  | 'when-lock-on-applied';
+
+export type RuleInteractions = {
+  systems: SystemId[];
+  triggers: RuleTrigger[];
+};
+
+export type PilotTrait = RuleInteractions & {
+  id: string;
+  name: string;
+  description: string;
+  rules: string[];
+};
+
 export type FocusMap = Record<SystemId, number>;
 
 export type ExpansionMap = Partial<Record<SystemId, boolean>>;
@@ -51,12 +88,19 @@ export type Weapon = {
   specialRules: Array<{
     name: string;
     text: string;
-  }>;
+  } & RuleInteractions>;
 };
 
 export type EquippedWeapons = Record<WeaponSlotName, string>;
 
 export type HandlerId = 'tactical' | 'engineering' | 'ordnance';
+
+export type PilotAbility = {
+  name: string;
+  text: string;
+  systems?: SystemId[];
+  triggers?: RuleTrigger[];
+};
 
 export type PilotRecord = {
   id: string;
@@ -69,10 +113,8 @@ export type PilotRecord = {
   focusPool: number;
   handler: HandlerId;
   equippedWeapons: EquippedWeapons;
-  specialAbility: {
-    name: string;
-    text: string;
-  };
+  specialAbility: PilotAbility;
+  pilotTraits?: PilotAbility[];
   createdAt: string;
   updatedAt: string;
 };
@@ -82,7 +124,12 @@ export type Handler = {
   label: string;
   asset: string;
   role: string;
-  calls: string[];
+  calls: Array<{
+    name: string;
+    text: string;
+    systems: SystemId[];
+    triggers: RuleTrigger[];
+  }>;
 };
 
 export type SavedState = {

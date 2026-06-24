@@ -1,6 +1,8 @@
+import type { RuleInteractions } from '../../types';
+
 export type FrameConfiguration = {
   name: string;
-  signatureSystem: {
+  signatureSystem: RuleInteractions & {
     name: string;
     description: string;
     rules: string[];
@@ -11,9 +13,11 @@ export const FRAME_CONFIGURATIONS = [
   {
     name: 'Prototype Frame',
     signatureSystem: {
-      name: 'None',
+      name: '',
       description: 'This Frame is an early production model, used for training and testing new Pilots.',
-      rules: ['This Frame has no special rules and is the default Frame for all Pilots.']
+      rules: ['This Frame has no special rules and is the default Frame for all Pilots.'],
+      systems: [],
+      triggers: []
     }
   },
   {
@@ -26,7 +30,9 @@ export const FRAME_CONFIGURATIONS = [
         'Stabilise: Ignore the -1 attack die penalty from High Speed for this Frame’s next attack this activation.',
         'Slip Free: Remove 1 Harried token from this Frame.',
         'After using this effect, gain +1 Heat.'
-      ]
+      ],
+      systems: ['mobility', 'weapons', 'reactor', 'neural'],
+      triggers: ['after-movement', 'before-weapon-attack', 'after-heat-gained']
     }
   },
   {
@@ -39,7 +45,9 @@ export const FRAME_CONFIGURATIONS = [
         'This may ignore penalties from Heavy weapon handling, High Speed, Smoke, minor Warning effects, or the Weapon Reflex penalty when using a non-Heavy weapon.',
         'It cannot ignore Armour, Exposed, Critical Major Damage, range restrictions, or line of sight restrictions.',
         'After using this effect, this Frame cannot use Reflexive Step until its next Focus Activation.'
-      ]
+      ],
+      systems: ['mobility', 'weapons'],
+      triggers: ['after-movement', 'before-weapon-attack']
     }
   },
   {
@@ -52,7 +60,9 @@ export const FRAME_CONFIGURATIONS = [
         'A non-Heavy melee weapon’s normal -1 attack die penalty is reduced to no penalty.',
         'A Heavy melee weapon’s normal -2 attack dice penalty is reduced to -1 attack die.',
         'If this Frame loses the Weapon Reflex contest, the incoming attack deals +1 damage.'
-      ]
+      ],
+      systems: ['weapons'],
+      triggers: ['before-weapon-reflex', 'after-weapon-reflex']
     }
   }
 ] as const satisfies readonly FrameConfiguration[];

@@ -32,7 +32,7 @@ export function HeatRulesModal({ isOpen, heatState, onClose }: HeatRulesModalPro
         </div>
         <div className="modal-rule-list">
           {HEAT_RULES[heatState.className].map((rule) => (
-            <p key={rule}>{rule}</p>
+            <p key={rule.text}>{rule.text}</p>
           ))}
         </div>
       </section>
