@@ -1,7 +1,15 @@
+import type { MouseEvent } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { HEAT_RULES } from '../constants/heat';
+import type { HeatState } from '../types';
 
-export function HeatRulesModal({ isOpen, heatState, onClose }) {
+type HeatRulesModalProps = {
+  isOpen: boolean;
+  heatState: HeatState | null;
+  onClose: () => void;
+};
+
+export function HeatRulesModal({ isOpen, heatState, onClose }: HeatRulesModalProps) {
   if (!isOpen || !heatState) return null;
 
   return (
@@ -11,7 +19,7 @@ export function HeatRulesModal({ isOpen, heatState, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="heat-rules-title"
-        onClick={(event) => event.stopPropagation()}
+        onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
       >
         <div className="modal-header">
           <div>

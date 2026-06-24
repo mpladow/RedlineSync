@@ -1,4 +1,6 @@
-export const HANDLERS = [
+import type { Handler } from '../types';
+
+export const HANDLERS: Handler[] = [
   {
     id: 'tactical',
     label: 'Tactical',

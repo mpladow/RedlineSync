@@ -1,6 +1,28 @@
+import type { CSSProperties } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import type { FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
 import { getDamageSeverity } from '../utils/helpers';
 import { Stepper } from './Stepper';
+
+type SystemCardProps = {
+  system: SystemDefinition;
+  focusValue: number;
+  focusPool: number;
+  assignedFocusValue: number;
+  showFocusAssignment: boolean;
+  selectedDamage: string[];
+  expandedActions: boolean;
+  expandedDamage: boolean;
+  focusedMarker: FocusedDamageMarker | null;
+  onFocusChange: (systemId: SystemId, value: number) => void;
+  onToggleActions: (systemId: SystemId) => void;
+  onToggleDamage: (systemId: SystemId) => void;
+  onToggleMarker: (systemId: SystemId, markerName: string) => void;
+  onShowDamageMarker: (systemId: SystemId, markerName: string) => void;
+  onShowOvercommittedWarning: (systemName: string) => void;
+  isCockpitPhase: boolean;
+  isActivationPhase: boolean;
+};
 
 export function SystemCard({
   system,
@@ -18,8 +40,9 @@ export function SystemCard({
   onToggleMarker,
   onShowDamageMarker,
   onShowOvercommittedWarning,
+  isCockpitPhase,
   isActivationPhase
-}) {
+}: SystemCardProps) {
   const { id, label, icon: Icon, accent, actions, damageMarkers } = system;
   const overcommittedFocusValue = showFocusAssignment ? assignedFocusValue : focusValue;
   const isOvercommitted = overcommittedFocusValue > 3;
@@ -29,7 +52,7 @@ export function SystemCard({
       id={`focus-system-${id}`}
       className={`system-card ${selectedDamage.length ? 'damaged' : ''}`}
       key={id}
-      style={{ '--accent': accent }}
+      style={{ '--accent': accent } as CSSProperties}
     >
       <div className="system-header">
         <div className="system-copy">
@@ -71,6 +94,8 @@ export function SystemCard({
             assignedValue={showFocusAssignment ? assignedFocusValue : null}
             disableDecrement={isActivationPhase && focusValue === 0}
             emptyDisplay={isActivationPhase && focusValue === 0}
+            dotDisplay={isCockpitPhase || isActivationPhase}
+            dotCount={isActivationPhase ? assignedFocusValue : 6}
           />
         </div>
       </div>

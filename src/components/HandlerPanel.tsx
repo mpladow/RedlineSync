@@ -1,15 +1,27 @@
-import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, Sparkles } from 'lucide-react';
 import { HANDLERS } from '../constants/handlers';
+import type { HandlerId } from '../types';
+
+type HandlerPanelProps = {
+  handler: HandlerId;
+  expandedCall: number;
+  onChangeHandler: (handler: HandlerId) => void;
+  onToggleCall: (index: number) => void;
+  onAdvancePhase: () => void;
+  isHighlighted?: boolean;
+  showSupportAlert?: boolean;
+};
 
 export function HandlerPanel({
   handler,
   expandedCall,
   onChangeHandler,
   onToggleCall,
+  onAdvancePhase,
   isHighlighted = false,
   showSupportAlert = false
-}) {
-  const activeHandler = HANDLERS.find((item) => item.id === handler);
+}: HandlerPanelProps) {
+  const activeHandler = HANDLERS.find((item) => item.id === handler) ?? HANDLERS[0];
 
   return (
     <section id="handler-panel" className={`panel handler-panel ${isHighlighted ? 'attention' : ''}`} tabIndex={-1}>
@@ -21,6 +33,10 @@ export function HandlerPanel({
         {showSupportAlert && (
           <div className="focus-alert" role="alert">
             <span>You can activate Support Actions in this phase.</span>
+            <button className="support-phase-advance" type="button" onClick={onAdvancePhase}>
+              <span>Continue to Activation Phase</span>
+              <ChevronRight size={16} />
+            </button>
           </div>
         )}
       </div>

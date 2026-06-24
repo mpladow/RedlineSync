@@ -1,9 +1,30 @@
+import type { KeyboardEvent, MouseEvent } from 'react';
 import { ChevronUp, Gauge } from 'lucide-react';
 import { DEFAULT_FOCUS_POOL, PILOT_CARD } from '../constants/pilotCard';
 import { Stepper } from './Stepper';
 
-export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpand, onFocusPoolChange }) {
-  const handleKeyDown = (event) => {
+type PilotCardProps = {
+  focusPool: number;
+  remainingFocus: number;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+  onFocusPoolChange: (value: number) => void;
+};
+
+type PilotCardModalProps = {
+  isOpen: boolean;
+  focusPool: number;
+  remainingFocus: number;
+  onFocusPoolChange: (value: number) => void;
+  onClose: () => void;
+};
+
+export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpand, onFocusPoolChange }: PilotCardProps) {
+  void remainingFocus;
+  void isExpanded;
+  void onFocusPoolChange;
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       onToggleExpand();
@@ -50,7 +71,7 @@ export function PilotCard({ focusPool, remainingFocus, isExpanded, onToggleExpan
   );
 }
 
-export function PilotCardModal({ isOpen, focusPool, remainingFocus, onFocusPoolChange, onClose }) {
+export function PilotCardModal({ isOpen, focusPool, remainingFocus, onFocusPoolChange, onClose }: PilotCardModalProps) {
   if (!isOpen) return null;
   const hasAdjustedFocusPool = focusPool !== DEFAULT_FOCUS_POOL;
 
@@ -61,7 +82,7 @@ export function PilotCardModal({ isOpen, focusPool, remainingFocus, onFocusPoolC
         role="dialog"
         aria-modal="true"
         aria-labelledby="pilot-id-title"
-        onClick={(event) => event.stopPropagation()}
+        onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
       >
         <div className="pilot-id-card">
           <div className="pilot-id-left">

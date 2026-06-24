@@ -1,7 +1,24 @@
 import { ChevronDown, ChevronUp, Swords } from 'lucide-react';
+import type { Weapon, WeaponSlotName } from '../types';
 import { WeaponSlot } from './WeaponSlot';
 
-export function WeaponsPanel({ meleeWeapon, rangedWeapon, onWeaponChange, onOpenWeaponDetails, isExpanded, onToggleExpand }) {
+type WeaponsPanelProps = {
+  meleeWeapon: Weapon;
+  rangedWeapon: Weapon;
+  onWeaponChange: (slot: WeaponSlotName, weaponId: string) => void;
+  onOpenWeaponDetails: (weapon: Weapon) => void;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+};
+
+export function WeaponsPanel({
+  meleeWeapon,
+  rangedWeapon,
+  onWeaponChange,
+  onOpenWeaponDetails,
+  isExpanded,
+  onToggleExpand
+}: WeaponsPanelProps) {
   return (
     <section className="meter-card weapons-meter">
       <button

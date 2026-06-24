@@ -1,4 +1,6 @@
-export const WEAPONS = [
+import type { EquippedWeapons, Weapon } from '../types';
+
+export const WEAPONS: Weapon[] = [
   {
     id: 'burst-carbine-br2',
     slot: 'ranged',
@@ -59,7 +61,7 @@ export const WEAPONS = [
   }
 ];
 
-export const DEFAULT_EQUIPPED_WEAPONS = {
+export const DEFAULT_EQUIPPED_WEAPONS: EquippedWeapons = {
   melee: 'titan-cleaver',
   ranged: 'burst-carbine-br2'
 };

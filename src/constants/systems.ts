@@ -1,6 +1,7 @@
 import { Cpu, Crosshair, Radar, Shield, Sparkles, Zap } from 'lucide-react';
+import type { SystemDefinition } from '../types';
 
-export const SYSTEMS = [
+export const SYSTEMS: SystemDefinition[] = [
   {
     id: 'mobility',
     label: 'Mobility',

@@ -1,16 +1,32 @@
+import type { KeyboardEvent, MouseEvent } from 'react';
 import { WEAPONS } from '../constants/weapons';
+import type { Weapon, WeaponSlotName } from '../types';
 
-export function WeaponSlot({ label, slot, selectedWeapon, onChange, onOpen }) {
+type WeaponSlotProps = {
+  label: string;
+  slot: WeaponSlotName;
+  selectedWeapon: Weapon;
+  onChange: (slot: WeaponSlotName, weaponId: string) => void;
+  onOpen: (weapon: Weapon) => void;
+};
+
+export function WeaponSlot({ label, slot, selectedWeapon, onChange, onOpen }: WeaponSlotProps) {
   const options = WEAPONS.filter((weapon) => weapon.slot === slot);
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onOpen(selectedWeapon);
+    }
+  };
 
   return (
-    <article className="weapon-slot" onClick={() => onOpen(selectedWeapon)} role="button" tabIndex={0}>
+    <article className="weapon-slot" onClick={() => onOpen(selectedWeapon)} onKeyDown={handleKeyDown} role="button" tabIndex={0}>
       <div className="weapon-slot-header">
         <span>{label}</span>
         <select
           value={selectedWeapon.id}
           onChange={(event) => onChange(slot, event.target.value)}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(event: MouseEvent<HTMLSelectElement>) => event.stopPropagation()}
           aria-label={`${label} weapon`}
         >
           {options.map((weapon) => (
