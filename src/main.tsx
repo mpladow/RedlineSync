@@ -33,10 +33,11 @@ import type {
   HeatState,
   PilotRecord,
   SavedState,
+  StructureMap,
   SystemId,
   Weapon
 } from './types';
-import { getHeatState } from './utils/helpers';
+import { clamp, getHeatState } from './utils/helpers';
 import {
   loadPilots,
   persistPilots,
@@ -126,6 +127,10 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
     ...(savedState.cockpitFocus ?? savedFocus),
     mobility: savedState.cockpitFocus?.mobility ?? savedFocus.mobility ?? savedFocus.movement ?? DEFAULT_FOCUS.mobility
   });
+  const [structure, setStructure] = useState<StructureMap>({
+    ...pilot.structure,
+    ...(savedState.structure ?? {})
+  });
   const [equippedWeapons, setEquippedWeapons] = useState<EquippedWeapons>({
     ...DEFAULT_EQUIPPED_WEAPONS,
     ...pilot.equippedWeapons,
@@ -156,6 +161,7 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
   const spentFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
   const remainingFocus = focusPool - spentFocus;
   const unspentActivationFocus = useMemo(() => Object.values(focus).reduce((total, value) => total + value, 0), [focus]);
+  const focusDockCount = phaseIndex === 0 ? remainingFocus : unspentActivationFocus;
   const assignedActivationFocus = useMemo(() => Object.values(cockpitFocus).reduce((total, value) => total + value, 0), [cockpitFocus]);
   const spentActivationFocus = assignedActivationFocus + unspentActivationFocus;
   void spentActivationFocus;
@@ -168,8 +174,29 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
   const previousPhase = GAME_PHASES[phaseIndex - 1];
 
   useEffect(() => {
-    setSavedState({ focusPool, focus, cockpitFocus, equippedWeapons, heat, handler, phaseIndex, selectedDamageMarkers });
-  }, [cockpitFocus, equippedWeapons, focus, focusPool, handler, heat, phaseIndex, selectedDamageMarkers, setSavedState]);
+    setSavedState({
+      focusPool,
+      focus,
+      cockpitFocus,
+      structure,
+      equippedWeapons,
+      heat,
+      handler,
+      phaseIndex,
+      selectedDamageMarkers
+    });
+  }, [
+    cockpitFocus,
+    equippedWeapons,
+    focus,
+    focusPool,
+    handler,
+    heat,
+    phaseIndex,
+    selectedDamageMarkers,
+    setSavedState,
+    structure
+  ]);
 
   const updateFocusPool = (value: number) => {
     setFocusPool(value);
@@ -192,6 +219,13 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
     if (projectedSpend <= focusPool) {
       setFocus((next) => ({ ...next, [systemId]: value }));
     }
+  };
+
+  const updateStructure = (systemId: SystemId, value: number) => {
+    setStructure((current) => ({
+      ...current,
+      [systemId]: clamp(value, 0, pilot.structure[systemId])
+    }));
   };
 
   const toggleSystem = (systemId: SystemId) => {
@@ -421,6 +455,8 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
       <div className="workspace">
         <FocusPanel
           frameName={pilot.frame}
+          structure={structure}
+          maximumStructure={pilot.structure}
           focus={focus}
           focusPool={focusPool}
           cockpitFocus={cockpitFocus}
@@ -429,6 +465,7 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
           selectedDamageMarkers={selectedDamageMarkers}
           focusedDamageMarker={focusedDamageMarker}
           onFocusChange={updateFocus}
+          onStructureChange={updateStructure}
           onToggleSystem={toggleSystem}
           onToggleDamageTable={toggleDamageTable}
           onToggleDamageMarker={toggleDamageMarker}
@@ -563,7 +600,7 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
       />
       <FocusAllocationDock
         focus={focus}
-        remainingFocus={unspentActivationFocus}
+        focusCount={focusDockCount}
         isExpanded={isFocusDockExpanded}
         onToggleExpanded={() => setIsFocusDockExpanded((current) => !current)}
         onSelectSystem={(systemId) => {

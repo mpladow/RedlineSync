@@ -4,7 +4,7 @@ import type { ExpansionMap, FocusMap, SystemId } from '../types';
 
 type FocusAllocationDockProps = {
   focus: FocusMap;
-  remainingFocus: number;
+  focusCount: number;
   isExpanded: boolean;
   onToggleExpanded: () => void;
   onSelectSystem: (systemId: SystemId) => void;
@@ -14,7 +14,7 @@ type FocusAllocationDockProps = {
 
 export function FocusAllocationDock({
   focus,
-  remainingFocus,
+  focusCount,
   isExpanded,
   onToggleExpanded,
   onSelectSystem,
@@ -53,7 +53,7 @@ export function FocusAllocationDock({
       </div>
 
       <div className="focus-dock-remaining">
-        <strong>{remainingFocus}</strong>
+        <strong>{focusCount}</strong>
         <span>Focus</span>
       </div>
     </aside>

@@ -1,4 +1,4 @@
-import { ChevronUp, Gauge } from 'lucide-react';
+import { ChevronUp, UserRound } from 'lucide-react';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { DEFAULT_FOCUS_POOL, getFrameConfiguration } from '../data/reference';
 import type { PilotRecord } from '../types';
@@ -33,6 +33,7 @@ export function PilotCard({
   void remainingFocus;
   void isExpanded;
   void onFocusPoolChange;
+  const frame = getFrameConfiguration(pilot.frame);
   const pilotTraits = pilot.pilotTraits?.length ? pilot.pilotTraits : [pilot.specialAbility];
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -52,23 +53,9 @@ export function PilotCard({
       aria-label="Show pilot ID"
     >
       <div className="pilot-card-main">
-        <div className="pilot-card-left">
-          <div className="pilot-portrait" aria-hidden="true">
-            <Gauge size={28} />
-          </div>
-          <div className="pilot-stat-grid" aria-label="Pilot frame stats">
-            <span>Mob {pilot.mobility}</span>
-            <span>Def {pilot.defence}</span>
-          </div>
-          <div className="pilot-focus-compact">
-            <span>Focus Pool</span>
-            <strong>{focusPool}</strong>
-          </div>
-        </div>
         <div className="pilot-card-info">
           <div className="pilot-card-heading">
             <div>
-              <p className="eyebrow">Pilot</p>
               <h2>{pilot.pilotName}</h2>
               <span>
                 {pilot.frame} &quot;
@@ -79,6 +66,17 @@ export function PilotCard({
           </div>
           <div className="pilot-ability-summary">
             <strong>{pilotTraits.map((trait) => trait.name).join(' · ')}</strong>
+          </div>
+        </div>
+        <div className="pilot-card-left">
+          <div className="pilot-portrait" aria-label="Pilot portrait placeholder">
+            <UserRound size={34} aria-hidden="true" />
+          </div>
+          <div className="pilot-stat-grid" aria-label="Pilot frame stats">
+            <span>
+              <small>Focus Pool</small>
+              <strong>{focusPool}</strong>
+            </span>
           </div>
         </div>
       </div>
@@ -111,11 +109,25 @@ export function PilotCardModal({
         <div className="pilot-id-card">
           <div className="pilot-id-left">
             <div className="pilot-id-portrait" aria-hidden="true">
-              <Gauge size={42} />
+              <UserRound size={42} />
             </div>
             <div className="pilot-stat-grid" aria-label="Pilot frame stats">
-              <span>Mob {pilot.mobility}</span>
-              <span>Def {pilot.defence}</span>
+              <span>
+                <small>Mobility</small>
+                <strong>{frame.mobility} MD</strong>
+              </span>
+              <span>
+                <small>Defence Die</small>
+                <strong>{frame.defenceDie}</strong>
+              </span>
+              <span className="sensor-range-stat">
+                <small>Sensor Range</small>
+                <strong>{frame.sensorRange} MD</strong>
+              </span>
+              <span>
+                <small>Armour</small>
+                <strong>{frame.armour}</strong>
+              </span>
             </div>
           </div>
           <div className="pilot-id-body">

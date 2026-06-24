@@ -88,28 +88,28 @@ export const PILOT_TRAITS = [
     systems: ['neural'],
     triggers: ['when-support-orders-reassigned', 'when-neural-focus-spent']
   },
-  {
-    id: 'iron-nerve',
-    name: 'Iron Nerve',
-    description: 'This pilot holds position under pressure.',
-    rules: [
-      'The mech may ignore the first Harried token it would receive each round.',
-      'If the mech already has 2 Harried tokens, this trait has no effect until at least one is removed.'
-    ],
-    systems: ['defence', 'neural'],
-    triggers: ['when-round-started', 'when-harried-applied']
-  },
-  {
-    id: 'close-assault-pilot',
-    name: 'Close Assault Pilot',
-    description: 'This pilot commits fully to charge attacks.',
-    rules: [
-      'When this mech spends a Charge Token on a melee attack, it gains +1 attack die as normal and +1 damage if the attack deals Structure damage.',
-      'After the attack resolves, the mech gains +1 Heat.'
-    ],
-    systems: ['mobility', 'weapons', 'reactor', 'neural'],
-    triggers: ['when-charge-token-spent', 'before-weapon-attack', 'after-structure-damage', 'after-heat-gained']
-  },
+//   {
+//     id: 'iron-nerve',
+//     name: 'Iron Nerve',
+//     description: 'This pilot holds position under pressure.',
+//     rules: [
+//       'The mech may ignore the first Harried token it would receive each round.',
+//       'If the mech already has 2 Harried tokens, this trait has no effect until at least one is removed.'
+//     ],
+//     systems: ['defence', 'neural'],
+//     triggers: ['when-round-started', 'when-harried-applied']
+//   },
+//   {
+//     id: 'close-assault-pilot',
+//     name: 'Close Assault Pilot',
+//     description: 'This pilot commits fully to charge attacks.',
+//     rules: [
+//       'When this mech spends a Charge Token on a melee attack, it gains +1 attack die as normal and +1 damage if the attack deals Structure damage.',
+//       'After the attack resolves, the mech gains +1 Heat.'
+//     ],
+//     systems: ['mobility', 'weapons', 'reactor', 'neural'],
+//     triggers: ['when-charge-token-spent', 'before-weapon-attack', 'after-structure-damage', 'after-heat-gained']
+//   },
   {
     id: 'emergency-reroute',
     name: 'Emergency Reroute',
@@ -121,17 +121,17 @@ export const PILOT_TRAITS = [
     systems: ['mobility', 'weapons', 'neural', 'defence', 'reactor', 'sensors'],
     triggers: ['when-major-damage-interacted', 'before-system-action']
   },
-  {
-    id: 'heavy-weapons-veteran',
-    name: 'Heavy Weapons Veteran',
-    description: 'This pilot is used to firing large weapons while repositioning.',
-    rules: [
-      'Once per round, ignore the Heavy penalty on one ranged attack.',
-      'This does not allow Heavy weapons to ignore other restrictions, such as special setup rules.'
-    ],
-    systems: ['weapons', 'mobility'],
-    triggers: ['before-weapon-attack']
-  },
+//   {
+//     id: 'heavy-weapons-veteran',
+//     name: 'Heavy Weapons Veteran',
+//     description: 'This pilot is used to firing large weapons while repositioning.',
+//     rules: [
+//       'Once per round, ignore the Heavy penalty on one ranged attack.',
+//       'This does not allow Heavy weapons to ignore other restrictions, such as special setup rules.'
+//     ],
+//     systems: ['weapons', 'mobility'],
+//     triggers: ['before-weapon-attack']
+//   },
   {
     id: 'reactor-gambler',
     name: 'Reactor Gambler',

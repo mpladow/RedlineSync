@@ -39,6 +39,8 @@ export type PilotTrait = RuleInteractions & {
 
 export type FocusMap = Record<SystemId, number>;
 
+export type StructureMap = Record<SystemId, number>;
+
 export type ExpansionMap = Partial<Record<SystemId, boolean>>;
 
 export type DamageSelectionMap = Partial<Record<SystemId, string[]>>;
@@ -55,6 +57,7 @@ export type SystemAction = {
 };
 
 export type DamageMarker = {
+  id?: string;
   roll: string;
   name: string;
   effect: string;
@@ -109,8 +112,11 @@ export type PilotRecord = {
   frame: string;
   status: 'Ready' | 'Draft';
   mobility: number;
-  defence: number;
+  defenceDie: number;
+  armour: number;
+  sensorRange: number;
   focusPool: number;
+  structure: StructureMap;
   handler: HandlerId;
   equippedWeapons: EquippedWeapons;
   specialAbility: PilotAbility;
@@ -135,6 +141,7 @@ export type Handler = {
 export type SavedState = {
   focus?: Partial<FocusMap> & { movement?: number };
   cockpitFocus?: Partial<FocusMap>;
+  structure?: Partial<StructureMap>;
   focusPool?: number;
   equippedWeapons?: Partial<EquippedWeapons>;
   heat?: number;

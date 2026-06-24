@@ -16,7 +16,7 @@ export const PILOT_CARD = {
   pilotName: 'Callsign Vantage',
   mechName: 'IC-07 Redline Frame',
   mobility: 3,
-  defence: 2,
+  defenceDie: 2,
   specialAbility: {
     name: DEFAULT_PILOT_TRAIT.name,
     text: getPilotTraitText(DEFAULT_PILOT_TRAIT),

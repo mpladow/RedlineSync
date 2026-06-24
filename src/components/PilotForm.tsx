@@ -12,8 +12,8 @@ import {
 	getPilotTrait,
 	getPilotTraitText,
 	HANDLERS,
-	PILOT_CARD,
 	PILOT_TRAITS,
+	SYSTEMS,
 	WEAPONS
 } from '../data/reference';
 import type { HandlerId, PilotRecord, WeaponSlotName } from '../types';
@@ -42,8 +42,6 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
   const [pilotName, setPilotName] = useState(pilot?.pilotName ?? '');
   const [mechName, setMechName] = useState(pilot?.mechName ?? '');
   const [frame, setFrame] = useState<string>(initialFrame);
-  const [mobility, setMobility] = useState(pilot?.mobility ?? PILOT_CARD.mobility);
-  const [defence, setDefence] = useState(pilot?.defence ?? PILOT_CARD.defence);
   const initialPilotTraitNames = (pilot?.pilotTraits?.length ? pilot.pilotTraits : pilot ? [pilot.specialAbility] : [])
     .slice(0, 2)
     .map((trait) => getPilotTrait(trait.name).name);
@@ -102,9 +100,12 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
       mechName: mechName.trim(),
       frame,
       status: 'Ready',
-      mobility,
-      defence,
+      mobility: selectedFrame.mobility,
+      defenceDie: selectedFrame.defenceDie,
+      armour: selectedFrame.armour,
+      sensorRange: selectedFrame.sensorRange,
       focusPool,
+      structure: { ...selectedFrame.structure },
       handler,
       equippedWeapons: {
         melee: meleeWeapon,
@@ -169,27 +170,39 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
             <h2 id="pilot-details-title">Pilot details</h2>
           </div>
           <div className="form-grid">
-            <label className="form-field">
-              <span>Pilot name</span>
-              <input
-                value={pilotName}
-                onChange={(event) => setPilotName(event.target.value)}
-                aria-invalid={Boolean(errors.pilotName)}
-                aria-describedby={errors.pilotName ? 'pilot-name-error' : undefined}
-                autoFocus
-              />
-              {errors.pilotName && <small id="pilot-name-error">{errors.pilotName}</small>}
-            </label>
-            <label className="form-field">
-              <span>Mech name</span>
-              <input
-                value={mechName}
-                onChange={(event) => setMechName(event.target.value)}
-                aria-invalid={Boolean(errors.mechName)}
-                aria-describedby={errors.mechName ? 'mech-name-error' : undefined}
-              />
-              {errors.mechName && <small id="mech-name-error">{errors.mechName}</small>}
-            </label>
+            <div className="form-column">
+              <label className="form-field">
+                <span>Pilot name</span>
+                <input
+                  value={pilotName}
+                  onChange={(event) => setPilotName(event.target.value)}
+                  aria-invalid={Boolean(errors.pilotName)}
+                  aria-describedby={errors.pilotName ? 'pilot-name-error' : undefined}
+                  autoFocus
+                />
+                {errors.pilotName && <small id="pilot-name-error">{errors.pilotName}</small>}
+              </label>
+              <label className="form-field">
+                <span>Focus pool</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={12}
+                  value={focusPool}
+                  onChange={(event) => setFocusPool(Math.min(12, Math.max(0, Number(event.target.value))))}
+                />
+              </label>
+              <label className="form-field">
+                <span>Handler</span>
+                <select value={handler} onChange={(event) => setHandler(event.target.value as HandlerId)}>
+                  {HANDLERS.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
             <div className="pilot-trait-fields">
               {selectedPilotTraits.map((trait, index) => (
                 <div className="form-field" key={`${index}-${trait.name}`}>
@@ -242,6 +255,25 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
                 </button>
               )}
             </div>
+          </div>
+        </section>
+
+        <section className="form-section" aria-labelledby="mech-configuration-title">
+          <div className="form-section-heading">
+            <p className="eyebrow">Step 2</p>
+            <h2 id="mech-configuration-title">Mech configuration</h2>
+          </div>
+          <div className="form-grid">
+            <label className="form-field">
+              <span>Mech name</span>
+              <input
+                value={mechName}
+                onChange={(event) => setMechName(event.target.value)}
+                aria-invalid={Boolean(errors.mechName)}
+                aria-describedby={errors.mechName ? 'mech-name-error' : undefined}
+              />
+              {errors.mechName && <small id="mech-name-error">{errors.mechName}</small>}
+            </label>
             <div className="form-field">
               <label htmlFor="pilot-frame">Frame</label>
               <select
@@ -258,6 +290,24 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
                 ))}
               </select>
               {errors.frame && <small id="frame-error">{errors.frame}</small>}
+              <div className="frame-stat-grid" aria-live="polite" aria-atomic="true">
+                <div>
+                  <span>Mobility</span>
+                  <strong>{selectedFrame.mobility} MD</strong>
+                </div>
+                <div>
+                  <span>Defence Die</span>
+                  <strong>{selectedFrame.defenceDie}</strong>
+                </div>
+                <div>
+                  <span>Armour</span>
+                  <strong>{selectedFrame.armour}</strong>
+                </div>
+                <div>
+                  <span>Sensor Range</span>
+                  <strong>{selectedFrame.sensorRange} MD</strong>
+                </div>
+              </div>
               <article className="signature-system" aria-live="polite" aria-atomic="true">
                 <p className="eyebrow">Signature System</p>
                 <h3>{selectedFrame.signatureSystem.name}</h3>
@@ -268,56 +318,18 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
                   ))}
                 </div>
               </article>
+              <div className="structure-allocation" aria-live="polite" aria-atomic="true">
+                <p className="eyebrow">Structure allocation</p>
+                <div className="structure-allocation-grid">
+                  {SYSTEMS.map((system) => (
+                    <div key={system.id}>
+                      <span>{system.label}</span>
+                      <strong>{selectedFrame.structure[system.id]}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
-
-        <section className="form-section" aria-labelledby="mech-configuration-title">
-          <div className="form-section-heading">
-            <p className="eyebrow">Step 2</p>
-            <h2 id="mech-configuration-title">Mech configuration</h2>
-          </div>
-          <div className="form-grid">
-            <label className="form-field">
-              <span>Mobility</span>
-              <select value={mobility} onChange={(event) => setMobility(Number(event.target.value))}>
-                {[1, 2, 3, 4].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="form-field">
-              <span>Defence</span>
-              <select value={defence} onChange={(event) => setDefence(Number(event.target.value))}>
-                {[1, 2, 3].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="form-field">
-              <span>Focus pool</span>
-              <input
-                type="number"
-                min={0}
-                max={12}
-                value={focusPool}
-                onChange={(event) => setFocusPool(Math.min(12, Math.max(0, Number(event.target.value))))}
-              />
-            </label>
-            <label className="form-field">
-              <span>Handler</span>
-              <select value={handler} onChange={(event) => setHandler(event.target.value as HandlerId)}>
-                {HANDLERS.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
             {renderWeaponSelect('melee', meleeWeapon, setMeleeWeapon)}
             {renderWeaponSelect('ranged', rangedWeapon, setRangedWeapon)}
           </div>

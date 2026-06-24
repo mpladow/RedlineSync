@@ -1,4 +1,5 @@
 import type { PilotRecord, SavedState } from '../types';
+import { getFrameConfiguration } from '../data/reference';
 
 export const PILOTS_STORAGE_KEY = 'redline-sync-pilots';
 
@@ -8,7 +9,20 @@ export function loadPilots(): PilotRecord[] {
     if (!raw) return [];
 
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as PilotRecord[]) : [];
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed.map((pilot) => {
+      const frame = getFrameConfiguration(pilot.frame);
+
+      return {
+        ...pilot,
+        mobility: frame.mobility,
+        defenceDie: frame.defenceDie,
+        armour: frame.armour,
+        sensorRange: frame.sensorRange,
+        structure: pilot.structure ?? { ...frame.structure }
+      };
+    }) as PilotRecord[];
   } catch {
     return [];
   }
