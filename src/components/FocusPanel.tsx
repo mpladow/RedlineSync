@@ -1,9 +1,10 @@
 import { Activity, CheckCircle2, ChevronRight } from 'lucide-react';
-import { SYSTEMS } from '../data/reference';
+import { getFrameConfiguration, SYSTEMS } from '../data/reference';
 import type { DamageSelectionMap, ExpansionMap, FocusMap, FocusedDamageMarker, SystemId } from '../types';
 import { SystemCard } from './SystemCard';
 
 type FocusPanelProps = {
+  frameName: string;
   focus: FocusMap;
   focusPool: number;
   cockpitFocus: FocusMap;
@@ -26,6 +27,7 @@ type FocusPanelProps = {
 };
 
 export function FocusPanel({
+  frameName,
   focus,
   focusPool,
   cockpitFocus,
@@ -47,6 +49,7 @@ export function FocusPanel({
   isActivationPhase
 }: FocusPanelProps) {
   const remainingFocus = focusPool - Object.values(focus).reduce((total, value) => total + value, 0);
+  const frame = getFrameConfiguration(frameName);
 
   return (
     <section className={`panel focus-panel ${showCockpitAlert ? 'attention' : ''}`}>
@@ -77,6 +80,7 @@ export function FocusPanel({
             <SystemCard
               key={system.id}
               system={system}
+              damageMarkers={frame.damageMarkers[system.id]}
               focusValue={focus[system.id]}
               focusPool={focusPool}
               assignedFocusValue={cockpitFocus[system.id] ?? 0}

@@ -1,7 +1,10 @@
-import type { RuleInteractions } from '../../types';
+import type { DamageMarker, RuleInteractions, SystemId } from '../../types';
+
+export type FrameDamageMarkers = Record<SystemId, DamageMarker[]>;
 
 export type FrameConfiguration = {
   name: string;
+  damageMarkers: FrameDamageMarkers;
   signatureSystem: RuleInteractions & {
     name: string;
     description: string;
@@ -9,9 +12,118 @@ export type FrameConfiguration = {
   };
 };
 
+export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
+  mobility: [
+    {
+      roll: '1',
+      name: 'LEG SYNC DAMAGE',
+      effect: 'Combat Move is reduced by 1 MD, to a minimum of 1 MD. Max Mobility Focus reduced by 1.',
+      isCritical: true
+    },
+    {
+      roll: '2-4',
+      name: 'ACTUATOR LAG',
+      effect: 'Combat Move is reduced by 1 MD, to a minimum of 1 MD. Max Mobility Focus reduced to 1.',
+      isCritical: false
+    },
+    {
+      roll: '5-6',
+      name: 'GYRO_DESYNC',
+      effect: 'Combat Sprint does not remove Lock-On while this card is active.',
+      isCritical: false
+    }
+  ],
+  weapons: [
+    {
+      roll: '1',
+      name: 'ARMOUR FRACTURE',
+      effect: 'Choose one weapon; it rolls -1 die until repaired. Max Weapons Focus reduced to 1.',
+      isCritical: true
+    },
+    {
+      roll: '4',
+      name: 'SHIELD DESYNC',
+      effect: 'Shield Flare provides no bonus unless you also spend 1 Reactor Focus.',
+      isCritical: false
+    },
+    {
+      roll: '5-6',
+      name: 'DEFENCE SYNC ERROR',
+      effect: 'Brace requires 1 Reactor Focus in addition to its normal cost.',
+      isCritical: false
+    }
+  ],
+  neural: [
+    {
+      roll: '1-2',
+      name: 'Signal Lag',
+      effect: 'Handler Calls require line of sight from this Frame.',
+      isCritical: true
+    },
+    {
+      roll: '3-4',
+      name: 'Feedback Spike',
+      effect: 'After a Support Call, roll 1d6; on 1, gain 1 Heat.',
+      isCritical: false
+    },
+    { roll: '5-6', name: 'Link Burn', effect: 'Sync Surge cannot be used.', isCritical: false }
+  ],
+  defence: [
+    {
+      roll: '1-2',
+      name: 'Armour Gap',
+      effect: 'First incoming hit each round gains +1 damage on a 6.',
+      isCritical: true
+    },
+    { roll: '3-4', name: 'Shield Drop', effect: 'Brace costs 1 additional Focus.', isCritical: false },
+    {
+      roll: '5-6',
+      name: 'Countermeasure Fault',
+      effect: 'Countermeasure Burst clears only Lock-On.',
+      isCritical: false
+    }
+  ],
+  reactor: [
+    {
+      roll: '1-2',
+      name: 'Coolant Leak',
+      effect: 'Vent Heat removes no Heat on a roll of 1.',
+      isCritical: true
+    },
+    {
+      roll: '3-4',
+      name: 'Power Flutter',
+      effect: 'Power Route cannot move Focus into Weapons.',
+      isCritical: false
+    },
+    {
+      roll: '5-6',
+      name: 'Core Warning',
+      effect: 'At Heat 8+, all Heat costs increase by 1.',
+      isCritical: false
+    }
+  ],
+  sensors: [
+    { roll: '1-2', name: 'Static Wash', effect: 'Scan range is reduced by 2 MD.', isCritical: true },
+    {
+      roll: '3-4',
+      name: 'Bad Return',
+      effect: 'Target Analysis requires line of sight.',
+      isCritical: false
+    },
+    {
+      roll: '5-6',
+      name: 'Blind Sector',
+      effect: 'Wide Spectrum Sweep can target only one enemy.',
+      isCritical: false
+    }
+  ]
+};
+
 export const FRAME_CONFIGURATIONS = [
   {
     name: 'Prototype Frame',
+    damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
     signatureSystem: {
       name: '',
       description: 'This Frame is an early production model, used for training and testing new Pilots.',
@@ -22,6 +134,7 @@ export const FRAME_CONFIGURATIONS = [
   },
   {
     name: 'Agile Frame',
+    damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
     signatureSystem: {
       name: 'Kinetic Recovery Array',
       description: 'This Frame converts high-speed movement into short bursts of stability.',
@@ -37,6 +150,7 @@ export const FRAME_CONFIGURATIONS = [
   },
   {
     name: 'Heavy Frame',
+    damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
     signatureSystem: {
       name: 'Anchored Stabiliser Core',
       description: 'This Frame performs best when it plants itself and turns into a firing platform.',
@@ -52,6 +166,7 @@ export const FRAME_CONFIGURATIONS = [
   },
   {
     name: 'Duelist Frame',
+    damageMarkers: SHARED_FRAME_DAMAGE_MARKERS,
     signatureSystem: {
       name: 'Duel-Pattern Actuators',
       description: 'This Frame is tuned for weapon clashes and close-range timing.',

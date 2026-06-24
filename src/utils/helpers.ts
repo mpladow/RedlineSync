@@ -5,7 +5,7 @@ export function clamp(value: number, min: number, max: number) {
 }
 
 export function getDamageSeverity(marker: DamageMarker) {
-  return marker.roll === '1-2' ? 'critical' : 'warning';
+  return marker.isCritical ? 'critical' : 'warning';
 }
 
 export function getHeatState(heat: number): HeatState {

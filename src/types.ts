@@ -58,13 +58,13 @@ export type DamageMarker = {
   roll: string;
   name: string;
   effect: string;
+  isCritical: boolean;
 };
 
 export type SystemDefinition = {
   id: SystemId;
   label: string;
   actions: SystemAction[];
-  damageMarkers: DamageMarker[];
 };
 
 export type HeatClassName = 'steady' | 'hot' | 'redline';
