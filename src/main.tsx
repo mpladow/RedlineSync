@@ -2,6 +2,7 @@ import type { MouseEvent } from 'react';
 import { ChevronLeft, ChevronRight, Menu, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import './styles.css';
 
@@ -32,8 +33,6 @@ import { getHeatState } from './utils/helpers';
 
 const GAME_PHASES = ['Cockpit Phase', 'Support Phase', 'Activation Phase', 'End Phase'];
 
-type ActiveScreen = 'home' | 'create-pilot' | 'sync';
-
 const PLACEHOLDER_PILOTS = [
   {
     id: 'rook-7',
@@ -58,9 +57,64 @@ const PLACEHOLDER_PILOTS = [
   }
 ];
 
-function App() {
+function PilotRosterPage() {
+  return (
+    <main className="app-shell home-shell">
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Pilot roster</p>
+          <h1>Resonance Sync Z</h1>
+        </div>
+        <Link to="/pilots/new" className="primary-action page-header-action">
+          <UserPlus size={18} />
+          <span>Create Pilot</span>
+        </Link>
+      </header>
+
+      <section className="roster-list" aria-label="Created Mechs and Pilots">
+        {PLACEHOLDER_PILOTS.map((pilot) => (
+          <Link key={pilot.id} to={`/sync/${pilot.id}`} className="roster-card">
+            <div className="roster-emblem" aria-hidden="true">
+              {pilot.mechName.slice(0, 1)}
+            </div>
+            <div className="roster-card-main">
+              <div>
+                <span>{pilot.pilotName}</span>
+                <strong>{pilot.mechName}</strong>
+              </div>
+              <p>{pilot.frame}</p>
+            </div>
+            <span className={`roster-status ${pilot.status.toLowerCase()}`}>{pilot.status}</span>
+          </Link>
+        ))}
+      </section>
+    </main>
+  );
+}
+
+function CreatePilotPage() {
+  return (
+    <main className="app-shell home-shell">
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">New record</p>
+          <h1>Create Pilot</h1>
+        </div>
+        <Link to="/" className="secondary-action page-header-action">
+          <ChevronLeft size={18} />
+          <span>Back</span>
+        </Link>
+      </header>
+
+      <section className="placeholder-panel" aria-label="Create Pilot placeholder">
+        <p>Create Pilot content placeholder</p>
+      </section>
+    </main>
+  );
+}
+
+function SyncWorkspacePage() {
   const [savedState, setSavedState] = useLocalStorage<SavedState>('redline-sync-state', {});
-  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('home');
   const [isNavigationMenuOpen, setIsNavigationMenuOpen] = useState(false);
 
   const savedFocus = savedState.focus ?? {};
@@ -252,6 +306,9 @@ function App() {
         });
         return next;
       });
+
+      const frame = requestAnimationFrame(scrollToAllocateFocus);
+      return () => cancelAnimationFrame(frame);
     }
 
     return undefined;
@@ -309,72 +366,6 @@ function App() {
 
     setIsPhaseConfirmOpen(true);
   };
-
-  const openSyncWorkspace = () => {
-    setActiveScreen('sync');
-    setIsNavigationMenuOpen(false);
-  };
-
-  const returnHome = () => {
-    setActiveScreen('home');
-    setIsNavigationMenuOpen(false);
-  };
-
-  if (activeScreen === 'home') {
-    return (
-      <main className="app-shell home-shell">
-        <header className="page-header">
-          <div>
-            <p className="eyebrow">Pilot roster</p>
-            <h1>Resonance Sync Z</h1>
-          </div>
-          <button type="button" className="primary-action page-header-action" onClick={() => setActiveScreen('create-pilot')}>
-            <UserPlus size={18} />
-            <span>Create Pilot</span>
-          </button>
-        </header>
-
-        <section className="roster-list" aria-label="Created Mechs and Pilots">
-          {PLACEHOLDER_PILOTS.map((pilot) => (
-            <button key={pilot.id} type="button" className="roster-card" onClick={openSyncWorkspace}>
-              <div className="roster-emblem" aria-hidden="true">
-                {pilot.mechName.slice(0, 1)}
-              </div>
-              <div className="roster-card-main">
-                <div>
-                  <span>{pilot.pilotName}</span>
-                  <strong>{pilot.mechName}</strong>
-                </div>
-                <p>{pilot.frame}</p>
-              </div>
-              <span className={`roster-status ${pilot.status.toLowerCase()}`}>{pilot.status}</span>
-            </button>
-          ))}
-        </section>
-      </main>
-    );
-  }
-
-  if (activeScreen === 'create-pilot') {
-    return (
-      <main className="app-shell home-shell">
-        <header className="page-header">
-          <div>
-            <p className="eyebrow">New record</p>
-            <h1>Create Pilot</h1>
-          </div>
-          <button type="button" className="secondary-action page-header-action" onClick={returnHome}>
-            <ChevronLeft size={18} />
-            <span>Back</span>
-          </button>
-        </header>
-
-        <section className="placeholder-panel" aria-label="Create Pilot placeholder">
-          <p>Create Pilot content placeholder</p>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main className="app-shell">
@@ -443,9 +434,11 @@ function App() {
           onToggleDamageMarker={toggleDamageMarker}
           onShowDamageMarker={showDamageMarker}
           onShowOvercommittedWarning={setOvercommittedSystemName}
+          onAdvancePhase={requestNextPhase}
           showCockpitAlert={showCockpitFocusAlert && phaseIndex === 0}
           focusAllocationComplete={remainingFocus === 0}
           showFocusAssignments={phaseIndex === 2}
+          isCockpitPhase={phaseIndex === 0}
           isActivationPhase={phaseIndex === 2}
         />
         <HandlerPanel
@@ -453,6 +446,7 @@ function App() {
           expandedCall={expandedCall}
           isHighlighted={isHandlerHighlighted}
           showSupportAlert={phaseIndex === 1}
+          onAdvancePhase={requestNextPhase}
           onChangeHandler={(id) => {
             setHandler(id);
             setExpandedCall(0);
@@ -591,13 +585,24 @@ function App() {
         </button>
         {isNavigationMenuOpen && (
           <div className="dock-menu-popup" role="menu">
-            <button type="button" role="menuitem" onClick={returnHome}>
+            <Link to="/" role="menuitem" onClick={() => setIsNavigationMenuOpen(false)}>
               Back
-            </button>
+            </Link>
           </div>
         )}
       </div>
     </main>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<PilotRosterPage />} />
+      <Route path="/pilots/new" element={<CreatePilotPage />} />
+      <Route path="/sync/:pilotId" element={<SyncWorkspacePage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
@@ -607,4 +612,8 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);

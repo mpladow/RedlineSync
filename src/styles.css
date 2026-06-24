@@ -124,6 +124,7 @@ button {
   background: rgba(18, 24, 24, 0.9);
   color: #f4f1e8;
   cursor: pointer;
+  text-decoration: none;
   text-align: left;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
 }
@@ -781,6 +782,41 @@ h2 {
   font-weight: 800;
 }
 
+.dot-stepper {
+  grid-template-columns: 44px auto 44px;
+  gap: 10px;
+}
+
+.focus-dots {
+  display: grid;
+  grid-template-columns: repeat(3, 18px);
+  grid-template-rows: repeat(2, 18px);
+  gap: 7px;
+  min-width: 68px;
+  padding: 3px;
+}
+
+.focus-dots span {
+  width: 18px;
+  height: 18px;
+  border: 2px solid color-mix(in srgb, var(--accent) 70%, #f4f1e8);
+  border-radius: 50%;
+  background: rgba(244, 241, 232, 0.04);
+  box-shadow: inset 0 0 0 2px rgba(17, 24, 23, 0.5);
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.focus-dots span.filled {
+  background: var(--accent);
+  box-shadow:
+    inset 0 0 0 2px rgba(244, 241, 232, 0.18),
+    0 0 10px color-mix(in srgb, var(--accent) 48%, transparent);
+  transform: scale(1.06);
+}
+
 .heat-track {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -877,7 +913,7 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  max-width: 320px;
+  max-width: 400px;
   padding: 9px 12px;
   border: 1px solid rgba(226, 169, 59, 0.32);
   border-radius: 8px;
@@ -892,10 +928,61 @@ h2 {
   border-color: rgba(143, 203, 107, 0.45);
   background: rgba(143, 203, 107, 0.16);
   color: #bce8a3;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 850;
+  text-align: left;
+}
+
+.focus-alert.complete:hover {
+  border-color: rgba(143, 203, 107, 0.72);
+  background: rgba(143, 203, 107, 0.25);
+}
+
+.focus-alert.complete:focus-visible {
+  outline: 2px solid #bce8a3;
+  outline-offset: 2px;
 }
 
 .focus-alert svg {
   flex: 0 0 auto;
+}
+
+.focus-alert-remaining {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(240, 210, 138, 0.16);
+  color: #f4dda5;
+  font-size: 0.76rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.support-phase-advance {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 9px;
+  border-radius: 7px;
+  background: rgba(240, 210, 138, 0.16);
+  color: #f4dda5;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.support-phase-advance:hover {
+  background: rgba(240, 210, 138, 0.26);
+}
+
+.support-phase-advance:focus-visible {
+  outline: 2px solid #f4dda5;
+  outline-offset: 2px;
 }
 
 .focus-grid {
@@ -1373,11 +1460,14 @@ h3 {
 
 .primary-action,
 .secondary-action {
+  border: 0;
   min-height: 42px;
   padding: 0 14px;
   border-radius: 8px;
   cursor: pointer;
+  font: inherit;
   font-weight: 850;
+  text-decoration: none;
 }
 
 .primary-action {
@@ -1522,6 +1612,7 @@ h3 {
   background: #f4f1e8;
   color: #111817;
   font-size: 0.9rem;
+  max-width: 28px;
 }
 
 .focus-dock-remaining {
@@ -1574,7 +1665,7 @@ h3 {
 }
 
 .dock-menu-button:hover,
-.dock-menu-popup button:hover {
+.dock-menu-popup a:hover {
   background: #32413f;
 }
 
@@ -1588,7 +1679,9 @@ h3 {
   animation: soft-pop 140ms ease;
 }
 
-.dock-menu-popup button {
+.dock-menu-popup a {
+  display: flex;
+  align-items: center;
   width: 100%;
   min-height: 42px;
   padding: 0 12px;
@@ -1596,6 +1689,7 @@ h3 {
   background: transparent;
   color: #f4f1e8;
   cursor: pointer;
+  text-decoration: none;
   text-align: left;
   font-weight: 850;
 }

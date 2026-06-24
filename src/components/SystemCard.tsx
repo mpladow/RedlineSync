@@ -20,6 +20,7 @@ type SystemCardProps = {
   onToggleMarker: (systemId: SystemId, markerName: string) => void;
   onShowDamageMarker: (systemId: SystemId, markerName: string) => void;
   onShowOvercommittedWarning: (systemName: string) => void;
+  isCockpitPhase: boolean;
   isActivationPhase: boolean;
 };
 
@@ -39,6 +40,7 @@ export function SystemCard({
   onToggleMarker,
   onShowDamageMarker,
   onShowOvercommittedWarning,
+  isCockpitPhase,
   isActivationPhase
 }: SystemCardProps) {
   const { id, label, icon: Icon, accent, actions, damageMarkers } = system;
@@ -92,6 +94,8 @@ export function SystemCard({
             assignedValue={showFocusAssignment ? assignedFocusValue : null}
             disableDecrement={isActivationPhase && focusValue === 0}
             emptyDisplay={isActivationPhase && focusValue === 0}
+            dotDisplay={isCockpitPhase || isActivationPhase}
+            dotCount={isActivationPhase ? assignedFocusValue : 6}
           />
         </div>
       </div>
