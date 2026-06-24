@@ -420,6 +420,7 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
 
       <div className="workspace">
         <FocusPanel
+          frameName={pilot.frame}
           focus={focus}
           focusPool={focusPool}
           cockpitFocus={cockpitFocus}

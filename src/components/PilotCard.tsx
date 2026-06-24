@@ -1,6 +1,6 @@
-import type { KeyboardEvent, MouseEvent } from 'react';
 import { ChevronUp, Gauge } from 'lucide-react';
-import { DEFAULT_FOCUS_POOL } from '../data/reference';
+import type { KeyboardEvent, MouseEvent } from 'react';
+import { DEFAULT_FOCUS_POOL, getFrameConfiguration } from '../data/reference';
 import type { PilotRecord } from '../types';
 import { Stepper } from './Stepper';
 
@@ -22,10 +22,18 @@ type PilotCardModalProps = {
   onClose: () => void;
 };
 
-export function PilotCard({ pilot, focusPool, remainingFocus, isExpanded, onToggleExpand, onFocusPoolChange }: PilotCardProps) {
+export function PilotCard({
+  pilot,
+  focusPool,
+  remainingFocus,
+  isExpanded,
+  onToggleExpand,
+  onFocusPoolChange,
+}: PilotCardProps) {
   void remainingFocus;
   void isExpanded;
   void onFocusPoolChange;
+  const pilotTraits = pilot.pilotTraits?.length ? pilot.pilotTraits : [pilot.specialAbility];
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -62,11 +70,15 @@ export function PilotCard({ pilot, focusPool, remainingFocus, isExpanded, onTogg
             <div>
               <p className="eyebrow">Pilot</p>
               <h2>{pilot.pilotName}</h2>
-              <span>{pilot.mechName}</span>
+              <span>
+                {pilot.frame} &quot;
+                {pilot.mechName}
+                &quot;
+              </span>
             </div>
           </div>
           <div className="pilot-ability-summary">
-            <strong>{pilot.specialAbility.name}</strong>
+            <strong>{pilotTraits.map((trait) => trait.name).join(' · ')}</strong>
           </div>
         </div>
       </div>
@@ -74,9 +86,18 @@ export function PilotCard({ pilot, focusPool, remainingFocus, isExpanded, onTogg
   );
 }
 
-export function PilotCardModal({ pilot, isOpen, focusPool, remainingFocus, onFocusPoolChange, onClose }: PilotCardModalProps) {
+export function PilotCardModal({
+  pilot,
+  isOpen,
+  focusPool,
+  remainingFocus,
+  onFocusPoolChange,
+  onClose,
+}: PilotCardModalProps) {
   if (!isOpen) return null;
   const hasAdjustedFocusPool = focusPool !== DEFAULT_FOCUS_POOL;
+  const frame = getFrameConfiguration(pilot.frame);
+  const pilotTraits = pilot.pilotTraits?.length ? pilot.pilotTraits : [pilot.specialAbility];
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
@@ -102,7 +123,14 @@ export function PilotCardModal({ pilot, isOpen, focusPool, remainingFocus, onFoc
               <div>
                 <p className="eyebrow">Pilot ID</p>
                 <h2 id="pilot-id-title">{pilot.pilotName}</h2>
-                <span>{pilot.mechName}</span>
+                <span>
+                  {frame.name} &quot;
+                  {pilot.mechName}
+                  &quot;
+                </span>
+                <p className="pilot-id-frame">
+                  <span>{frame.signatureSystem.name}</span>
+                </p>
               </div>
               <button className="icon-action" type="button" onClick={onClose} aria-label="Close pilot ID">
                 <ChevronUp size={20} />
@@ -118,10 +146,12 @@ export function PilotCardModal({ pilot, isOpen, focusPool, remainingFocus, onFoc
             {hasAdjustedFocusPool && (
               <p className="pilot-focus-note">Focus Pool adjusted from default {DEFAULT_FOCUS_POOL}.</p>
             )}
-            <article className="pilot-id-ability">
-              <strong>{pilot.specialAbility.name}</strong>
-              <p>{pilot.specialAbility.text}</p>
-            </article>
+            {pilotTraits.map((trait) => (
+              <article className="pilot-id-ability" key={trait.name}>
+                <strong>{trait.name}</strong>
+                <p>{trait.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

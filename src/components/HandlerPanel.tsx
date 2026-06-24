@@ -58,16 +58,15 @@ export function HandlerPanel({
       </div>
       <div className="call-list">
         {activeHandler.calls.map((call, index) => {
-          const [name, body] = call.split(': ');
           const open = expandedCall === index;
           return (
-            <article className="call-item" key={call}>
+            <article className="call-item" key={call.name}>
               <button type="button" onClick={() => onToggleCall(open ? -1 : index)}>
-                <span>{name}</span>
+                <span>{call.name}</span>
                 {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
               </button>
               <div className={`call-content ${open ? 'open' : 'closed'}`}>
-                <p>{body}</p>
+                <p>{call.text}</p>
               </div>
             </article>
           );

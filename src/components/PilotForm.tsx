@@ -1,14 +1,20 @@
+import { ChevronLeft, Plus, Save, Trash2 } from 'lucide-react';
 import type { FormEvent } from 'react';
-import { ChevronLeft, Save, Trash2 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
-  DEFAULT_EQUIPPED_WEAPONS,
-  DEFAULT_FOCUS_POOL,
-  FRAME_OPTIONS,
-  HANDLERS,
-  PILOT_CARD,
-  WEAPONS
+	DEFAULT_EQUIPPED_WEAPONS,
+	DEFAULT_FOCUS_POOL,
+	DEFAULT_FRAME,
+	DEFAULT_PILOT_TRAIT,
+	FRAME_OPTIONS,
+	getFrameConfiguration,
+	getPilotTrait,
+	getPilotTraitText,
+	HANDLERS,
+	PILOT_CARD,
+	PILOT_TRAITS,
+	WEAPONS
 } from '../data/reference';
 import type { HandlerId, PilotRecord, WeaponSlotName } from '../types';
 
@@ -32,9 +38,18 @@ function createPilotId(pilotName: string) {
 
 export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
   const navigate = useNavigate();
+  const initialFrame = getFrameConfiguration(pilot?.frame ?? DEFAULT_FRAME.name).name;
   const [pilotName, setPilotName] = useState(pilot?.pilotName ?? '');
   const [mechName, setMechName] = useState(pilot?.mechName ?? '');
-  const [frame, setFrame] = useState(pilot?.frame ?? '');
+  const [frame, setFrame] = useState<string>(initialFrame);
+  const [mobility, setMobility] = useState(pilot?.mobility ?? PILOT_CARD.mobility);
+  const [defence, setDefence] = useState(pilot?.defence ?? PILOT_CARD.defence);
+  const initialPilotTraitNames = (pilot?.pilotTraits?.length ? pilot.pilotTraits : pilot ? [pilot.specialAbility] : [])
+    .slice(0, 2)
+    .map((trait) => getPilotTrait(trait.name).name);
+  const [pilotTraitNames, setPilotTraitNames] = useState<string[]>(
+    initialPilotTraitNames.length ? initialPilotTraitNames : [DEFAULT_PILOT_TRAIT.name]
+  );
   const [focusPool, setFocusPool] = useState(pilot?.focusPool ?? DEFAULT_FOCUS_POOL);
   const [handler, setHandler] = useState<HandlerId>(pilot?.handler ?? 'tactical');
   const [meleeWeapon, setMeleeWeapon] = useState(pilot?.equippedWeapons.melee ?? DEFAULT_EQUIPPED_WEAPONS.melee);
@@ -42,6 +57,23 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveError, setSaveError] = useState('');
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const selectedFrame = getFrameConfiguration(frame);
+  const selectedPilotTraits = pilotTraitNames.map(getPilotTrait);
+
+  const updatePilotTrait = (index: number, traitName: string) => {
+    setPilotTraitNames((current) => current.map((name, itemIndex) => (itemIndex === index ? traitName : name)));
+  };
+
+  const addPilotTrait = () => {
+    if (pilot || pilotTraitNames.length >= 2) return;
+    const nextTrait = PILOT_TRAITS.find((trait) => !pilotTraitNames.includes(trait.name)) ?? DEFAULT_PILOT_TRAIT;
+    setPilotTraitNames((current) => [...current, nextTrait.name].slice(0, 2));
+  };
+
+  const removePilotTrait = (index: number) => {
+    if (pilot || pilotTraitNames.length <= 1) return;
+    setPilotTraitNames((current) => current.filter((_, itemIndex) => itemIndex !== index));
+  };
 
   const validate = () => {
     const nextErrors: FormErrors = {};
@@ -58,21 +90,28 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
     if (!validate()) return;
 
     const now = new Date().toISOString();
+    const pilotTraits = selectedPilotTraits.map((trait) => ({
+      name: trait.name,
+      text: getPilotTraitText(trait),
+      systems: [...trait.systems],
+      triggers: [...trait.triggers]
+    }));
     const nextPilot: PilotRecord = {
       id: pilot?.id ?? createPilotId(pilotName),
       pilotName: pilotName.trim(),
       mechName: mechName.trim(),
       frame,
       status: 'Ready',
-      mobility: pilot?.mobility ?? PILOT_CARD.mobility,
-      defence: pilot?.defence ?? PILOT_CARD.defence,
+      mobility,
+      defence,
       focusPool,
       handler,
       equippedWeapons: {
         melee: meleeWeapon,
         ranged: rangedWeapon
       },
-      specialAbility: pilot?.specialAbility ?? PILOT_CARD.specialAbility,
+      specialAbility: pilotTraits[0],
+      pilotTraits,
       createdAt: pilot?.createdAt ?? now,
       updatedAt: now
     };
@@ -151,15 +190,67 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
               />
               {errors.mechName && <small id="mech-name-error">{errors.mechName}</small>}
             </label>
-            <label className="form-field">
-              <span>Frame</span>
+            <div className="pilot-trait-fields">
+              {selectedPilotTraits.map((trait, index) => (
+                <div className="form-field" key={`${index}-${trait.name}`}>
+                  <div className="pilot-trait-label">
+                    <label htmlFor={`pilot-trait-${index}`}>Pilot Trait {index + 1}</label>
+                    {!pilot && index > 0 && (
+                      <button
+                        type="button"
+                        className="pilot-trait-remove"
+                        onClick={() => removePilotTrait(index)}
+                        aria-label={`Remove ${trait.name}`}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <select
+                    id={`pilot-trait-${index}`}
+                    value={pilotTraitNames[index]}
+                    onChange={(event) => updatePilotTrait(index, event.target.value)}
+                  >
+                    {PILOT_TRAITS.map((option) => (
+                      <option
+                        key={option.id}
+                        value={option.name}
+                        disabled={pilotTraitNames.some(
+                          (selectedName, selectedIndex) => selectedIndex !== index && selectedName === option.name
+                        )}
+                      >
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                  <article className="signature-system" aria-live="polite" aria-atomic="true">
+                    <p className="eyebrow">Pilot Trait</p>
+                    <h3>{trait.name}</h3>
+                    <p>{trait.description}</p>
+                    <div className="signature-system-rules">
+                      {trait.rules.map((rule) => (
+                        <p key={rule}>{rule}</p>
+                      ))}
+                    </div>
+                  </article>
+                </div>
+              ))}
+              {!pilot && pilotTraitNames.length < 2 && (
+                <button type="button" className="secondary-action pilot-trait-add" onClick={addPilotTrait}>
+                  <Plus size={18} />
+                  <span>Add Pilot Trait</span>
+                </button>
+              )}
+            </div>
+            <div className="form-field">
+              <label htmlFor="pilot-frame">Frame</label>
               <select
+                id="pilot-frame"
                 value={frame}
                 onChange={(event) => setFrame(event.target.value)}
                 aria-invalid={Boolean(errors.frame)}
                 aria-describedby={errors.frame ? 'frame-error' : undefined}
               >
-                <option value="">Select a frame</option>
                 {FRAME_OPTIONS.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -167,7 +258,17 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
                 ))}
               </select>
               {errors.frame && <small id="frame-error">{errors.frame}</small>}
-            </label>
+              <article className="signature-system" aria-live="polite" aria-atomic="true">
+                <p className="eyebrow">Signature System</p>
+                <h3>{selectedFrame.signatureSystem.name}</h3>
+                <p>{selectedFrame.signatureSystem.description}</p>
+                <div className="signature-system-rules">
+                  {selectedFrame.signatureSystem.rules.map((rule) => (
+                    <p key={rule}>{rule}</p>
+                  ))}
+                </div>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -177,6 +278,26 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
             <h2 id="mech-configuration-title">Mech configuration</h2>
           </div>
           <div className="form-grid">
+            <label className="form-field">
+              <span>Mobility</span>
+              <select value={mobility} onChange={(event) => setMobility(Number(event.target.value))}>
+                {[1, 2, 3, 4].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="form-field">
+              <span>Defence</span>
+              <select value={defence} onChange={(event) => setDefence(Number(event.target.value))}>
+                {[1, 2, 3].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label className="form-field">
               <span>Focus pool</span>
               <input

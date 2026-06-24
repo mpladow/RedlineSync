@@ -12,15 +12,21 @@ export const WEAPONS: Weapon[] = [
     specialRules: [
       {
         name: 'Overcharge - Damage',
-        text: 'When attacking, you can choose to gain +1 Heat to add +1 Damage to the attack.'
+        text: 'When attacking, you can choose to gain +1 Heat to add +1 Damage to the attack.',
+        systems: ['weapons', 'reactor', 'neural'],
+        triggers: ['before-weapon-attack', 'after-heat-gained']
       },
       {
         name: 'Reliable',
-        text: 'When attacking with this weapon, reroll 1 attack die. The second result must be kept.'
+        text: 'When attacking with this weapon, reroll 1 attack die. The second result must be kept.',
+        systems: ['weapons'],
+        triggers: ['after-attack-roll']
       },
       {
         name: 'Suppressive Pattern',
-        text: 'Condition: Target has at least 1 Lock-On token or 1 Harried token. Effect: If this attack hits, place 1 Harried token on the target.'
+        text: 'Condition: Target has at least 1 Lock-On token or 1 Harried token. Effect: If this attack hits, place 1 Harried token on the target.',
+        systems: ['weapons', 'sensors'],
+        triggers: ['when-token-present', 'after-weapon-hit', 'after-token-applied']
       }
     ]
   },
@@ -45,7 +51,9 @@ export const WEAPONS: Weapon[] = [
     specialRules: [
       {
         name: 'Heavy Arc',
-        text: 'When this attack deals Structure Damage, push the defender 1 MD.'
+        text: 'When this attack deals Structure Damage, push the defender 1 MD.',
+        systems: ['weapons', 'mobility'],
+        triggers: ['after-structure-damage']
       }
     ]
   },

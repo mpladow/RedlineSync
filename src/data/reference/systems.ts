@@ -30,11 +30,6 @@ export const SYSTEMS: SystemDefinition[] = [
         description:
           'Reaction when targeted by a Weapon. Add +1 Defence die. If the attack fails, immediately move 1 full MD in any direction and add +1 Heat.'
       }
-    ],
-    damageMarkers: [
-      { roll: '1-2', name: 'Seized Actuator', effect: 'Reduce movement by 1 MD.' },
-      { roll: '3-4', name: 'Gyro Stutter', effect: 'After Boosting, gain 1 additional Heat.' },
-      { roll: '5-6', name: 'Locked Knee', effect: 'Cannot Redline Dash until repaired.' }
     ]
   },
   {
@@ -66,11 +61,6 @@ export const SYSTEMS: SystemDefinition[] = [
         description:
           'Reaction Only. Use an equipped weapon\'s Attack Die in the Contested Roll for combat, with a -1 Attack Die penalty. If successful, you may deal Structural Damage as normal to the attacker. Heavy weapons suffer -2 Attack Die penalty instead of -1.'
       }
-    ],
-    damageMarkers: [
-      { roll: '1-2', name: 'Jammed Feed', effect: 'First Weapon Action each round loses 1 die.' },
-      { roll: '3-4', name: 'Hardpoint Drift', effect: 'Cannot benefit from more than 1 Lock-On.' },
-      { roll: '5-6', name: 'Breach Alarm', effect: 'Overcharge Volley gains 1 extra Heat.' }
     ]
   },
   {
@@ -92,11 +82,6 @@ export const SYSTEMS: SystemDefinition[] = [
         name: '*Emergency Field Patch',
         description: 'Ignore one Critical Damage card for the current action only. Does not remove the card.'
       }
-    ],
-    damageMarkers: [
-      { roll: '1-2', name: 'Signal Lag', effect: 'Handler Calls require line of sight from this Frame.' },
-      { roll: '3-4', name: 'Feedback Spike', effect: 'After a Support Call, roll 1d6; on 1, gain 1 Heat.' },
-      { roll: '5-6', name: 'Link Burn', effect: 'Sync Surge cannot be used.' }
     ]
   },
   {
@@ -126,11 +111,6 @@ export const SYSTEMS: SystemDefinition[] = [
         name: '*Armour Lock',
         description: 'Ignore up to 1 Exposed token on this mech for this attack only.'
       }
-    ],
-    damageMarkers: [
-      { roll: '1-2', name: 'Armour Gap', effect: 'First incoming hit each round gains +1 damage on a 6.' },
-      { roll: '3-4', name: 'Shield Drop', effect: 'Brace costs 1 additional Focus.' },
-      { roll: '5-6', name: 'Countermeasure Fault', effect: 'Countermeasure Burst clears only Lock-On.' }
     ]
   },
   {
@@ -153,11 +133,6 @@ export const SYSTEMS: SystemDefinition[] = [
         name: '*Emergency Field Patch',
         description: 'Ignore one Critical Damage card for the current action only. Does not remove the card.'
       }
-    ],
-    damageMarkers: [
-      { roll: '1-2', name: 'Coolant Leak', effect: 'Vent Heat removes no Heat on a roll of 1.' },
-      { roll: '3-4', name: 'Power Flutter', effect: 'Power Route cannot move Focus into Weapons.' },
-      { roll: '5-6', name: 'Core Warning', effect: 'At Heat 8+, all Heat costs increase by 1.' }
     ]
   },
   {
@@ -180,11 +155,6 @@ export const SYSTEMS: SystemDefinition[] = [
         description:
           'Roll X dice. 1-2 = no effect. 3-4 = remove Lock-On token. 5-6 = remove Exposed token. If no corresponding token exists, then no effect.'
       }
-    ],
-    damageMarkers: [
-      { roll: '1-2', name: 'Static Wash', effect: 'Scan range is reduced by 2 MD.' },
-      { roll: '3-4', name: 'Bad Return', effect: 'Target Analysis requires line of sight.' },
-      { roll: '5-6', name: 'Blind Sector', effect: 'Wide Spectrum Sweep can target only one enemy.' }
     ]
   }
 ];

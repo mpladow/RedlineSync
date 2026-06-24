@@ -294,7 +294,8 @@ button {
   min-width: 0;
 }
 
-.form-field > span {
+.form-field > span,
+.form-field > label {
   color: #d7dedb;
   font-size: 0.82rem;
   font-weight: 850;
@@ -328,6 +329,75 @@ button {
   color: #ffb2a4;
   font-size: 0.8rem;
   font-weight: 750;
+}
+
+.signature-system {
+  display: grid;
+  gap: 7px;
+  margin-top: 4px;
+  padding: 14px;
+  border: 1px solid rgba(154, 216, 207, 0.18);
+  border-radius: 8px;
+  background: rgba(154, 216, 207, 0.07);
+}
+
+.signature-system .eyebrow {
+  margin: 0;
+}
+
+.signature-system h3 {
+  color: #f4f1e8;
+  font-size: 1rem;
+  text-transform: none;
+}
+
+.signature-system > p:not(.eyebrow),
+.signature-system-rules p {
+  color: #c8d0ce;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.signature-system-rules {
+  display: grid;
+  gap: 7px;
+  padding-top: 3px;
+}
+
+.pilot-trait-fields {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.pilot-trait-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pilot-trait-label label {
+  color: #d7dedb;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.pilot-trait-remove {
+  padding: 0;
+  background: transparent;
+  color: #ffb2a4;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.pilot-trait-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  justify-self: start;
 }
 
 .pilot-form-actions {
@@ -702,6 +772,23 @@ h2 {
 
 .pilot-id-header span {
   color: #c8d0ce;
+}
+
+.pilot-id-header .pilot-id-frame {
+  display: grid;
+  gap: 2px;
+  margin-top: 7px;
+}
+
+.pilot-id-frame strong {
+  color: #9ad8cf;
+  font-size: 0.86rem;
+}
+
+.pilot-id-frame span {
+  color: #d8ccff;
+  font-size: 0.8rem;
+  font-weight: 800;
 }
 
 .pilot-id-ability {
