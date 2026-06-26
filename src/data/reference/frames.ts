@@ -45,7 +45,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 		{
 			id: 'weapon-desync',
 			roll: '1-2',
-			name: 'WEAPON DESYNCRONISATION',
+			name: 'WEAPON DESYNC',
 			effect: 'Choose one weapon; it rolls -1 attack die until repaired. Also, Mech cannot use Exerted Attack.',
 			isCritical: true
 		},
@@ -75,7 +75,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 		{
 			id: 'cognitive-desync',
 			roll: '2-4',
-			name: 'COGNITIVE DESYNCRONISATION',
+			name: 'COGNITIVE DESYNC',
 			effect: 'Future Cockpit Phases, 1 Focus must be randomly allocated to one of the 6 systems using a d6.',
 			isCritical: true
 		},

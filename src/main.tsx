@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, ChevronLeft, ChevronRight, Info, Menu, Pencil, UserPlus } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle2, ChevronLeft, ChevronRight, Info, Menu, Pencil, UserPlus } from 'lucide-react';
 import type { MouseEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -8,12 +8,14 @@ import './styles.css';
 
 import { FocusAllocationDock } from './components/FocusAllocationDock';
 import { FocusPanel } from './components/FocusPanel';
+import { GlossaryText } from './components/GlossaryText';
 import { HandlerPhase } from './components/HandlerPhase';
 import { HeatMeter } from './components/HeatMeter';
 import { HeatRulesModal } from './components/HeatRulesModal';
 import { PhaseIntelPanel } from './components/PhaseIntelPanel';
 import { PilotCard, PilotCardModal } from './components/PilotCard';
 import { PilotForm } from './components/PilotForm';
+import { RulesReferenceModal } from './components/RulesReferenceModal';
 import { WeaponDetailsModal } from './components/WeaponDetailsModal';
 import { WeaponsPanel } from './components/WeaponsPanel';
 import {
@@ -27,6 +29,7 @@ import {
 	SYSTEMS,
 	WEAPONS
 } from './data/reference';
+import { RULES_REFERENCES } from './data/reference/rules';
 import type {
 	DamageSelectionMap,
 	EquippedWeapons,
@@ -215,6 +218,8 @@ function SyncWorkspacePage({ pilots }: { pilots: PilotRecord[] }) {
 function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
   const [savedState, setSavedState] = useLocalStorage<SavedState>(`redline-sync-state:${pilot.id}`, {});
   const [isNavigationMenuOpen, setIsNavigationMenuOpen] = useState(false);
+  const [isRulesMenuOpen, setIsRulesMenuOpen] = useState(false);
+  const [selectedRulesReferenceId, setSelectedRulesReferenceId] = useState<string | null>(null);
 
   const savedFocus = savedState.focus ?? {};
   const [focusPool, setFocusPool] = useState<number>(savedState.focusPool ?? pilot.focusPool ?? DEFAULT_FOCUS_POOL);
@@ -291,6 +296,14 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
     () => Object.fromEntries(SYSTEMS.map((system) => [system.id, true])) as ExpansionMap,
     []
   );
+  const selectedRulesReference = useMemo(
+    () => RULES_REFERENCES.find((page) => page.id === selectedRulesReferenceId) ?? null,
+    [selectedRulesReferenceId]
+  );
+  const currentPhaseRulesReference = useMemo(() => {
+    const phaseRulesReferenceId = currentPhase.toLowerCase().replace(/\s+/g, '-');
+    return RULES_REFERENCES.find((page) => page.id === phaseRulesReferenceId) ?? null;
+  }, [currentPhase]);
 
   useEffect(() => {
     setSavedState({
@@ -588,6 +601,11 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
     setIsDeployableAssetDeployed(false);
   };
 
+  const openRulesReference = (rulesReferenceId: string) => {
+    setSelectedRulesReferenceId(rulesReferenceId);
+    setIsRulesMenuOpen(false);
+  };
+
   return (
     <main className="app-shell">
       {!isFrameInfoOpen && hasSelectedHandler && (
@@ -606,7 +624,18 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
           )}
           <div className="phase-current">
             <p className="eyebrow">Round {round}</p>
-            <h1>{currentPhase}</h1>
+            {currentPhaseRulesReference ? (
+              <button
+                className="phase-heading-button"
+                type="button"
+                onClick={() => openRulesReference(currentPhaseRulesReference.id)}
+                aria-label={`Open ${currentPhase} rules`}
+              >
+                <h1>{currentPhase}</h1>
+              </button>
+            ) : (
+              <h1>{currentPhase}</h1>
+            )}
           </div>
           <button
             className="phase-nav next"
@@ -693,7 +722,13 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
             />
           </section>
 
-          <HeatMeter heat={heat} heatState={heatState} onHeatChange={setHeat} onOpenHeatRules={openHeatRules} />
+          <HeatMeter
+            heat={heat}
+            heatState={heatState}
+            onHeatChange={setHeat}
+            onOpenHeatRules={openHeatRules}
+            onOpenHeatChapter={() => openRulesReference('heat')}
+          />
 
           <div className="workspace">
             <FocusPanel
@@ -854,6 +889,7 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
         <>
           <HeatRulesModal isOpen={isHeatModalOpen} heatState={modalHeatState} onClose={closeHeatRules} />
           <WeaponDetailsModal weapon={selectedWeaponDetails} onClose={closeWeaponDetails} />
+          <RulesReferenceModal page={selectedRulesReference} onClose={() => setSelectedRulesReferenceId(null)} />
           <PilotCardModal
             pilot={pilot}
             isOpen={isPilotCardExpanded}
@@ -883,6 +919,32 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
           expandedSystems={expandedSystems}
           expandedDamageTables={expandedDamageTables}
         />
+      )}
+      {!isFrameInfoOpen && hasSelectedHandler && (
+        <div className="rules-dock">
+          {isRulesMenuOpen && (
+            <div className="rules-dock-popup" role="menu">
+              {RULES_REFERENCES.map((page) => (
+                <button key={page.id} type="button" role="menuitem" onClick={() => openRulesReference(page.id)}>
+                  {page.title}
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            className="rules-dock-button"
+            type="button"
+            aria-haspopup="menu"
+            aria-expanded={isRulesMenuOpen}
+            onClick={() => {
+              setIsRulesMenuOpen((current) => !current);
+              setIsNavigationMenuOpen(false);
+            }}
+          >
+            <BookOpen size={18} />
+            <span>Rules</span>
+          </button>
+        </div>
       )}
       {!isFrameInfoOpen && (
         <div className="dock-menu">
@@ -961,8 +1023,14 @@ function HandlerSelectionView({
               </button>
 
               <div className="handler-option-summary">
-                <p>{handler.description ?? handler.role}</p>
-                {handler.directiveNotes && <p>{handler.directiveNotes}</p>}
+                <p>
+                  <GlossaryText text={handler.description ?? handler.role} />
+                </p>
+                {handler.directiveNotes && (
+                  <p>
+                    <GlossaryText text={handler.directiveNotes} />
+                  </p>
+                )}
               </div>
 
               <section className="handler-reference-block" aria-label={`${handler.label} directives`}>
@@ -978,7 +1046,9 @@ function HandlerSelectionView({
                         <div>
                           <strong>{directive.name}</strong>
                           <small>{directive.timing}</small>
-                          <p>{directive.effect}</p>
+                          <p>
+                            <GlossaryText text={directive.effect} />
+                          </p>
                         </div>
                       </article>
                     ))}
@@ -1000,7 +1070,9 @@ function HandlerSelectionView({
                       <span><small>Cost</small>{deployableAsset.cost}</span>
                       <span><small>Type</small>{deployableAsset.type}</span>
                     </div>
-                    <p className="deployable-asset-effect">{deployableAsset.effect}</p>
+                    <p className="deployable-asset-effect">
+                      <GlossaryText text={deployableAsset.effect} />
+                    </p>
                     <dl className="deployable-asset-stats">
                       {deployableAsset.stats.map((stat) => (
                         <div key={stat.label}>
@@ -1082,7 +1154,7 @@ function FrameInfoView({
           </p>
           {meleeWeapon.specialRules.map((rule) => (
             <p key={rule.name}>
-              <strong>{rule.name}:</strong> {rule.text}
+              <strong>{rule.name}:</strong> <GlossaryText text={rule.text} />
             </p>
           ))}
         </div>
@@ -1094,7 +1166,7 @@ function FrameInfoView({
           </p>
           {rangedWeapon.specialRules.map((rule) => (
             <p key={rule.name}>
-              <strong>{rule.name}:</strong> {rule.text}
+              <strong>{rule.name}:</strong> <GlossaryText text={rule.text} />
             </p>
           ))}
         </div>

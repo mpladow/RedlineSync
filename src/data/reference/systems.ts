@@ -70,7 +70,7 @@ export const SYSTEMS: SystemDefinition[] = [
       {
         cost: '1',
         name: 'Vent Heat',
-        description: 'Remove 2 Heat. If affected by Emergency Vent Fault, remove 1 less Heat.'
+        description: 'Remove 2 Heat. If affected by Coolant Leak (Major Damage Effect), remove 1 less Heat.'
       },
       {
         cost: '1-3',
@@ -122,8 +122,8 @@ export const SYSTEMS: SystemDefinition[] = [
         name: 'Vent Heat',
         description: 'Remove 2 Heat. If affected by Emergency Vent Fault, remove 1 less Heat.'
       },
-      { cost: '2', name: 'Power Route', description: 'Move 1 allocated Focus from one system to another.' },
-      {
+      { cost: '2', name: 'Power Route', description: 'Move 1 allocated Focus from one system to another. Use of this effect does not cause Overcommitted on the affected System.' },
+      { 
         cost: '1-3',
         name: 'System Reset',
         description: 'Used to repair Major Damage Warnings. Check the Major Damage card for more details.'

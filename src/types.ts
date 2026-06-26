@@ -159,6 +159,93 @@ export type DeployableAsset = {
   }>;
 };
 
+export type GlossaryDefinitionBlock =
+  | {
+      type: 'paragraph';
+      text: string;
+    }
+  | {
+      type: 'list';
+      items: string[];
+    }
+  | {
+      type: 'image';
+      src: string;
+      alt: string;
+      caption?: string;
+    }
+  | {
+      type: 'table';
+      columns: string[];
+      rows: string[][];
+    };
+
+export type GlossaryEntry = {
+  id: string;
+  keyword: string;
+  summary: string;
+  definition: GlossaryDefinitionBlock[];
+};
+
+export type RulesCombatRole = 'attacker' | 'defender' | 'both' | 'reaction' | "";
+
+export type RulesReferenceListItem =
+  | string
+  | {
+      text: string;
+      combatRole?: RulesCombatRole;
+    };
+
+export type RulesReferenceBlock =
+  | {
+      type: 'heading';
+      text: string;
+      combatRole?: RulesCombatRole;
+    }
+  | {
+      type: 'paragraph';
+      text: string;
+      combatRole?: RulesCombatRole;
+    }
+  | {
+      type: 'list';
+      items: RulesReferenceListItem[];
+      combatRole?: RulesCombatRole;
+    }
+  | {
+      type: 'table';
+      columns: string[];
+      rows: string[][];
+      combatRole?: RulesCombatRole;
+    }
+  | {
+      type: 'image';
+      src: string;
+      alt: string;
+      caption?: string;
+      combatRole?: RulesCombatRole;
+    }
+  | {
+      type: 'callout';
+      title: string;
+      text: string;
+      combatRole?: RulesCombatRole;
+    };
+
+export type RulesReferenceSection = {
+  id: string;
+  title: string;
+  blocks: RulesReferenceBlock[];
+};
+
+export type RulesReferencePage = {
+  id: string;
+  title: string;
+  summary: string;
+  overviewBlocks?: RulesReferenceBlock[];
+  sections: RulesReferenceSection[];
+};
+
 export type SavedState = {
   focus?: Partial<FocusMap> & { movement?: number };
   cockpitFocus?: Partial<FocusMap>;

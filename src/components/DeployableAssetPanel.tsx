@@ -1,5 +1,6 @@
 import { RadioTower } from 'lucide-react';
 import type { DeployableAsset } from '../types';
+import { GlossaryText } from './GlossaryText';
 
 type DeployableAssetPanelProps = {
   asset: DeployableAsset;
@@ -35,7 +36,9 @@ export function DeployableAssetPanel({ asset, isDeployed, onToggleDeployed }: De
         <span><small>Type</small>{asset.type}</span>
       </div>
 
-      <p className="deployable-asset-effect">{asset.effect}</p>
+      <p className="deployable-asset-effect">
+        <GlossaryText text={asset.effect} />
+      </p>
 
       <dl className="deployable-asset-stats">
         {asset.stats.map((stat) => (

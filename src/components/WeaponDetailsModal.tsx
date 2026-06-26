@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react';
 import { ChevronUp } from 'lucide-react';
 import type { Weapon } from '../types';
+import { GlossaryText } from './GlossaryText';
 
 type WeaponDetailsModalProps = {
   weapon: Weapon | null;
@@ -41,7 +42,9 @@ export function WeaponDetailsModal({ weapon, onClose }: WeaponDetailsModalProps)
               weapon.specialRules.map((rule) => (
                 <div className="weapon-rule" key={rule.name}>
                   <strong>{rule.name}</strong>
-                  <p>{rule.text}</p>
+                  <p>
+                    <GlossaryText text={rule.text} />
+                  </p>
                 </div>
               ))
             ) : (

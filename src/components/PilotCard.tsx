@@ -2,6 +2,7 @@ import { ChevronUp, UserRound } from 'lucide-react';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { DEFAULT_FOCUS_POOL, getFrameConfiguration } from '../data/reference';
 import type { PilotRecord } from '../types';
+import { GlossaryText } from './GlossaryText';
 import { Stepper } from './Stepper';
 
 type PilotCardProps = {
@@ -161,7 +162,9 @@ export function PilotCardModal({
             {pilotTraits.map((trait) => (
               <article className="pilot-id-ability" key={trait.name}>
                 <strong>{trait.name}</strong>
-                <p>{trait.text}</p>
+                <p>
+                  <GlossaryText text={trait.text} />
+                </p>
               </article>
             ))}
           </div>

@@ -8,16 +8,17 @@ type HeatMeterProps = {
   heatState: HeatState;
   onHeatChange: (value: number) => void;
   onOpenHeatRules: (heatState: HeatState) => void;
+  onOpenHeatChapter: () => void;
 };
 
-export function HeatMeter({ heat, heatState, onHeatChange, onOpenHeatRules }: HeatMeterProps) {
+export function HeatMeter({ heat, heatState, onHeatChange, onOpenHeatRules, onOpenHeatChapter }: HeatMeterProps) {
   return (
     <section className="meter-card heat-meter heat-row">
       <div className="heat-title-row">
-        <div className="meter-heading">
+        <button className="meter-heading meter-heading-button" type="button" onClick={onOpenHeatChapter}>
           <Flame size={20} />
           <span>Heat</span>
-        </div>
+        </button>
         <button
           className={`heat-state ${heatState.className}`}
           type="button"
