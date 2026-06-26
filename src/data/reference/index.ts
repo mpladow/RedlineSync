@@ -1,5 +1,17 @@
 import { DEFAULT_FRAME, FRAME_CONFIGURATIONS, FRAME_OPTIONS, getFrameConfiguration } from './frames';
-import { GAME_PHASES } from './game';
+import {
+    FORWARD_RELAY_BEACON,
+    GAME_PHASES,
+    ORDINANCE_DIRECTIVES,
+    STATIC_GUN_EMPLACEMENT,
+    TACTICAL_DIRECTIVES
+} from './game';
+import {
+    HANDLER_DEPLOYABLE_ASSETS,
+    HANDLER_DIRECTIVE_TABLES,
+    getHandlerDeployableAsset,
+    getHandlerDirectives
+} from './handlerRules';
 import { HANDLERS } from './handlers';
 import { HEAT_RULES, HEAT_STATES } from './heat';
 import { RULE_TRIGGERS } from './interactions';
@@ -9,25 +21,19 @@ import { SYSTEMS } from './systems';
 import { DEFAULT_EQUIPPED_WEAPONS, WEAPONS } from './weapons';
 
 export {
-  DEFAULT_EQUIPPED_WEAPONS,
-  DEFAULT_FOCUS,
-  DEFAULT_FOCUS_POOL,
-  DEFAULT_FRAME,
-  DEFAULT_PILOT_TRAIT,
-  FRAME_CONFIGURATIONS,
-  FRAME_OPTIONS,
-  GAME_PHASES,
-  getFrameConfiguration,
-  getPilotTrait,
-  getPilotTraitText,
-  HANDLERS,
-  HEAT_RULES,
-  HEAT_STATES,
-  PILOT_CARD,
-  PILOT_TRAITS,
-  RULE_TRIGGERS,
-  SYSTEMS,
-  WEAPONS
+    DEFAULT_EQUIPPED_WEAPONS,
+    DEFAULT_FOCUS,
+    DEFAULT_FOCUS_POOL,
+    DEFAULT_FRAME,
+    DEFAULT_PILOT_TRAIT, FORWARD_RELAY_BEACON, FRAME_CONFIGURATIONS,
+    FRAME_OPTIONS,
+    GAME_PHASES, HANDLERS, HANDLER_DEPLOYABLE_ASSETS,
+    HANDLER_DIRECTIVE_TABLES, HEAT_RULES,
+    HEAT_STATES, ORDINANCE_DIRECTIVES, PILOT_CARD,
+    PILOT_TRAITS,
+    RULE_TRIGGERS, STATIC_GUN_EMPLACEMENT, SYSTEMS, TACTICAL_DIRECTIVES, WEAPONS, getFrameConfiguration, getHandlerDeployableAsset,
+    getHandlerDirectives, getPilotTrait,
+    getPilotTraitText
 };
 
 /**
@@ -54,6 +60,8 @@ export const REFERENCE_DATA = {
   pilotTraits: PILOT_TRAITS,
   game: {
     phases: GAME_PHASES,
-    frames: FRAME_CONFIGURATIONS
+    frames: FRAME_CONFIGURATIONS,
+    directiveTables: HANDLER_DIRECTIVE_TABLES,
+    deployableAssets: HANDLER_DEPLOYABLE_ASSETS
   }
 } as const;

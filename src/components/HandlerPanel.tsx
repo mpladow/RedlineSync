@@ -5,7 +5,6 @@ import type { HandlerId } from '../types';
 type HandlerPanelProps = {
   handler: HandlerId;
   expandedCall: number;
-  onChangeHandler: (handler: HandlerId) => void;
   onToggleCall: (index: number) => void;
   onAdvancePhase: () => void;
   isHighlighted?: boolean;
@@ -15,7 +14,6 @@ type HandlerPanelProps = {
 export function HandlerPanel({
   handler,
   expandedCall,
-  onChangeHandler,
   onToggleCall,
   onAdvancePhase,
   isHighlighted = false,
@@ -46,7 +44,7 @@ export function HandlerPanel({
             key={item.id}
             type="button"
             className={handler === item.id ? 'selected' : ''}
-            onClick={() => onChangeHandler(item.id)}
+            disabled={handler !== item.id}
           >
             {item.label}
           </button>
