@@ -1,9 +1,10 @@
-import { AlertTriangle, Heart, LoaderCircle, Minus, Plus } from 'lucide-react';
+import { AlertTriangle, Clock3, Heart, LoaderCircle, Minus, Plus } from 'lucide-react';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useState } from 'react';
 import type { DamageMarker, FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
 import { SYSTEM_PRESENTATION } from '../ui/systemPresentation';
 import { getDamageMarkerId, getDamageSeverity } from '../utils/helpers';
+import { GlossaryText } from './GlossaryText';
 import { Stepper } from './Stepper';
 
 type SystemCardProps = {
@@ -198,13 +199,23 @@ export function SystemCard({
                 <span>Action</span>
                 <span>Description</span>
               </div>
-              {actions.map((action) => (
-                <div className="table-row" key={action.name}>
-                  <span className="cost-pill">{action.cost}</span>
-                  <strong>{action.name}</strong>
-                  <span>{action.description}</span>
-                </div>
-              ))}
+              {actions.map((action) => {
+                const isReaction = action.name.startsWith('*');
+                const actionName = isReaction ? action.name.slice(1) : action.name;
+
+                return (
+                  <div className="table-row" key={action.name}>
+                    <span className="cost-pill">{action.cost}</span>
+                    <strong className="action-name">
+                      {isReaction && <Clock3 size={15} aria-label="Reaction" />}
+                      {actionName}
+                    </strong>
+                    <span>
+                      <GlossaryText text={action.description} />
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
           {expandedDamage && (

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getHandlerDeployableAsset, getHandlerDirectives, HANDLERS } from '../data/reference';
 import type { HandlerDirective, HandlerId } from '../types';
 import { DeployableAssetPanel } from './DeployableAssetPanel';
+import { GlossaryText } from './GlossaryText';
 
 type HandlerPhaseProps = {
   handler: HandlerId;
@@ -74,8 +75,9 @@ export function HandlerPhase({
         </div>
 
         <p className="handler-turn-description">
-          {activeHandler.role} Receive one private directive for this round. Keep the screen tilted away from your
-          opponent before revealing it.
+          <GlossaryText
+            text={`${activeHandler.role} Receive one private directive for this round. Keep the screen tilted away from your opponent before revealing it.`}
+          />
         </p>
 
         {hasDirectiveData ? (
@@ -218,7 +220,9 @@ function DirectiveModal({ directive, onHide }: { directive: HandlerDirective; on
         </div>
         <div className="directive-modal-body">
           <span className="directive-timing">{directive.timing}</span>
-          <p>{directive.effect}</p>
+          <p>
+            <GlossaryText text={directive.effect} />
+          </p>
           <button type="button" className="primary-action" onClick={onHide}>
             <EyeOff size={18} />
             Hide Directive

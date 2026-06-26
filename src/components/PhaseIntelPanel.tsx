@@ -2,6 +2,7 @@ import { Eye, EyeOff, Radio, SatelliteDish } from 'lucide-react';
 import { getHandlerDeployableAsset, getHandlerDirectives } from '../data/reference';
 import type { HandlerId } from '../types';
 import { DeployableAssetPanel } from './DeployableAssetPanel';
+import { GlossaryText } from './GlossaryText';
 
 type PhaseIntelPanelProps = {
   handler: HandlerId;
@@ -61,7 +62,9 @@ export function PhaseIntelPanel({
               {isDirectiveRevealed && (
                 <div className="selected-directive-details">
                   <span className="directive-timing">{directive.timing}</span>
-                  <p>{directive.effect}</p>
+                  <p>
+                    <GlossaryText text={directive.effect} />
+                  </p>
                 </div>
               )}
             </>
