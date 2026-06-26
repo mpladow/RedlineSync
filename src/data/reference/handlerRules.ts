@@ -1,14 +1,14 @@
 import type { DeployableAsset, HandlerDirective, HandlerId } from '../../types';
-import { FORWARD_RELAY_BEACON, ORDNANCE_DIRECTIVES, STATIC_GUN_EMPLACEMENT, TACTICAL_DIRECTIVES } from './game';
+import { FORWARD_RELAY_BEACON, ORDINANCE_DIRECTIVES, STATIC_GUN_EMPLACEMENT, TACTICAL_DIRECTIVES } from './game';
 
 export const HANDLER_DIRECTIVE_TABLES: Partial<Record<HandlerId, HandlerDirective[]>> = {
   tactical: TACTICAL_DIRECTIVES,
-  ordnance: ORDNANCE_DIRECTIVES
+  ordinance: ORDINANCE_DIRECTIVES
 };
 
 export const HANDLER_DEPLOYABLE_ASSETS: Partial<Record<HandlerId, DeployableAsset>> = {
   tactical: FORWARD_RELAY_BEACON,
-  ordnance: STATIC_GUN_EMPLACEMENT
+  ordinance: STATIC_GUN_EMPLACEMENT
 };
 
 export function getHandlerDirectives(handler: HandlerId) {

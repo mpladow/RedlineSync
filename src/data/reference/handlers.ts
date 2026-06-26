@@ -57,13 +57,13 @@ export const HANDLERS: Handler[] = [
 		]
 	},
 	{
-		id: 'ordnance',
-		label: 'Ordnance',
+		id: 'ordinance',
+		label: 'Ordinance',
 		asset: 'Static Gun Emplacement',
 		role: 'Fire support, mines, smoke, emplacements, area control.',
-		description: 'An Ordnance Handler focuses on fire support, battlefield assets, smoke, mines, and strike markers.',
+		description: 'An Ordinance Handler focuses on fire support, battlefield assets, smoke, mines, and strike markers.',
 		directiveNotes:
-			'Ordnance Directives are strong for area control, but many require Neural Link Focus or careful positioning.',
+			'Ordinance Directives are strong for area control, but many require Neural Link Focus or careful positioning.',
 		calls: [
 			{
 				name: 'Gun emplacement online',

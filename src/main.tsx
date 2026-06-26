@@ -8,13 +8,12 @@ import './styles.css';
 
 import { FocusAllocationDock } from './components/FocusAllocationDock';
 import { FocusPanel } from './components/FocusPanel';
-import { HandlerPanel } from './components/HandlerPanel';
 import { HandlerPhase } from './components/HandlerPhase';
 import { HeatMeter } from './components/HeatMeter';
 import { HeatRulesModal } from './components/HeatRulesModal';
+import { PhaseIntelPanel } from './components/PhaseIntelPanel';
 import { PilotCard, PilotCardModal } from './components/PilotCard';
 import { PilotForm } from './components/PilotForm';
-import { PhaseIntelPanel } from './components/PhaseIntelPanel';
 import { WeaponDetailsModal } from './components/WeaponDetailsModal';
 import { WeaponsPanel } from './components/WeaponsPanel';
 import {
@@ -44,8 +43,8 @@ import type {
 } from './types';
 import { clamp, getHeatState } from './utils/helpers';
 import {
-	loadPilotWorkspaceState,
 	loadPilots,
+	loadPilotWorkspaceState,
 	persistPilots,
 	persistPilotWorkspaceConfiguration,
 	removePilotWorkspace,
@@ -727,14 +726,14 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
               {/*
                     The {handler} Handler’s deployable asset has not been added yet.
               */}
-              <HandlerPanel
+              {/* <HandlerPanel
                 handler={handler}
                 expandedCall={expandedCall}
                 isHighlighted={isHandlerHighlighted}
                 showSupportAlert={phaseIndex === 2}
                 onAdvancePhase={requestNextPhase}
                 onToggleCall={setExpandedCall}
-              />
+              /> */}
               </>
             )}
           </div>

@@ -73,7 +73,7 @@ export const TACTICAL_DIRECTIVES: HandlerDirective[] = [
   }
 ];
 
-export const ORDNANCE_DIRECTIVES: HandlerDirective[] = [
+export const ORDINANCE_DIRECTIVES: HandlerDirective[] = [
   {
     roll: 1,
     name: 'Radio silence.',
@@ -158,7 +158,7 @@ export const FORWARD_RELAY_BEACON: DeployableAsset = {
 
 export const STATIC_GUN_EMPLACEMENT: DeployableAsset = {
   name: 'Static Gun Emplacement',
-  deployment: 'Ordnance Directive 7',
+  deployment: 'Ordinance Directive 7',
   cost: '2 Neural Link Focus',
   type: 'Fixed Asset',
   effect:

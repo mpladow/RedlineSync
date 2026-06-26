@@ -96,7 +96,7 @@ export type Weapon = {
 
 export type EquippedWeapons = Record<WeaponSlotName, string>;
 
-export type HandlerId = 'tactical' | 'engineering' | 'ordnance';
+export type HandlerId = 'tactical' | 'engineering' | 'ordinance';
 
 export type PilotAbility = {
   name: string;
