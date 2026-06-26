@@ -1,6 +1,6 @@
+import { AlertTriangle, Heart, LoaderCircle, Minus, Plus } from 'lucide-react';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useState } from 'react';
-import { AlertTriangle, Heart, LoaderCircle, Minus, Plus } from 'lucide-react';
 import type { DamageMarker, FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
 import { SYSTEM_PRESENTATION } from '../ui/systemPresentation';
 import { getDamageMarkerId, getDamageSeverity } from '../utils/helpers';
@@ -28,6 +28,8 @@ type SystemCardProps = {
   onShowOvercommittedWarning: (systemName: string) => void;
   isCockpitPhase: boolean;
   isActivationPhase: boolean;
+  isReadOnly?: boolean;
+  allowReadOnlyDetailToggle?: boolean;
 };
 
 export function SystemCard({
@@ -51,7 +53,9 @@ export function SystemCard({
   onShowDamageMarker,
   onShowOvercommittedWarning,
   isCockpitPhase,
-  isActivationPhase
+  isActivationPhase,
+  isReadOnly = false,
+  allowReadOnlyDetailToggle = false,
 }: SystemCardProps) {
   const { id, label, actions } = system;
   const { icon: Icon, accent } = SYSTEM_PRESENTATION[id];
@@ -66,6 +70,7 @@ export function SystemCard({
     const markerId = getDamageMarkerId(marker);
     return !selectedDamage.includes(markerId) && !selectedDamage.includes(marker.name);
   });
+  const canToggleDetailMode = !isReadOnly || allowReadOnlyDetailToggle;
 
   const closeMajorDamageModal = () => {
     if (!isRollingMajorDamage) {
@@ -74,7 +79,7 @@ export function SystemCard({
   };
 
   const rollForMajorDamage = () => {
-    if (availableDamageMarkers.length === 0) return;
+    if (isReadOnly || availableDamageMarkers.length === 0) return;
 
     setIsRollingMajorDamage(true);
     window.setTimeout(() => {
@@ -91,180 +96,201 @@ export function SystemCard({
     <>
       <article
         id={`focus-system-${id}`}
-        className={`system-card ${selectedDamage.length ? 'damaged' : ''}`}
+        className={`system-card ${selectedDamage.length ? 'damaged' : ''} ${isReadOnly ? 'readonly' : ''}`}
         key={id}
         style={{ '--accent': accent } as CSSProperties}
       >
-      <div className="system-header">
-        <div className="system-copy">
-          <Icon size={22} />
-          <span>{label}</span>
-          <span
-            className={`system-structure-badge ${structureState}`}
-            aria-label={`${label} structure ${structureValue} of ${maximumStructureValue}`}
-          >
-            <Heart size={14} aria-hidden="true" />
-            {structureValue}/{maximumStructureValue}
-          </span>
-          {isOvercommitted && (
-            <button
-              className="system-status-badge overcommitted"
-              type="button"
-              onClick={() => onShowOvercommittedWarning(label)}
-              aria-label={`Show ${label} overcommitted warning`}
+        <div className="system-header">
+          <div className="system-copy">
+            <Icon size={22} />
+            <span>{label}</span>
+            <span
+              className={`system-structure-badge ${structureState}`}
+              aria-label={`${label} structure ${structureValue} of ${maximumStructureValue}`}
             >
-              Overcommitted
-            </button>
-          )}
-          {selectedDamage.map((markerId) => {
-            const marker = damageMarkers.find(
-              (item) => getDamageMarkerId(item) === markerId || item.name === markerId
-            );
-            const severity = marker ? getDamageSeverity(marker) : 'warning';
-            const markerName = marker?.name ?? markerId;
-            return (
-              <button
-                className={`system-damage-badge ${severity}`}
-                key={markerId}
-                type="button"
-                onClick={() => onShowDamageMarker(id, markerId)}
-                aria-label={`Show ${label} damage marker ${markerName}`}
-              >
-                {severity === 'critical' ? <AlertTriangle size={14} /> : null}
-                {markerName}
-              </button>
-            );
-          })}
-        </div>
-        <div className="system-controls">
-          <Stepper
-            value={focusValue}
-            max={focusLimit}
-            onChange={(value) => onFocusChange(id, value)}
-            label={`${label} focus`}
-            assignedValue={showFocusAssignment ? assignedFocusValue : null}
-            disableDecrement={isActivationPhase && focusValue === 0}
-            emptyDisplay={isActivationPhase && focusValue === 0}
-            dotDisplay={isCockpitPhase || isActivationPhase}
-            dotCount={isActivationPhase ? assignedFocusValue : 6}
-          />
-        </div>
-      </div>
-
-      <div className="system-mode-toggle" aria-label={`${label} detail mode`}>
-        <button
-          className={expandedActions ? 'selected' : ''}
-          type="button"
-          aria-pressed={expandedActions}
-          aria-label={`Show ${label} actions`}
-          onClick={() => onToggleActions(id)}
-        >
-          Actions
-        </button>
-        <button
-          className={expandedDamage ? 'selected' : ''}
-          type="button"
-          aria-pressed={expandedDamage}
-          aria-label={`Show ${label} damage markers`}
-          onClick={() => onToggleDamage(id)}
-        >
-          Damage
-        </button>
-      </div>
-
-      <div className="system-detail-panel">
-        {expandedActions && (
-          <div className="data-table action-table" aria-label={`${label} actions`}>
-            <div className="table-head">
-              <span>Cost</span>
-              <span>Action</span>
-              <span>Description</span>
-            </div>
-            {actions.map((action) => (
-              <div className="table-row" key={action.name}>
-                <span className="cost-pill">{action.cost}</span>
-                <strong>{action.name}</strong>
-                <span>{action.description}</span>
-              </div>
-            ))}
-          </div>
-        )}
-        {expandedDamage && (
-          <div className="data-table marker-table" aria-label={`${label} damage markers`}>
-            <div className="structure-tracker">
-              <div>
-                <span className="structure-tracker-label">Structure</span>
-                <output
-                  className="structure-squares"
-                  aria-label={`${label} has ${structureValue} of ${maximumStructureValue} structure points`}
-                >
-                  {Array.from({ length: maximumStructureValue }, (_, index) => (
-                    <span className={index < structureValue ? 'filled' : ''} key={index} aria-hidden="true" />
-                  ))}
-                </output>
-                {structureValue === 0 && (
-                  <button
-                    className="system-major-damage-badge"
-                    type="button"
-                    onClick={() => setIsMajorDamageModalOpen(true)}
-                  >
-                    Roll for Major Damage
-                  </button>
-                )}
-              </div>
-              <div className="structure-controls">
+              <Heart size={14} aria-hidden="true" />
+              {structureValue}/{maximumStructureValue}
+            </span>
+            {isOvercommitted &&
+              (isReadOnly ? (
+                <span className="system-status-badge overcommitted">Overcommitted</span>
+              ) : (
                 <button
+                  className="system-status-badge overcommitted"
                   type="button"
-                  onClick={() => onStructureChange(id, structureValue - 1)}
-                  disabled={structureValue === 0}
-                  aria-label={`Decrease ${label} structure`}
+                  onClick={() => onShowOvercommittedWarning(label)}
+                  aria-label={`Show ${label} overcommitted warning`}
                 >
-                  <Minus size={16} />
+                  Overcommitted
                 </button>
-                <strong aria-hidden="true">{structureValue}/{maximumStructureValue}</strong>
+              ))}
+            {selectedDamage.map((markerId) => {
+              const marker = damageMarkers.find(
+                (item) => getDamageMarkerId(item) === markerId || item.name === markerId
+              );
+              const severity = marker ? getDamageSeverity(marker) : 'warning';
+              const markerName = marker?.name ?? markerId;
+              return isReadOnly ? (
+                <span className={`system-damage-badge ${severity}`} key={markerId}>
+                  {severity === 'critical' ? <AlertTriangle size={14} /> : null}
+                  {markerName}
+                </span>
+              ) : (
                 <button
-                  type="button"
-                  onClick={() => onStructureChange(id, structureValue + 1)}
-                  disabled={structureValue === maximumStructureValue}
-                  aria-label={`Increase ${label} structure`}
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
-            </div>
-            <div className="table-head">
-              <span>Roll</span>
-              <span>Name</span>
-              <span>Effect</span>
-            </div>
-            {damageMarkers.map((marker) => {
-              const markerId = getDamageMarkerId(marker);
-              const isSelected = selectedDamage.includes(markerId) || selectedDamage.includes(marker.name);
-              const severity = getDamageSeverity(marker);
-              const isFocused = focusedMarker?.systemId === id && focusedMarker?.markerName === markerId;
-              return (
-                <button
-                  className={`table-row marker-row ${severity} ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}`}
+                  className={`system-damage-badge ${severity}`}
                   key={markerId}
                   type="button"
-                  aria-pressed={isSelected}
-                  data-system-id={id}
-                  data-marker-name={markerId}
-                  onClick={() => onToggleMarker(id, markerId)}
+                  onClick={() => onShowDamageMarker(id, markerId)}
+                  aria-label={`Show ${label} damage marker ${markerName}`}
                 >
-                  <span className="roll-pill">{marker.roll}</span>
-                  <strong className="marker-name">
-                    {severity === 'critical' ? <AlertTriangle size={16} /> : null}
-                    {marker.name}
-                  </strong>
-                  <span>{marker.effect}</span>
+                  {severity === 'critical' ? <AlertTriangle size={14} /> : null}
+                  {markerName}
                 </button>
               );
             })}
           </div>
-        )}
-        {!expandedActions && !expandedDamage && <p className="system-detail-empty">Select Actions or Damage.</p>}
-      </div>
+          <div className="system-controls">
+            {!isReadOnly && (
+              <Stepper
+                value={focusValue}
+                max={focusLimit}
+                onChange={(value) => onFocusChange(id, value)}
+                label={`${label} focus`}
+                assignedValue={showFocusAssignment ? assignedFocusValue : null}
+                disableDecrement={isActivationPhase && focusValue === 0}
+                emptyDisplay={isActivationPhase && focusValue === 0}
+                dotDisplay={isCockpitPhase || isActivationPhase}
+                dotCount={isActivationPhase ? assignedFocusValue : 6}
+                readOnly={isReadOnly}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="system-mode-toggle" aria-label={`${label} detail mode`}>
+          <button
+            className={expandedActions ? 'selected' : ''}
+            type="button"
+            aria-pressed={expandedActions}
+            aria-label={`Show ${label} actions`}
+            onClick={() => onToggleActions(id)}
+            disabled={!canToggleDetailMode}
+          >
+            Actions
+          </button>
+          <button
+            className={expandedDamage ? 'selected' : ''}
+            type="button"
+            aria-pressed={expandedDamage}
+            aria-label={`Show ${label} damage markers`}
+            onClick={() => onToggleDamage(id)}
+            disabled={!canToggleDetailMode}
+          >
+            Damage
+          </button>
+        </div>
+
+        <div className="system-detail-panel">
+          {expandedActions && (
+            <div className="data-table action-table" aria-label={`${label} actions`}>
+              <div className="table-head">
+                <span>Cost</span>
+                <span>Action</span>
+                <span>Description</span>
+              </div>
+              {actions.map((action) => (
+                <div className="table-row" key={action.name}>
+                  <span className="cost-pill">{action.cost}</span>
+                  <strong>{action.name}</strong>
+                  <span>{action.description}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {expandedDamage && (
+            <div className="data-table marker-table" aria-label={`${label} damage markers`}>
+              <div className="structure-tracker">
+                <div>
+                  <span className="structure-tracker-label">Structure</span>
+                  <output
+                    className="structure-squares"
+                    aria-label={`${label} has ${structureValue} of ${maximumStructureValue} structure points`}
+                  >
+                    {Array.from({ length: maximumStructureValue }, (_, index) => (
+                      <span className={index < structureValue ? 'filled' : ''} key={index} aria-hidden="true" />
+                    ))}
+                  </output>
+                  {structureValue === 0 &&
+                    (isReadOnly ? (
+                      <span className="system-major-damage-badge">Major Damage</span>
+                    ) : (
+                      <button
+                        className="system-major-damage-badge"
+                        type="button"
+                        onClick={() => setIsMajorDamageModalOpen(true)}
+                      >
+                        Roll for Major Damage
+                      </button>
+                    ))}
+                </div>
+                {!isReadOnly && (
+                  <div className="structure-controls">
+                    <button
+                      type="button"
+                      onClick={() => onStructureChange(id, structureValue - 1)}
+                      disabled={isReadOnly || structureValue === 0}
+                      aria-label={`Decrease ${label} structure`}
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <strong aria-hidden="true">
+                      {structureValue}/{maximumStructureValue}
+                    </strong>
+                    <button
+                      type="button"
+                      onClick={() => onStructureChange(id, structureValue + 1)}
+                      disabled={isReadOnly || structureValue === maximumStructureValue}
+                      aria-label={`Increase ${label} structure`}
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="table-head">
+                <span>Roll</span>
+                <span>Name</span>
+                <span>Effect</span>
+              </div>
+              {damageMarkers.map((marker) => {
+                const markerId = getDamageMarkerId(marker);
+                const isSelected = selectedDamage.includes(markerId) || selectedDamage.includes(marker.name);
+                const severity = getDamageSeverity(marker);
+                const isFocused = focusedMarker?.systemId === id && focusedMarker?.markerName === markerId;
+                return (
+                  <button
+                    className={`table-row marker-row ${severity} ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}`}
+                    key={markerId}
+                    type="button"
+                    aria-pressed={isSelected}
+                    data-system-id={id}
+                    data-marker-name={markerId}
+                    onClick={() => onToggleMarker(id, markerId)}
+                    disabled={isReadOnly}
+                  >
+                    <span className="roll-pill">{marker.roll}</span>
+                    <strong className="marker-name">
+                      {severity === 'critical' ? <AlertTriangle size={16} /> : null}
+                      {marker.name}
+                    </strong>
+                    <span>{marker.effect}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {!expandedActions && !expandedDamage && <p className="system-detail-empty">Select Actions or Damage.</p>}
+        </div>
       </article>
 
       {isMajorDamageModalOpen && (

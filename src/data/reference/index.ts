@@ -1,6 +1,18 @@
 import { DEFAULT_FRAME, FRAME_CONFIGURATIONS, FRAME_OPTIONS, getFrameConfiguration } from './frames';
-import { GAME_PHASES } from './game';
+import {
+  FORWARD_RELAY_BEACON,
+  GAME_PHASES,
+  ORDNANCE_DIRECTIVES,
+  STATIC_GUN_EMPLACEMENT,
+  TACTICAL_DIRECTIVES
+} from './game';
 import { HANDLERS } from './handlers';
+import {
+  HANDLER_DEPLOYABLE_ASSETS,
+  HANDLER_DIRECTIVE_TABLES,
+  getHandlerDeployableAsset,
+  getHandlerDirectives
+} from './handlerRules';
 import { HEAT_RULES, HEAT_STATES } from './heat';
 import { RULE_TRIGGERS } from './interactions';
 import { DEFAULT_FOCUS, DEFAULT_FOCUS_POOL, PILOT_CARD } from './pilotDefaults';
@@ -17,6 +29,14 @@ export {
   FRAME_CONFIGURATIONS,
   FRAME_OPTIONS,
   GAME_PHASES,
+  HANDLER_DEPLOYABLE_ASSETS,
+  HANDLER_DIRECTIVE_TABLES,
+  ORDNANCE_DIRECTIVES,
+  STATIC_GUN_EMPLACEMENT,
+  TACTICAL_DIRECTIVES,
+  FORWARD_RELAY_BEACON,
+  getHandlerDeployableAsset,
+  getHandlerDirectives,
   getFrameConfiguration,
   getPilotTrait,
   getPilotTraitText,
@@ -54,6 +74,8 @@ export const REFERENCE_DATA = {
   pilotTraits: PILOT_TRAITS,
   game: {
     phases: GAME_PHASES,
-    frames: FRAME_CONFIGURATIONS
+    frames: FRAME_CONFIGURATIONS,
+    directiveTables: HANDLER_DIRECTIVE_TABLES,
+    deployableAssets: HANDLER_DEPLOYABLE_ASSETS
   }
 } as const;

@@ -1,12 +1,12 @@
 import { Activity, CheckCircle2, ChevronRight, Dice6, Gauge, Radar, Shield } from 'lucide-react';
 import { getFrameConfiguration, SYSTEMS } from '../data/reference';
 import type {
-  DamageSelectionMap,
-  ExpansionMap,
-  FocusMap,
-  FocusedDamageMarker,
-  StructureMap,
-  SystemId
+	DamageSelectionMap,
+	ExpansionMap,
+	FocusedDamageMarker,
+	FocusMap,
+	StructureMap,
+	SystemId
 } from '../types';
 import { SystemCard } from './SystemCard';
 
@@ -34,6 +34,9 @@ type FocusPanelProps = {
   showFocusAssignments: boolean;
   isCockpitPhase: boolean;
   isActivationPhase: boolean;
+  isReadOnly?: boolean;
+  isCompressed?: boolean;
+  allowReadOnlyDetailToggle?: boolean;
 };
 
 export function FocusPanel({
@@ -59,13 +62,18 @@ export function FocusPanel({
   focusAllocationComplete,
   showFocusAssignments,
   isCockpitPhase,
-  isActivationPhase
+  isActivationPhase,
+  isReadOnly = false,
+  isCompressed = false,
+  allowReadOnlyDetailToggle = false
 }: FocusPanelProps) {
   const remainingFocus = focusPool - Object.values(focus).reduce((total, value) => total + value, 0);
   const frame = getFrameConfiguration(frameName);
 
   return (
-    <section className={`panel focus-panel ${showCockpitAlert ? 'attention' : ''}`}>
+    <section
+      className={`panel focus-panel ${showCockpitAlert ? 'attention' : ''} ${isReadOnly ? 'readonly' : ''} ${isCompressed ? 'compressed' : ''}`}
+    >
       <div className="focus-panel-heading">
         <div className="focus-panel-title-row">
           <div className="section-title">
@@ -86,7 +94,7 @@ export function FocusPanel({
             <span>
               <Dice6 size={15} aria-hidden="true" />
               <small>Defence Die</small>
-              <strong>D{frame.defenceDie}</strong>
+              <strong>{frame.defenceDie}</strong>
             </span>
             <span className="systems-armour-stat">
               <Shield size={15} aria-hidden="true" />
@@ -137,6 +145,8 @@ export function FocusPanel({
               onShowOvercommittedWarning={onShowOvercommittedWarning}
               isCockpitPhase={isCockpitPhase}
               isActivationPhase={isActivationPhase}
+              isReadOnly={isReadOnly}
+              allowReadOnlyDetailToggle={allowReadOnlyDetailToggle}
             />
           );
         })}

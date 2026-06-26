@@ -12,6 +12,7 @@ type StepperProps = {
   emptyDisplay?: boolean;
   dotDisplay?: boolean;
   dotCount?: number;
+  readOnly?: boolean;
 };
 
 export function Stepper({
@@ -24,10 +25,12 @@ export function Stepper({
   disableDecrement = false,
   emptyDisplay = false,
   dotDisplay = false,
-  dotCount = 6
+  dotCount = 6,
+  readOnly = false
 }: StepperProps) {
   const displayValue = assignedValue === null ? value : `${value}/${assignedValue}`;
-  const isDecreaseDisabled = disableDecrement && value <= min;
+  const isDecreaseDisabled = readOnly || (disableDecrement && value <= min);
+  const isIncreaseDisabled = readOnly;
 
   return (
     <div className={`stepper ${dotDisplay ? 'dot-stepper' : ''}`} aria-label={label}>
@@ -48,7 +51,12 @@ export function Stepper({
       ) : (
         <output className={emptyDisplay ? 'empty' : ''}>{displayValue}</output>
       )}
-      <button type="button" onClick={() => onChange(clamp(value + 1, min, max))} aria-label={`Increase ${label}`}>
+      <button
+        type="button"
+        onClick={() => onChange(clamp(value + 1, min, max))}
+        aria-label={`Increase ${label}`}
+        disabled={isIncreaseDisabled}
+      >
         <Plus size={18} />
       </button>
     </div>

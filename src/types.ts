@@ -130,11 +130,32 @@ export type Handler = {
   label: string;
   asset: string;
   role: string;
+  description?: string;
+  directiveNotes?: string;
   calls: Array<{
     name: string;
     text: string;
     systems: SystemId[];
     triggers: RuleTrigger[];
+  }>;
+};
+
+export type HandlerDirective = {
+  roll: number;
+  name: string;
+  timing: string;
+  effect: string;
+};
+
+export type DeployableAsset = {
+  name: string;
+  deployment: string;
+  cost: string;
+  type: string;
+  effect: string;
+  stats: Array<{
+    label: string;
+    value: string;
   }>;
 };
 
@@ -146,6 +167,11 @@ export type SavedState = {
   equippedWeapons?: Partial<EquippedWeapons>;
   heat?: number;
   handler?: HandlerId;
+  hasSelectedHandler?: boolean;
   phaseIndex?: number;
+  round?: number;
+  directiveRoll?: number | null;
+  isDirectiveRevealed?: boolean;
+  isDeployableAssetDeployed?: boolean;
   selectedDamageMarkers?: DamageSelectionMap;
 };
