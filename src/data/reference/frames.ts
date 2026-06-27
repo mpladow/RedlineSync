@@ -68,8 +68,8 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 		{
 			id: 'neural-burn',
 			roll: '1',
-			name: 'SENSOR LINK FAULT',
-			effect: 'Weapon Attacks cannot benefit from Lock-on rerolls.',
+			name: 'NEURAL BURN',
+			effect: 'Max total Focus is reduced by 1.',
 			isCritical: true
 		},
 		{
@@ -83,7 +83,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 			id: 'neural-sync-contamination',
 			roll: '5-6',
 			name: 'NEURAL SYNC CONTAMINATION',
-			effect: 'Roll a d6 immediately. On a roll of 5-6, until the Mech is disabled, gain +1 MD to all Mobility actions, +1 Attack Die, ignore Harried tokens. Cannot use Sensors, Reactor or Neural Link actions (except for Interact).',
+			effect: 'Roll a d6 immediately. On a roll of 5-6, until the Mech is disabled, gain +1 MD to all Mobility actions, +1 Attack Die, ignore Harried tokens. Cannot use Sensors, Reactor or Neural Link actions (except for Interact). If 1-4 is rolled, no effect.',
 			isCritical: true
 		},
 	],
@@ -110,7 +110,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 			id: 'defence-sync-error',
 			roll: '5-6',
 			name: 'DEFENCE SYNC ERROR',
-			effect: 'Brace requires 1 Reactor Focus in addition to its normal cost.',
+			effect: 'Brace(Defence Action) requires 1 Reactor Focus in addition to its normal cost.',
 			isCritical: false
 		}
 	],
@@ -119,7 +119,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 			id: 'coolant-leak',
 			roll: '1-2',
 			name: 'COOLANT LEAK',
-			effect: 'Start each Cockpit Phase with +1 Heat. This damage is not affected by Emergency Field Patch.',
+			effect: 'Start each Cockpit Phase with +1 Heat. This damage cannot be ignored with Emergency System Overloard.',
 			isCritical: true
 		},
 		{
@@ -143,7 +143,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 			id: 'targeting-fault',
 			roll: '3-4',
 			name: 'TARGETING FAULT',
-			effect: 'During each Bootup Sequence, remove 1 additional Lock-On from an enemy target.',
+			effect: 'During each Cockpit Phase, remove 1 additional Lock-On from an enemy target.',
 			isCritical: false
 		},
 		{

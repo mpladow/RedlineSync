@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type { CSSProperties } from 'react';
 import { SYSTEMS } from '../data/reference';
 import type { ExpansionMap, FocusMap, SystemId } from '../types';
+import { SYSTEM_PRESENTATION } from '../ui/systemPresentation';
 
 type FocusAllocationDockProps = {
   focus: FocusMap;
@@ -36,17 +38,24 @@ export function FocusAllocationDock({
       <div className="focus-dock-systems">
         {SYSTEMS.map((system) => {
           const isSelected = Boolean(expandedSystems[system.id] || expandedDamageTables[system.id]);
+          const focusValue = focus[system.id] ?? 0;
+          const { accent } = SYSTEM_PRESENTATION[system.id];
           return (
             <button
               key={system.id}
               type="button"
               className={isSelected ? 'selected' : ''}
+              style={{ '--accent': accent } as CSSProperties}
               onClick={() => onSelectSystem(system.id)}
               tabIndex={isExpanded ? 0 : -1}
               aria-pressed={isSelected}
             >
               <span>{system.label}</span>
-              <strong>{focus[system.id] ?? 0}</strong>
+              <output className="focus-dots focus-dock-meter" aria-label={`${focusValue} ${system.label} focus`}>
+                {Array.from({ length: focusValue }, (_, index) => (
+                  <span className="filled" key={index} aria-hidden="true" />
+                ))}
+              </output>
             </button>
           );
         })}

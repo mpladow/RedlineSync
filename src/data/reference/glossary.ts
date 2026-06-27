@@ -8,22 +8,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition: [
       {
         type: 'paragraph',
-        text:
-          'A High Speed token represents a mech moving at combat velocity, using evasive thrust, rapid footwork, or high-output manoeuvring.'
-      },
-      {
-        type: 'list',
-        items: [
-          'High Speed may come from Combat Sprint.',
-          'High Speed may come from Jump.',
-          'High Speed may come from equipment.',
-          'High Speed may come from special movement effects.',
-          'High Speed may come from scenario effects.'
-        ]
-      },
-      {
-        type: 'paragraph',
-        text: 'High Speed Effect: while a mech has a High Speed token, it gains these modifiers.'
+        text: 'Effect: while a mech has a High Speed token, it gains these modifiers.'
       },
       {
         type: 'table',
@@ -60,22 +45,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition: [
       {
         type: 'paragraph',
-        text:
-          'A Lock-On token represents targeting data, weapon tracking, predictive movement analysis, guided targeting, or a stable firing solution.'
-      },
-      {
-        type: 'list',
-        items: [
-          'Lock-On may come from Precision Aim.',
-          'Lock-On may come from some support units.',
-          'Lock-On may come from weapon links.',
-          'Lock-On may come from equipment.',
-          'Lock-On may come from scenario effects.'
-        ]
-      },
-      {
-        type: 'paragraph',
-        text: 'Lock-On Effect: when attacking a target with Lock-On tokens, the attacker may reroll attack dice.'
+        text: 'Effect: when attacking a target with Lock-On tokens, the attacker may reroll attack dice.'
       },
       {
         type: 'list',
@@ -95,7 +65,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'exposed',
     keyword: 'Exposed',
-    summary: 'A vulnerability token that reduces a mech\'s Armour against incoming attacks.',
+    summary: 'A vulnerability token that temporarily reduces a mech\'s Armour against incoming attacks.',
     definition: [
       {
         type: 'paragraph',
@@ -111,26 +81,11 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'harried',
     keyword: 'Harried',
-    summary: 'A pressure token that weakens a mech\'s defence when it is attacked.',
+	  summary: 'A Harried token represents a mech being pressured, distracted, boxed in, destabilised, or forced into a poor defensive posture.',
     definition: [
       {
         type: 'paragraph',
-        text:
-          'A Harried token represents a mech being pressured, distracted, boxed in, destabilised, or forced into a poor defensive posture.'
-      },
-      {
-        type: 'list',
-        items: [
-          'Harried may come from support harassment.',
-          'Harried may come from swarm attacks.',
-          'Harried may come from suppressive weapon effects.',
-          'Harried may come from certain melee or weapon links.',
-          'Harried may come from scenario effects.'
-        ]
-      },
-      {
-        type: 'paragraph',
-        text: 'Harried Effect: when a mech with a Harried token defends against an attack, remove 1 Harried token to apply -1 Defence die.'
+        text: 'Effect: when a mech with a Harried token defends against an attack, remove 1 Harried token to apply -1 Defence die.'
       },
       {
         type: 'list',
@@ -149,5 +104,29 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
         text: 'Some pilot abilities, weapons, equipment, or scenario effects may also remove Harried tokens.'
       }
     ]
-  }
+  },
+	{
+		id: 'charge-burst',
+		keyword: 'Charge Burst',
+		summary: 'A burst of energy that temporarily increases a Frames combat prowess at the expense of defence.',
+		definition: [
+			{
+				type: 'paragraph',
+				text: 'Effect: while a mech has a Charge Burst token, it gains these modifiers.'
+			},
+			{
+				type: 'table',
+				columns: ['Effect', 'Modifier'],
+				rows: [
+					['Attacks', '+1 Attack die'],
+					['Defence', '-1 Defence die']
+				]
+			},
+			{
+				type: 'paragraph',
+				text:
+					'Removing Burst Charge: at the end of this mech\'s NEXT Action, its controlling player must remove the Burst Charge token.'
+			},
+		]
+	},
 ];

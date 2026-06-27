@@ -3448,7 +3448,7 @@ h3 {
 .focus-dock-toggle,
 .focus-dock-systems button,
 .focus-dock-remaining {
-  min-height: 44px;
+  min-height: 54px;
   border-radius: 8px;
 }
 
@@ -3492,8 +3492,8 @@ h3 {
   display: grid;
   grid-template-columns: minmax(72px, auto) auto;
   align-items: center;
-  gap: 8px;
-  padding: 0 10px;
+  gap: 10px;
+  padding: 6px 10px;
   background: #182120;
   color: #d7dedb;
   cursor: pointer;
@@ -3510,9 +3510,17 @@ h3 {
   color: #111817;
 }
 
-.focus-dock-systems button.selected strong {
-  background: #111817;
-  color: #f4f1e8;
+.focus-dock-systems button.selected .focus-dock-meter span {
+  border-color: color-mix(in srgb, var(--accent) 72%, #111817);
+  background: rgba(17, 24, 23, 0.08);
+  box-shadow: inset 0 0 0 2px rgba(244, 241, 232, 0.42);
+}
+
+.focus-dock-systems button.selected .focus-dock-meter span.filled {
+  background: var(--accent);
+  box-shadow:
+    inset 0 0 0 2px rgba(17, 24, 23, 0.28),
+    0 0 10px color-mix(in srgb, var(--accent) 36%, transparent);
 }
 
 .focus-dock-systems span,
@@ -3532,6 +3540,29 @@ h3 {
   color: #111817;
   font-size: 0.9rem;
   max-width: 28px;
+}
+
+.focus-dock-meter {
+  grid-template-columns: repeat(3, 10px);
+  grid-auto-rows: 10px;
+  justify-self: end;
+  align-self: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 2px;
+}
+
+.focus-dock-meter span {
+  width: 10px;
+  height: 10px;
+  border-width: 1px;
+  box-shadow: inset 0 0 0 1px rgba(17, 24, 23, 0.5);
+}
+
+.focus-dock-meter span.filled {
+  box-shadow:
+    inset 0 0 0 1px rgba(244, 241, 232, 0.18),
+    0 0 8px color-mix(in srgb, var(--accent) 46%, transparent);
 }
 
 .focus-dock-remaining {
@@ -3563,7 +3594,7 @@ h3 {
 .rules-dock {
   position: fixed;
   right: 18px;
-  bottom: 112px;
+  bottom: 124px;
   z-index: 16;
   display: grid;
   justify-items: end;
@@ -3596,7 +3627,7 @@ h3 {
   position: absolute;
   right: calc(100% + 8px);
   bottom: 0;
-  min-width: 160px;
+  min-width: min(300px, calc(100vw - 118px));
   padding: 6px;
   border: 1px solid rgba(244, 241, 232, 0.14);
   border-radius: 8px;
@@ -3619,6 +3650,10 @@ h3 {
   font-weight: 850;
 }
 
+.rules-dock-popup button + button {
+  border-top: 1px solid rgba(244, 241, 232, 0.12);
+}
+
 .rules-dock-popup button:hover {
   background: #32413f;
 }
@@ -3626,7 +3661,7 @@ h3 {
 .dock-menu {
   position: fixed;
   right: 18px;
-  bottom: 174px;
+  bottom: 186px;
   z-index: 16;
   display: grid;
   justify-items: end;
@@ -3921,7 +3956,7 @@ h3 {
 
   .dock-menu {
     right: 10px;
-    bottom: 142px;
+    bottom: 154px;
   }
 
   .dock-menu-popup {
@@ -3931,7 +3966,7 @@ h3 {
 
   .rules-dock {
     right: 10px;
-    bottom: 84px;
+    bottom: 96px;
   }
 
   .rules-dock-popup {
@@ -3941,6 +3976,7 @@ h3 {
 
   .focus-dock-systems button {
     grid-template-columns: auto auto;
+    flex-basis: 128px;
   }
 }
 

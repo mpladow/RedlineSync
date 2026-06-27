@@ -68,20 +68,20 @@ export const SYSTEMS: SystemDefinition[] = [
     label: 'Neural Link',
     actions: [
       {
-        cost: '1',
-        name: 'Vent Heat',
-        description: 'Remove 2 Heat. If affected by Coolant Leak (Major Damage Effect), remove 1 less Heat.'
+        cost: '1-3',
+        name: 'Support Orders',
+			 description: 'Change orders for X friendly Support Units, where X is the number of Focus Tokens spent. See Support in Rulebook.'
       },
       {
         cost: '1-3',
-        name: 'System Reset',
-        description: 'Used to repair Major Damage Warnings. Check the Major Damage card for more details.'
+        name: 'Interact',
+			description: 'Interact with Battlefield Objects and Pick Up Weapons. Some Battlefield Objects may require additional Focus tokens.'
       },
-      {
-        cost: '1 + 1 Heat',
-        name: '*Emergency Field Patch',
-        description: 'Ignore one Critical Damage card for the current action only. Does not remove the card.'
-      }
+		 {
+			 cost: '1-3',
+			 name: 'Use Handler action',
+			 description: 'Used to activation handler actions/assets. Check handler details for correct usage.'
+		 },
     ]
   },
   {
@@ -130,8 +130,8 @@ export const SYSTEMS: SystemDefinition[] = [
       },
       {
         cost: '1 + 1 Heat',
-        name: '*Emergency Field Patch',
-        description: 'Ignore one Critical Damage card for the current action only. Does not remove the card.'
+        name: '*Emergency System Overload',
+        description: 'Ignore one Major Damage effect for the current action only. Does not remove the damage effect.'
       }
     ]
   },
