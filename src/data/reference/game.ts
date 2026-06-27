@@ -148,7 +148,7 @@ export const FORWARD_RELAY_BEACON: DeployableAsset = {
   cost: '2 Neural Link Focus',
   type: 'Fixed Asset',
   effect:
-    'Once per round, during a friendly Frame’s Focus Activation, a friendly Frame within 4 MD of the Forward Relay Beacon may spend 1 Neural Link Focus to place 1 Lock-On on an enemy Frame in line of sight of the Beacon.',
+    'Once per game, during a friendly Frame’s Focus Activation, a friendly Frame within 4 MD of the Forward Relay Beacon may spend 1 Neural Link Focus to place 1 Lock-On on an enemy Frame in line of sight of the Beacon.',
   stats: [
     { label: 'Defence', value: '2' },
     { label: 'Armour', value: '0' },
@@ -162,7 +162,7 @@ export const STATIC_GUN_EMPLACEMENT: DeployableAsset = {
   cost: '2 Neural Link Focus',
   type: 'Fixed Asset',
   effect:
-    'Once per round, during a friendly Frame\'s Focus Activation, a friendly Frame within 6 MD of the Static Gun Emplacement may spend 1 Neural Link Focus to fire it. Resolve the shot as a Support Attack. The target does not roll Defence dice and cannot use Reactions. Compare Support Attack successes against the target\'s Defence value. If the attack hits, resolve damage normally.',
+    'Once per game, during a friendly Frame\'s Focus Activation, a friendly Frame within 6 MD of the Static Gun Emplacement may spend 1 Neural Link Focus to fire it. Resolve the shot as a Support Attack. The target does not roll Defence dice and cannot use Reactions. Compare Support Attack successes against the target\'s Defence value. If the attack hits, resolve damage normally.',
   stats: [
     { label: 'Support Dice', value: '3' },
     { label: 'Range', value: '6 MD' },

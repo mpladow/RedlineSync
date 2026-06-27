@@ -954,7 +954,10 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
           aria-haspopup="menu"
           aria-expanded={isNavigationMenuOpen}
           aria-label="Open navigation menu"
-          onClick={() => setIsNavigationMenuOpen((current) => !current)}
+          onClick={() => {
+            setIsNavigationMenuOpen((current) => !current);
+            setIsRulesMenuOpen(false);
+          }}
         >
           <Menu size={20} />
         </button>
