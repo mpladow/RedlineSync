@@ -10,13 +10,13 @@ export const SYSTEMS: SystemDefinition[] = [
         cost: '1 + 1 Heat',
         name: 'Combat Sprint',
         description:
-          'Move up to the mech\'s Mobility value in MD. Add 1 High Speed token at the beginning of the movement. Remove 1 Lock-On token.'
+          'Move up to the Frame\'s Mobility value in MD. Add 1 High Speed token at the beginning of the movement. Remove 1 Lock-On token.'
       },
       {
         cost: '1 + 1 Heat',
         name: 'Jump',
         description:
-          'Move up to Mobility in MD, ignoring terrain and models. Must land in a legal space. Add a High Speed token at the beginning of the movement. Remove 1 Lock-On token.'
+          'Move up to Mobility in MD, ignoring terrain and models. Must land in a legal space.'
       },
       {
         cost: '1 + 1 Heat',
@@ -109,7 +109,7 @@ export const SYSTEMS: SystemDefinition[] = [
       {
         cost: '2',
         name: '*Armour Lock',
-        description: 'Ignore up to 1 Exposed token on this mech for this attack only.'
+        description: 'Ignore up to 1 Exposed token on this Frame for this attack only.'
       }
     ]
   },
@@ -130,7 +130,7 @@ export const SYSTEMS: SystemDefinition[] = [
       },
       {
         cost: '1 + 1 Heat',
-        name: '*Emergency System Overload',
+        name: 'Emergency System Overload',
         description: 'Ignore one Major Damage effect for the current action only. Does not remove the damage effect.'
       }
     ]

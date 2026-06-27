@@ -29,7 +29,7 @@ export const PILOT_TRAITS = [
     name: 'Heat Discipline',
     description: 'This pilot manages reactor load with practiced restraint.',
     rules: [
-      'Once per round, when the mech would gain Heat from a Fast Mobility action or Combat Charge, roll 1d6.',
+      'Once per round, when the Frame would gain Heat from a Fast Mobility action or Combat Charge, roll 1d6.',
       'On a 5+, ignore that Heat.',
       'This cannot prevent Heat from weapons, Overcharge, Major Damage, or Critical Heat.'
     ],
@@ -60,8 +60,8 @@ export const PILOT_TRAITS = [
     name: 'Redline Temper',
     description: 'This pilot becomes more aggressive as the cockpit overheats.',
     rules: [
-      'While the mech is in Redline, if it chooses the Redline Surge Action that provides +1 Attack, it may add an additional +1 Attack.',
-      'If that attack misses, the mech gains +1 Heat after the attack resolves.'
+      'While the Frame is in Redline, if it chooses the Redline Surge Action that provides +1 Attack, it may add an additional +1 Attack.',
+      'If that attack misses, the Frame gains +1 Heat after the attack resolves.'
     ],
     systems: ['weapons', 'reactor', 'neural'],
     triggers: ['when-heat-state-entered', 'before-weapon-attack', 'after-attack-roll', 'after-heat-gained']
@@ -93,8 +93,8 @@ export const PILOT_TRAITS = [
 //     name: 'Iron Nerve',
 //     description: 'This pilot holds position under pressure.',
 //     rules: [
-//       'The mech may ignore the first Harried token it would receive each round.',
-//       'If the mech already has 2 Harried tokens, this trait has no effect until at least one is removed.'
+//       'The Frame may ignore the first Harried token it would receive each round.',
+//       'If the Frame already has 2 Harried tokens, this trait has no effect until at least one is removed.'
 //     ],
 //     systems: ['defence', 'neural'],
 //     triggers: ['when-round-started', 'when-harried-applied']
@@ -104,8 +104,8 @@ export const PILOT_TRAITS = [
 //     name: 'Close Assault Pilot',
 //     description: 'This pilot commits fully to charge attacks.',
 //     rules: [
-//       'When this mech spends a Charge Token on a melee attack, it gains +1 attack die as normal and +1 damage if the attack deals Structure damage.',
-//       'After the attack resolves, the mech gains +1 Heat.'
+//       'When this Frame spends a Charge Token on a melee attack, it gains +1 attack die as normal and +1 damage if the attack deals Structure damage.',
+//       'After the attack resolves, the Frame gains +1 Heat.'
 //     ],
 //     systems: ['mobility', 'weapons', 'reactor', 'neural'],
 //     triggers: ['when-charge-token-spent', 'before-weapon-attack', 'after-structure-damage', 'after-heat-gained']
@@ -148,7 +148,7 @@ export const PILOT_TRAITS = [
     name: 'Ghost-Signal Sensitivity',
     description: 'This pilot can read hostile targeting patterns.',
     rules: [
-      'Once per round, when the enemy places a Lock-On token on this mech, roll 1d6.',
+      'Once per round, when the enemy places a Lock-On token on this Frame, roll 1d6.',
       'On a 5+, cancel that Lock-On.',
       'If cancelled, this pilot may immediately place 1 Harried token on the enemy that attempted the Lock-On, if it is within 8 MD.'
     ],

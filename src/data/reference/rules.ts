@@ -21,7 +21,7 @@ const combatAndDamageOverview = [
         '(Weapon Damage + Net Success Bonus + additional bonuses) - Effective Armour'
       ],
       ['Net Success Bonus', 'Net Successes are calculated from every 2 successes over the target value.'],
-      ['Effective Armour', 'Mech Armour - Modifiers (eg. Exposed Tokens).'],
+      ['Effective Armour', 'Frame Armour - Modifiers (eg. Exposed Tokens).'],
       [
         'Token Usage',
         'Lock-On tokens, Harried tokens, and Exposed tokens can all be used freely by both sides during the combat exchange.'
@@ -41,7 +41,7 @@ const rulesReferences = [
     id: 'heat',
     title: 'Heat Rules',
     summary:
-      'Heat represents reactor strain, actuator load, weapon discharge, cockpit temperature, and stress on the mech\'s internal systems.',
+      'Heat represents reactor strain, actuator load, weapon discharge, cockpit temperature, and stress on the Frame\'s internal systems.',
     sections: [
       {
         id: 'heat-overview',
@@ -50,7 +50,7 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'Heat represents reactor strain, actuator load, weapon discharge, cockpit temperature, and the stress placed on the mech\'s internal systems.'
+              'Heat represents reactor strain, actuator load, weapon discharge, cockpit temperature, and the stress placed on the Frame\'s internal systems.'
           },
           {
             type: 'paragraph',
@@ -75,7 +75,7 @@ const rulesReferences = [
               [
                 '4-5',
                 'Hot',
-                'Some weapons, pilot traits and enemy effects may interact with Mechs in a Hot state'
+                'Some weapons, pilot traits and enemy effects may interact with Frames in a Hot state'
               ],
               ['6-8', 'Redline', 'Redline Surge']
             ]
@@ -119,11 +119,7 @@ const rulesReferences = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'After resolving any Critical Heat effects, each mech removes 1 Heat, to a minimum of 0.'
-          },
-          {
-            type: 'paragraph',
-            text: 'A mech at 8 Heat still resolves the Reactor Warning table before cooling.'
+            text: 'After resolving any Critical Heat effects, each Frame removes 1 Heat, to a minimum of 0.'
           }
         ]
       },
@@ -178,7 +174,7 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'At the beginning of the Activation Phase, the mech immediately gains +1 Heat for each Overcommitted system.'
+              'At the beginning of the Activation Phase, the Frame immediately gains +1 Heat for each Overcommitted system.'
           },
           {
             type: 'paragraph',
@@ -235,7 +231,7 @@ const rulesReferences = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'A mech may have a maximum of 2 Lock-On tokens and 2 Exposed tokens at the end of the Cockpit phase.'
+            text: 'A Frame may have a maximum of 2 Lock-On tokens and 2 Exposed tokens at the end of the Cockpit phase.'
           },
           {
             type: 'paragraph',
@@ -330,7 +326,7 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'Terrain represents buildings, industrial structures, ruined city blocks, towers, walls, heavy machinery, and other battlefield features large enough to affect mech combat.'
+              'Terrain represents buildings, industrial structures, ruined city blocks, towers, walls, heavy machinery, and other battlefield features large enough to affect Frame combat.'
           },
           {
             type: 'paragraph',
@@ -368,8 +364,8 @@ const rulesReferences = [
           {
             type: 'list',
             items: [
-              'A mech moves through it.',
-              'A mech is pushed into it.',
+              'A Frame moves through it.',
+              'A Frame is pushed into it.',
               'A ranged attack passes through it.'
             ]
           },
@@ -387,7 +383,7 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'When a mech physically interacts with Impact Terrain, the pilot controlling that mech makes an Impact Check. This includes cases where the mech is pushed into terrain by an enemy attack.'
+              'When a Frame physically interacts with Impact Terrain, the pilot controlling that Frame makes an Impact Check. This includes cases where the Frame is pushed into terrain by an enemy attack.'
           },
           {
             type: 'paragraph',
@@ -414,14 +410,14 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'When a mech intentionally moves through Impact Terrain, roll an Impact Check for each Impact Terrain piece it interacts with.'
+              'When a Frame intentionally moves through Impact Terrain, roll an Impact Check for each Impact Terrain piece it interacts with.'
           },
           {
             type: 'table',
             columns: ['Result', 'Effect'],
             rows: [
-              ['1-3', 'The mech stops. The terrain piece is destroyed. The mech gains +1 Heat.'],
-              ['4+', 'The mech moves through successfully. Movement may continue.']
+              ['1-3', 'The Frame stops. The terrain piece is destroyed. The Frame gains +1 Heat.'],
+              ['4+', 'The Frame moves through successfully. Movement may continue.']
             ]
           }
         ]
@@ -433,7 +429,7 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'When a mech is pushed into Impact Terrain, the pushed mech\'s pilot makes the Impact Check. Start with the first Impact Terrain piece the mech contacts.'
+              'When a Frame is pushed into Impact Terrain, the pushed Frame\'s pilot makes the Impact Check. Start with the first Impact Terrain piece the Frame contacts.'
           },
           {
             type: 'table',
@@ -441,14 +437,14 @@ const rulesReferences = [
             rows: [
               [
                 '1-3',
-                'The terrain piece is destroyed. The mech gains +1 Heat. If pushback distance remains, the push continues.'
+                'The terrain piece is destroyed. The Frame gains +1 Heat. If pushback distance remains, the push continues.'
               ],
-              ['4+', 'The terrain stops the mech. Pushback ends. No Heat is gained.']
+              ['4+', 'The terrain stops the Frame. Pushback ends. No Heat is gained.']
             ]
           },
           {
             type: 'paragraph',
-            text: 'If the mech continues into another Impact Terrain piece, repeat this process.'
+            text: 'If the Frame continues into another Impact Terrain piece, repeat this process.'
           }
         ]
       },
@@ -459,13 +455,13 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'When a mech uses Jump and lands on Impact Terrain, make one Impact Check for the landing, not one roll per terrain piece.'
+              'When a Frame uses Jump and lands on Impact Terrain, make one Impact Check for the landing, not one roll per terrain piece.'
           },
           {
             type: 'table',
             columns: ['Result', 'Effect'],
             rows: [
-              ['1-3', 'All Impact Terrain pieces landed on are destroyed. The mech gains +1 Heat total.'],
+              ['1-3', 'All Impact Terrain pieces landed on are destroyed. The Frame gains +1 Heat total.'],
               ['4+', 'All Impact Terrain pieces landed on are destroyed. No additional Heat is generated.']
             ]
           },
@@ -485,7 +481,7 @@ const rulesReferences = [
           },
           {
             type: 'paragraph',
-            text: 'When making a ranged attack, draw a line from the centre of the attacking mech to the centre of the target mech.'
+            text: 'When making a ranged attack, draw a line from the centre of the attacking Frame to the centre of the target Frame.'
           },
           {
             type: 'paragraph',
@@ -500,7 +496,7 @@ const rulesReferences = [
             type: 'callout',
             title: 'Example',
             text:
-              'A mech with a Defence of 2 is visible but behind 2 large buildings. Since Line of Sight is traced through these two large buildings, the Defence value of the mech is now 4.'
+              'A Frame with a Defence of 2 is visible but behind 2 large buildings. Since Line of Sight is traced through these two large buildings, the Defence value of the Frame is now 4.'
           }
         ]
       },
@@ -586,14 +582,14 @@ const rulesReferences = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'A mech may move onto Level 1 terrain if all of the following are true.'
+            text: 'A Frame may move onto Level 1 terrain if all of the following are true.'
           },
           {
             type: 'list',
             items: [
-              'The mech\'s base can fit fully on the elevated surface.',
+              'The Frame\'s base can fit fully on the elevated surface.',
               'There is a ramp, slope, road, or accessible edge.',
-              'The mech has enough movement.'
+              'The Frame has enough movement.'
             ]
           },
           {
@@ -602,7 +598,7 @@ const rulesReferences = [
           },
           {
             type: 'paragraph',
-            text: 'If the mech uses a ramp, road, or gentle slope, this extra movement cost does not apply.'
+            text: 'If the Frame uses a ramp, road, or gentle slope, this extra movement cost does not apply.'
           }
         ]
       },
@@ -612,7 +608,7 @@ const rulesReferences = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'A mech using Jump may move onto or off Level 1 terrain freely, as long as it can land legally.'
+            text: 'A Frame using Jump may move onto or off Level 1 terrain freely, as long as it can land legally.'
           },
           {
             type: 'paragraph',
@@ -631,13 +627,13 @@ const rulesReferences = [
           },
           {
             type: 'paragraph',
-            text: 'This represents the elevated mech firing over low buildings, ruins, and battlefield clutter.'
+            text: 'This represents the elevated Frame firing over low buildings, ruins, and battlefield clutter.'
           },
           {
             type: 'callout',
             title: 'Example',
             text:
-              'A Level 1 mech fires at a Level 0 target. The line of fire crosses two Impact Terrain pieces. Normally, the defender would gain +2 Defence dice. Because the attacker is elevated, it ignores one crossed Impact Terrain piece. The defender gains only +1 Defence die.'
+              'A Level 1 Frame fires at a Level 0 target. The line of fire crosses two Impact Terrain pieces. Normally, the defender would gain +2 Defence dice. Because the attacker is elevated, it ignores one crossed Impact Terrain piece. The defender gains only +1 Defence die.'
           }
         ]
       },
@@ -648,23 +644,23 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'If a mech is pushed off Level 1 terrain, place it at the nearest legal Level 0 position in the direction of the push.'
+              'If a Frame is pushed off Level 1 terrain, place it at the nearest legal Level 0 position in the direction of the push.'
           },
           {
             type: 'paragraph',
-            text: 'Then the pushed mech\'s pilot makes an Impact Check.'
+            text: 'Then the pushed Frame\'s pilot makes an Impact Check.'
           },
           {
             type: 'table',
             columns: ['Roll', 'Effect'],
             rows: [
-              ['1-3', 'Bad landing. The mech gains +1 Heat.'],
+              ['1-3', 'Bad landing. The Frame gains +1 Heat.'],
               ['4+', 'Controlled landing. No extra effect.']
             ]
           },
           {
             type: 'paragraph',
-            text: 'This does not destroy terrain unless the mech also lands on or contacts Impact Terrain.'
+            text: 'This does not destroy terrain unless the Frame also lands on or contacts Impact Terrain.'
           }
         ]
       },
@@ -674,16 +670,16 @@ const rulesReferences = [
         blocks: [
           {
             type: 'paragraph',
-            text: 'A mech may only end movement on Level 1 terrain if its base can fit fully and legally on the elevated surface.'
+            text: 'A Frame may only end movement on Level 1 terrain if its base can fit fully and legally on the elevated surface.'
           },
           {
             type: 'paragraph',
-            text: 'The current standard mech base size is 6.5 cm x 6.5 cm.'
+            text: 'The current standard Frame base size is 6.5 cm x 6.5 cm.'
           },
           {
             type: 'paragraph',
             text:
-              'Larger mechs may use larger bases. Larger bases represent sturdier frames, but they are harder to manoeuvre through tight terrain and may have more difficulty fitting onto elevated surfaces.'
+              'Larger Frames may use larger bases. Larger bases represent sturdier frames, but they are harder to manoeuvre through tight terrain and may have more difficulty fitting onto elevated surfaces.'
           }
         ]
       },
@@ -694,12 +690,12 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'There are situations where a mech is fighting from a lower elevation and cannot be placed on the higher terrain piece to maintain minimum melee range.'
+              'There are situations where a Frame is fighting from a lower elevation and cannot be placed on the higher terrain piece to maintain minimum melee range.'
           },
           {
             type: 'paragraph',
             text:
-              'In situations like this, the mech on the lower elevation must use a Jump Mobility Action prior to using a weapon action.'
+              'In situations like this, the Frame on the lower elevation must use a Jump Mobility Action prior to using a weapon action.'
           }
         ]
       },
@@ -710,12 +706,12 @@ const rulesReferences = [
           {
             type: 'paragraph',
             text:
-              'If a mech is pushed off of terrain or is situated on elevated terrain which is subsequently destroyed, each elevation level the mech falls results in a Mobility Focus loss.'
+              'If a Frame is pushed off of terrain or is situated on elevated terrain which is subsequently destroyed, each elevation level the Frame falls results in a Mobility Focus loss.'
           },
           {
             type: 'paragraph',
             text:
-              'If no Mobility Focus is allocated, the mech must immediately take 1 Structure damage for each elevation level. This damage is allocated randomly.'
+              'If no Mobility Focus is allocated, the Frame must immediately take 1 Structure damage for each elevation level. This damage is allocated randomly.'
           }
         ]
       }

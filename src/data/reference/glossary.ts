@@ -4,11 +4,11 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'high-speed',
     keyword: 'High Speed',
-    summary: 'A movement token that makes a mech harder to hit, but less stable when attacking.',
+    summary: 'A movement token that makes a Frame harder to hit, but less stable when attacking.',
     definition: [
       {
         type: 'paragraph',
-        text: 'Effect: while a mech has a High Speed token, it gains these modifiers.'
+        text: 'Effect: while a Frame has a High Speed token, it gains these modifiers.'
       },
       {
         type: 'table',
@@ -21,16 +21,16 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
       {
         type: 'paragraph',
         text:
-          'High Speed makes the mech harder to hit, but less stable when attacking.'
+          'High Speed makes the Frame harder to hit, but less stable when attacking.'
       },
       {
         type: 'paragraph',
         text:
-          'Removing High Speed: at the beginning of this mech\'s next Focus Activation, unless its chosen action will result in another High Speed token being assigned, its controlling player must remove the High Speed token.'
+          'Removing High Speed: at the beginning of this Frame\'s next Focus Activation, unless its chosen action will result in another High Speed token being assigned, its controlling player must remove the High Speed token.'
       },
       {
         type: 'paragraph',
-        text: 'If the token is not removed, the mech continues to receive both effects.'
+        text: 'If the token is not removed, the Frame continues to receive both effects.'
       },
       {
         type: 'paragraph',
@@ -65,12 +65,12 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'exposed',
     keyword: 'Exposed',
-    summary: 'A vulnerability token that temporarily reduces a mech\'s Armour against incoming attacks.',
+    summary: 'A vulnerability token that temporarily reduces a Frame\'s Armour against incoming attacks.',
     definition: [
       {
         type: 'paragraph',
         text:
-          'Each Exposed token on a mech reduces that mech\'s Armour by 1 against incoming attacks.'
+          'Each Exposed token on a Frame reduces that Frame\'s Armour by 1 against incoming attacks.'
       },
       {
         type: 'list',
@@ -81,17 +81,17 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'harried',
     keyword: 'Harried',
-	  summary: 'A Harried token represents a mech being pressured, distracted, boxed in, destabilised, or forced into a poor defensive posture.',
+	  summary: 'A Harried token represents a Frame being pressured, distracted, boxed in, destabilised, or forced into a poor defensive posture.',
     definition: [
       {
         type: 'paragraph',
-        text: 'Effect: when a mech with a Harried token defends against an attack, remove 1 Harried token to apply -1 Defence die.'
+        text: 'Effect: when a Frame with a Harried token defends against an attack, remove 1 Harried token to apply -1 Defence die.'
       },
       {
         type: 'list',
         items: [
-          'A mech cannot be reduced below 1 Defence die by Harried.',
-          'A mech may have a maximum of 2 Harried tokens.',
+          'A Frame cannot be reduced below 1 Defence die by Harried.',
+          'A Frame may have a maximum of 2 Harried tokens.',
           'If a rule would place a third Harried token, ignore the extra token.'
         ]
       },
@@ -112,7 +112,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
 		definition: [
 			{
 				type: 'paragraph',
-				text: 'Effect: while a mech has a Charge Burst token, it gains these modifiers.'
+				text: 'Effect: while a Frame has a Charge Burst token, it gains these modifiers.'
 			},
 			{
 				type: 'table',
@@ -125,7 +125,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
 			{
 				type: 'paragraph',
 				text:
-					'Removing Burst Charge: at the end of this mech\'s NEXT Action, its controlling player must remove the Burst Charge token.'
+					'Removing Burst Charge: at the end of this Frame\'s NEXT Action, its controlling player must remove the Burst Charge token.'
 			},
 		]
 	},

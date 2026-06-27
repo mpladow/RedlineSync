@@ -135,14 +135,14 @@ function PilotRosterPage({ pilots }: { pilots: PilotRecord[] }) {
           </Link>
           <div>
             <h2>No pilots yet</h2>
-            <p>Create a pilot, configure their Mech, and they will appear here.</p>
+            <p>Create a pilot, configure their Frame, and they will appear here.</p>
           </div>
           <Link to="/pilots/new" className="primary-action">
             Create your first pilot
           </Link>
         </section>
       ) : (
-        <section className="roster-list" aria-label="Created Mechs and Pilots">
+        <section className="roster-list" aria-label="Created Frames and Pilots">
           {pilots.map((pilot) => {
             const gameStatus = pilotGameStatuses.get(pilot.id) ?? getPilotGameStatus(pilot.id);
             const statusLabel = gameStatus.isInGame ? `In Game - Round ${gameStatus.round}` : pilot.status;
@@ -903,7 +903,7 @@ function SyncWorkspace({ pilot }: { pilot: PilotRecord }) {
       {!isFrameInfoOpen && hasSelectedHandler && phaseIndex === 0 && (
         <button className="frame-info-dock-button" type="button" onClick={openFrameInfo}>
           <Info size={18} />
-          <span>Frame / Mech Info</span>
+          <span>Frame Info</span>
         </button>
       )}
       {!isFrameInfoOpen && hasSelectedHandler && phaseIndex !== 0 && phaseIndex !== 2 && (
@@ -1134,7 +1134,7 @@ function FrameInfoView({
   };
 
   return (
-    <section className="frame-info-view" aria-label="Read only Frame and Mech information">
+    <section className="frame-info-view" aria-label="Read only Frame information">
       <header className="frame-info-header">
         <div>
           <p className="eyebrow">Read Only Frame Intel</p>

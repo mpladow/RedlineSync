@@ -76,7 +76,7 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
   const validate = () => {
     const nextErrors: FormErrors = {};
     if (!pilotName.trim()) nextErrors.pilotName = 'Enter a pilot name.';
-    if (!mechName.trim()) nextErrors.mechName = 'Enter a Mech name.';
+    if (!mechName.trim()) nextErrors.mechName = 'Enter a Frame name.';
     if (!frame) nextErrors.frame = 'Select a frame.';
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -258,21 +258,21 @@ export function PilotForm({ pilot, onSave, onDelete }: PilotFormProps) {
           </div>
         </section>
 
-        <section className="form-section" aria-labelledby="mech-configuration-title">
+        <section className="form-section" aria-labelledby="frame-configuration-title">
           <div className="form-section-heading">
             <p className="eyebrow">Step 2</p>
-            <h2 id="mech-configuration-title">Mech configuration</h2>
+            <h2 id="frame-configuration-title">Frame configuration</h2>
           </div>
           <div className="form-grid">
             <label className="form-field">
-              <span>Mech name</span>
+              <span>Frame name</span>
               <input
                 value={mechName}
                 onChange={(event) => setMechName(event.target.value)}
                 aria-invalid={Boolean(errors.mechName)}
-                aria-describedby={errors.mechName ? 'mech-name-error' : undefined}
+                aria-describedby={errors.mechName ? 'frame-name-error' : undefined}
               />
-              {errors.mechName && <small id="mech-name-error">{errors.mechName}</small>}
+              {errors.mechName && <small id="frame-name-error">{errors.mechName}</small>}
             </label>
             <div className="form-field">
               <label htmlFor="pilot-frame">Frame</label>

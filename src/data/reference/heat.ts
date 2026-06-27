@@ -15,7 +15,7 @@ export const HEAT_RULES: Record<HeatClassName, HeatRule[]> = {
   steady: [{ text: 'No additional Steady heat rules yet.', systems: [], triggers: [] }],
   hot: [
     {
-      text: 'Some weapons, pilot traits, and enemy effects may interact with Hot mechs.',
+      text: 'Some weapons, pilot traits, and enemy effects may interact with Hot Frames.',
       systems: ['weapons', 'reactor', 'neural'],
       triggers: ['when-heat-state-entered']
     }

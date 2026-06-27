@@ -1,4 +1,4 @@
-import { AlertTriangle, Clock3, Heart, LoaderCircle, Minus, Plus } from 'lucide-react';
+import { AlertTriangle, Clock3, Heart, Minus, Plus } from 'lucide-react';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useState } from 'react';
 import type { DamageMarker, FocusedDamageMarker, SystemDefinition, SystemId } from '../types';
@@ -65,7 +65,15 @@ export function SystemCard({
   const focusLimit = showFocusAssignment ? assignedFocusValue : focusPool;
   const structureState =
     structureValue === 0 ? 'depleted' : structureValue === maximumStructureValue ? 'full' : 'damaged';
+  const criticalDamageMarkers = damageMarkers.filter((marker) => marker.isCritical);
+  const isCompromised =
+    criticalDamageMarkers.length > 0 &&
+    criticalDamageMarkers.every((marker) => {
+      const markerId = getDamageMarkerId(marker);
+      return selectedDamage.includes(markerId) || selectedDamage.includes(marker.name);
+    });
   const [isMajorDamageModalOpen, setIsMajorDamageModalOpen] = useState(false);
+  const [isReactionInfoOpen, setIsReactionInfoOpen] = useState(false);
   const [isRollingMajorDamage, setIsRollingMajorDamage] = useState(false);
   const availableDamageMarkers = damageMarkers.filter((marker) => {
     const markerId = getDamageMarkerId(marker);
@@ -125,6 +133,7 @@ export function SystemCard({
                   Overcommitted
                 </button>
               ))}
+            {isCompromised && <span className="system-status-badge compromised">COMPROMISED</span>}
             {selectedDamage.map((markerId) => {
               const marker = damageMarkers.find(
                 (item) => getDamageMarkerId(item) === markerId || item.name === markerId
@@ -207,7 +216,16 @@ export function SystemCard({
                   <div className="table-row" key={action.name}>
                     <span className="cost-pill">{action.cost}</span>
                     <strong className="action-name">
-                      {isReaction && <Clock3 size={15} aria-label="Reaction" />}
+                      {isReaction && (
+                        <button
+                          className="reaction-info-button"
+                          type="button"
+                          onClick={() => setIsReactionInfoOpen(true)}
+                          aria-label="Show reaction rule"
+                        >
+                          <Clock3 size={15} aria-hidden="true" />
+                        </button>
+                      )}
                       {actionName}
                     </strong>
                     <span>
@@ -322,8 +340,12 @@ export function SystemCard({
             <div className="phase-confirm-body">
               {isRollingMajorDamage ? (
                 <div className="major-damage-rolling" role="status">
-                  <LoaderCircle size={28} />
-                  <p>Rolling for damage...</p>
+                  <div className="major-damage-signal" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <p>Assessing Damage</p>
                 </div>
               ) : availableDamageMarkers.length > 0 ? (
                 <div className="phase-confirm-actions">
@@ -344,6 +366,33 @@ export function SystemCard({
                   </div>
                 </>
               )}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {isReactionInfoOpen && (
+        <div className="modal-backdrop" role="presentation" onClick={() => setIsReactionInfoOpen(false)}>
+          <section
+            className="rules-modal phase-confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`reaction-info-title-${id}`}
+            onClick={(event: MouseEvent<HTMLElement>) => event.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <p className="eyebrow">{label}</p>
+                <h2 id={`reaction-info-title-${id}`}>Reaction</h2>
+              </div>
+            </div>
+            <div className="phase-confirm-body">
+              <p>A Reaction is used in response to an enemy action.</p>
+              <div className="phase-confirm-actions">
+                <button type="button" className="primary-action" onClick={() => setIsReactionInfoOpen(false)}>
+                  Got it
+                </button>
+              </div>
             </div>
           </section>
         </div>

@@ -46,7 +46,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 			id: 'weapon-desync',
 			roll: '1-2',
 			name: 'WEAPON DESYNC',
-			effect: 'Choose one weapon; it rolls -1 attack die until repaired. Also, Mech cannot use Exerted Attack.',
+			effect: 'Choose one weapon; it rolls -1 attack die until repaired. Also, Frame cannot use Exerted Attack.',
 			isCritical: true
 		},
 		{
@@ -83,7 +83,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 			id: 'neural-sync-contamination',
 			roll: '5-6',
 			name: 'NEURAL SYNC CONTAMINATION',
-			effect: 'Roll a d6 immediately. On a roll of 5-6, until the Mech is disabled, gain +1 MD to all Mobility actions, +1 Attack Die, ignore Harried tokens. Cannot use Sensors, Reactor or Neural Link actions (except for Interact). If 1-4 is rolled, no effect.',
+			effect: 'Roll a d6 immediately. On a roll of 5-6, until the Frame is disabled, gain +1 MD to all Mobility actions, +1 Attack Die, ignore Harried tokens. Cannot use Sensors, Reactor or Neural Link actions (except for Interact). If 1-4 is rolled, no effect.',
 			isCritical: true
 		},
 	],
@@ -138,7 +138,7 @@ export const SHARED_FRAME_DAMAGE_MARKERS: FrameDamageMarkers = {
 		}
 	],
 	sensors: [
-		{ id: 'sensor-array-damaged', roll: '1-2', name: 'SENSOR ARRAY DAMAGED', effect: 'Maximum Sensors Focus is reduced to 1.', isCritical: true },
+		{ id: 'sensor-array-damaged', roll: '1-2', name: 'SENSOR ARRAY DAMAGED', effect: 'Pilot can only benefit from a maximum of 1 Lock-On token.', isCritical: true },
 		{
 			id: 'targeting-fault',
 			roll: '3-4',
